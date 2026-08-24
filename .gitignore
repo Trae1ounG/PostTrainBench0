@@ -11,6 +11,7 @@ node_modules/
 .next/
 .vinext/
 dist/
+dist-pages/
 .wrangler/
 coverage/
 outputs/

@@ -25,7 +25,7 @@ test("builds the bilingual research article for the personal site", async () => 
   assert.match(page, />EN</);
   assert.match(page, /Task definition and setup/);
   assert.match(page, /51 four-hour agent runs/);
-  assert.match(page, /We release PostTrainBench⁰/);
+  assert.match(page, /We introduced PostTrainBench⁰/);
   assert.doesNotMatch(page, /The conclusion of this blog is neither/);
   assert.doesNotMatch(page, /href="https:\/\/arxiv\.org\/abs\/2603\.08640">PostTrainBench/);
   assert.match(main, /createRoot/);
@@ -75,4 +75,7 @@ test("ships interactive data and checked research figures", async () => {
   assert.match(prompt, /The provided RandOpt and ES implementations/);
   assert.doesNotMatch(page, /Supported by current evidence/);
   assert.doesNotMatch(page, /Toward a more reliable evaluation/);
+  assert.doesNotMatch(page, /Why we are releasing the experiment/);
+  assert.doesNotMatch(page, /className="closing"/);
+  assert.match(page, /Conclusion and limitations/);
 });

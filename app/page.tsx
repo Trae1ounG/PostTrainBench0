@@ -111,7 +111,11 @@ export default function Home() {
     <article className="research-article" id="top">
       <header className="article-header">
         <h1>PostTrainBench<sup>0</sup>: {tx("LLM Agent 能否在没有梯度的情况下完成模型后训练？", "Can LLM Agents Automate LLM Post-Training Without Gradients?")}</h1>
-        <p className="article-meta">{tx("日期：2026 年 8 月", "Date: August 2026")} <span>·</span> {tx("预计阅读时间：24 分钟", "Estimated Reading Time: 24 min")} <span>·</span> {tx("作者：Yuqiao Tan、Minzheng Wang、Shizhu He、Jun Zhao、Kang Liu", "Authors: Yuqiao Tan, Minzheng Wang, Shizhu He, Jun Zhao, Kang Liu")}</p>
+        <div className="article-authors">
+          <p className="author-names">Yuqiao Tan <span>·</span> Minzheng Wang <span>·</span> Shizhu He <span>·</span> Jun Zhao <span>·</span> Kang Liu</p>
+          <p className="author-affiliation">{tx("中国科学院自动化研究所", "Institute of Automation, Chinese Academy of Sciences")}</p>
+        </div>
+        <p className="article-meta">{tx("2026 年 8 月", "August 2026")} <span>·</span> {tx("预计阅读时间：24 分钟", "24 min read")}</p>
         <p className="article-links"><a href="https://github.com/Trae1ounG/PostTrainBench0">Code &amp; data</a></p>
       </header>
 

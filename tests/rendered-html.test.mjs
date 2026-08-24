@@ -18,6 +18,7 @@ test("builds the bilingual research article for the personal site", async () => 
   assert.match(html, /Shizhu He/);
   assert.match(html, /Jun Zhao/);
   assert.match(html, /Kang Liu/);
+  assert.match(html, /Institute of Automation, Chinese Academy of Sciences/);
   assert.match(html, /\/posttrainbench0\/assets\/index-/);
   assert.match(page, /useState<Language>\("en"\)/);
   assert.match(page, /中文/);

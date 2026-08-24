@@ -4,6 +4,8 @@
 
 Yuqiao Tan · Minzheng Wang · Shizhu He · Jun Zhao · Kang Liu
 
+*Institute of Automation, Chinese Academy of Sciences*
+
 [Read the bilingual research blog](https://trae1oung.github.io/posttrainbench0/) ·
 [Benchmark prompt](public/prompt.txt) ·
 [Framework](docs/FRAMEWORK.md) ·

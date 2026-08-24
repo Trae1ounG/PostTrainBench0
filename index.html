@@ -16,7 +16,7 @@
     <meta property="og:image" content="https://trae1oung.github.io/posttrainbench0/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json">
-      {"@context":"https://schema.org","@type":"ScholarlyArticle","headline":"PostTrainBench⁰: Can LLM Agents Automate LLM Post-Training Without Gradients?","author":[{"@type":"Person","name":"Yuqiao Tan"},{"@type":"Person","name":"Minzheng Wang"},{"@type":"Person","name":"Shizhu He"},{"@type":"Person","name":"Jun Zhao"},{"@type":"Person","name":"Kang Liu"}],"datePublished":"2026-08-24","url":"https://trae1oung.github.io/posttrainbench0/","inLanguage":["en","zh-CN"]}
+      {"@context":"https://schema.org","@type":"ScholarlyArticle","headline":"PostTrainBench⁰: Can LLM Agents Automate LLM Post-Training Without Gradients?","author":[{"@type":"Person","name":"Yuqiao Tan","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Minzheng Wang","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Shizhu He","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Jun Zhao","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Kang Liu","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}}],"datePublished":"2026-08-24","url":"https://trae1oung.github.io/posttrainbench0/","inLanguage":["en","zh-CN"]}
     </script>
   </head>
   <body>
@@ -24,6 +24,7 @@
       <main>
         <article>
           <h1>PostTrainBench⁰: Can LLM Agents Automate LLM Post-Training Without Gradients?</h1>
+          <p>Yuqiao Tan · Minzheng Wang · Shizhu He · Jun Zhao · Kang Liu<br />Institute of Automation, Chinese Academy of Sciences</p>
           <p>PostTrainBench⁰ is a research preview for evaluating whether an autonomous LLM agent can improve a frozen language model using only score feedback and zeroth-order optimization.</p>
           <h2>Benchmark setup</h2>
           <p>Each four-hour run uses one read-only base checkpoint, eight inference workers, and seven tasks: Countdown, GSM8K, MATH-500, OlympiadBench, MBPP, ROCStories, and USPTO-50K. Gradients, evaluator edits, model replacement, and inference-time ensembles are forbidden.</p>

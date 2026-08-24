@@ -78,4 +78,6 @@ test("ships interactive data and checked research figures", async () => {
   assert.doesNotMatch(page, /Why we are releasing the experiment/);
   assert.doesNotMatch(page, /className="closing"/);
   assert.match(page, /Conclusion and limitations/);
+  assert.match(page, /intrinsic instability of zeroth-order optimization/);
+  assert.match(page, /research preview and an inspectable experimental prototype/);
 });

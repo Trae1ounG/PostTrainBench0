@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type Language = "zh" | "en";
+const displayScore = (value: number) => (value * 100).toFixed(2);
 type Projection = "pca" | "random";
 type ScoreKey = "joint" | "countdown" | "gsm8k" | "math500" | "olympiadbench" | "mbpp" | "rocstories" | "uspto50k";
 type WeightPoint = { index: number; seed: number; sigma: number; pca: [number, number]; random: [number, number]; scores: Record<ScoreKey, number> };
@@ -174,8 +175,8 @@ export default function WeightSpaceExplorer({ language }: { language: Language }
           <span>{hover ? tr("当前候选", "Candidate under cursor") : tr("当前任务最高分候选", "Best candidate for selected score")}</span>
           <strong>#{selected.index}</strong>
           <dl>
-            <div><dt>{tr("当前着色分数", "Selected score")}</dt><dd>{selected.scores[scoreKey].toFixed(4)}</dd></div>
-            <div><dt>{tr("七任务均分", "Seven-task mean")}</dt><dd>{selected.scores.joint.toFixed(4)}</dd></div>
+            <div><dt>{tr("当前着色分数", "Selected score")}</dt><dd>{displayScore(selected.scores[scoreKey])}</dd></div>
+            <div><dt>{tr("七任务均分", "Seven-task mean")}</dt><dd>{displayScore(selected.scores.joint)}</dd></div>
             <div><dt>{tr("扰动幅度", "Noise scale")}</dt><dd>{selected.sigma}</dd></div>
             <div><dt>{tr("方向种子", "Direction seed")}</dt><dd>{selected.seed}</dd></div>
           </dl>

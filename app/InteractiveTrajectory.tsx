@@ -34,6 +34,7 @@ type Series = {
 type Hover = { series: Series; point: ChartPoint; px: number; py: number };
 
 const BASE_SCORE = 0.440764;
+const displayScore = (value: number) => (value * 100).toFixed(2);
 const COLORS = ["#2457ff", "#de5b3f", "#078b71", "#8a4bd0", "#d39400", "#1686b0", "#cc3d7e", "#667085", "#76a000", "#6b4f3f", "#111827"];
 
 function cleanAgentName(agent: string, language: Language) {
@@ -217,7 +218,7 @@ export default function InteractiveTrajectory({ language }: { language: Language
       context.lineWidth = 1;
       context.beginPath(); context.moveTo(geometry.margin.left, y); context.lineTo(width - geometry.margin.right, y); context.stroke();
       context.fillStyle = "#7b8190";
-      context.fillText(value.toFixed(3), geometry.margin.left - 9, y);
+      context.fillText(displayScore(value), geometry.margin.left - 9, y);
     }
 
     context.textAlign = "center";
@@ -329,7 +330,7 @@ export default function InteractiveTrajectory({ language }: { language: Language
         <label className="switch-control"><input type="checkbox" checked={showBaselines} onChange={(event) => { setShowBaselines(event.target.checked); setHover(null); }} /><span />{tr("显示固定搜索基线", "Show fixed baselines")}</label>
       </div>
 
-      <div className="trajectory-legend" aria-label={viewMode === "summary" ? "切换 Agent 汇总曲线" : "选择一个 Agent"}>
+      <div className="trajectory-legend" aria-label={viewMode === "summary" ? tr("切换 Agent 汇总曲线", "Toggle agent summary curves") : tr("选择一个 Agent", "Select an agent")}>
         {displayedAgents.map((agent) => {
           const runCount = eligibleRuns.filter((run) => agentGroup(run) === agent).length;
           const enabled = viewMode === "runs" ? agent === activeSelectedAgent : !enabledAgents || enabledAgents.has(agent);
@@ -343,8 +344,8 @@ export default function InteractiveTrajectory({ language }: { language: Language
 
       <div className="trajectory-stage">
         <div className="trajectory-canvas-wrap" ref={wrapRef}>
-          <span className="y-axis-title">{tr("当前最佳七任务均分", "Best seven-task mean so far")}</span>
-          <canvas ref={canvasRef} onPointerMove={pointerMove} onPointerLeave={() => setHover(null)} aria-label="交互式最佳分数搜索轨迹" />
+          <span className="y-axis-title">{tr("当前最佳七任务均分（0–100）", "Best seven-task mean so far (0–100)")}</span>
+          <canvas ref={canvasRef} onPointerMove={pointerMove} onPointerLeave={() => setHover(null)} aria-label={tr("交互式最佳分数搜索轨迹", "Interactive best-score search trajectories")} />
         </div>
         <aside className="trajectory-readout">
           <span className="readout-kicker">{hover ? tr("当前指向的数据", "Point under cursor") : viewMode === "summary" ? tr("如何阅读", "How to read") : tr("当前 Agent", "Selected Agent")}</span>
@@ -353,8 +354,8 @@ export default function InteractiveTrajectory({ language }: { language: Language
               <strong>{readoutSeries?.label}</strong>
               <p>{readoutSeries?.harness}</p>
               <dl>
-                <div><dt>{viewMode === "summary" ? tr("中位最佳分", "Median best") : tr("最佳分数", "Best score")}</dt><dd>{hover.point.best.toFixed(4)}</dd></div>
-                {viewMode === "summary" && <div><dt>{tr("重复运行范围", "Run range")}</dt><dd>{hover.point.low.toFixed(4)}–{hover.point.high.toFixed(4)}</dd></div>}
+                <div><dt>{viewMode === "summary" ? tr("中位最佳分", "Median best") : tr("最佳分数", "Best score")}</dt><dd>{displayScore(hover.point.best)}</dd></div>
+                {viewMode === "summary" && <div><dt>{tr("重复运行范围", "Run range")}</dt><dd>{displayScore(hover.point.low)}–{displayScore(hover.point.high)}</dd></div>}
                 <div><dt>{xAxis === "minute" ? tr("已运行", "Elapsed") : tr("完整评测", "Full evaluation")}</dt><dd>{xAxis === "minute" ? `${hover.point.x.toFixed(1)} ${tr("分钟", "min")}` : `#${Math.round(hover.point.x)}`}</dd></div>
                 <div><dt>{tr("计入运行", "Runs represented")}</dt><dd>{hover.series.runCount}</dd></div>
               </dl>
@@ -371,8 +372,8 @@ export default function InteractiveTrajectory({ language }: { language: Language
               <p>{tr("每条线表示一次得到完整七任务分数的搜索运行。", "Each line is one search run that produced a complete seven-task score.")}</p>
               <dl>
                 <div><dt>{tr("可见运行", "Visible runs")}</dt><dd>{selectedRuns.length}</dd></div>
-                <div><dt>{tr("终点中位数", "Endpoint median")}</dt><dd>{selectedEnds.length ? median(selectedEnds).toFixed(4) : "—"}</dd></div>
-                <div><dt>{tr("终点范围", "Endpoint range")}</dt><dd>{selectedEnds.length ? `${Math.min(...selectedEnds).toFixed(4)}–${Math.max(...selectedEnds).toFixed(4)}` : "—"}</dd></div>
+                <div><dt>{tr("终点中位数", "Endpoint median")}</dt><dd>{selectedEnds.length ? displayScore(median(selectedEnds)) : "—"}</dd></div>
+                <div><dt>{tr("终点范围", "Endpoint range")}</dt><dd>{selectedEnds.length ? `${displayScore(Math.min(...selectedEnds))}–${displayScore(Math.max(...selectedEnds))}` : "—"}</dd></div>
               </dl>
             </>
           )}
@@ -381,7 +382,8 @@ export default function InteractiveTrajectory({ language }: { language: Language
 
       <div className="trajectory-footer">
         <span>{tr("当前显示", "Showing")} <b>{series.length}</b> {viewMode === "summary" ? tr("条 Agent 汇总曲线", "Agent summaries") : tr("条单次运行曲线", "individual runs")}</span>
-        <span>{tr("水平虚线：未修改模型", "Dashed horizontal line: unmodified model")} {BASE_SCORE.toFixed(4)}</span>
+        <span>{tr("Qwen2.5-3B-Instruct · 34 次完整运行", "Qwen2.5-3B-Instruct · 34 complete runs")}</span>
+        <span>{tr("水平虚线：未修改模型", "Dashed horizontal line: unmodified model")} {displayScore(BASE_SCORE)}</span>
         <span>{xAxis === "minute" ? tr("时间包含评测等待", "Time includes evaluation latency") : tr("一次完整评测覆盖全部七项任务", "One full evaluation covers all seven tasks")}</span>
       </div>
     </div>

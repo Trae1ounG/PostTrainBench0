@@ -24,8 +24,8 @@ test("builds the bilingual research article for the personal site", async () => 
   assert.match(page, /中文/);
   assert.match(page, />EN</);
   assert.match(page, /Task definition and setup/);
-  assert.match(page, /51 four-hour agent runs/);
-  assert.match(page, /We introduced PostTrainBench⁰/);
+  assert.match(page, /51 included complete agent runs/);
+  assert.match(page, /PostTrainBench⁰ reformulates LLM post-training/);
   assert.doesNotMatch(page, /The conclusion of this blog is neither/);
   assert.doesNotMatch(page, /href="https:\/\/arxiv\.org\/abs\/2603\.08640">PostTrainBench/);
   assert.match(main, /createRoot/);
@@ -71,7 +71,7 @@ test("ships interactive data and checked research figures", async () => {
   assert.match(css, /font-family:\s*-apple-system/);
   assert.match(runtime, /\/home\/agent/);
   assert.match(runtime, /Full instruction/);
-  assert.match(trace, /How feedback changed the next move/);
+  assert.match(trace, /Next step observed after feedback/);
   assert.match(trace, /Kimi K2\.6 · OpenCode/);
   assert.match(trace, /Claude Opus 4\.8 high · Cursor/);
   assert.match(trace, /Case conclusion/);
@@ -81,7 +81,20 @@ test("ships interactive data and checked research figures", async () => {
   assert.doesNotMatch(page, /Toward a more reliable evaluation/);
   assert.doesNotMatch(page, /Why we are releasing the experiment/);
   assert.doesNotMatch(page, /className="closing"/);
-  assert.match(page, /Conclusion and limitations/);
-  assert.match(page, /intrinsic instability of zeroth-order optimization/);
-  assert.match(page, /research preview and an inspectable experimental prototype/);
+  assert.match(page, /Validity threats and limitations/);
+  assert.match(page, /Every score reported here is a development score/);
+  assert.match(page, /finite-budget zeroth-order search is strongly path-dependent/i);
+  assert.match(page, /best viewed at this stage as a research prototype and perspective/);
+  assert.match(page, /In one minute/);
+});
+
+test("uses one 0–100 score scale across interactive figures", async () => {
+  const [trajectory, weight] = await Promise.all([
+    readFile(new URL("app/InteractiveTrajectory.tsx", root), "utf8"),
+    readFile(new URL("app/WeightSpaceExplorer.tsx", root), "utf8"),
+  ]);
+  assert.match(trajectory, /const displayScore = \(value: number\) => \(value \* 100\)\.toFixed\(2\)/);
+  assert.match(trajectory, /Best seven-task mean so far \(0–100\)/);
+  assert.match(trajectory, /Qwen2\.5-3B-Instruct · 34 complete runs/);
+  assert.match(weight, /displayScore\(selected\.scores\.joint\)/);
 });

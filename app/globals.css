@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   --main-width: 720px;
   --nav-width: 1024px;
   --gap: 24px;
@@ -12,8 +13,9 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { overflow-x: hidden; scroll-behavior: smooth; }
 body {
+  overflow-x: hidden;
   margin: 0;
   color: var(--text);
   background: #fff;
@@ -101,6 +103,20 @@ img { display: block; max-width: 100%; }
 .research-article section p { margin: 0 0 20px; font-size: 16px; line-height: 1.6; }
 .abstract-section h2 { font-size: 24px !important; }
 .abstract-section p { font-size: 16px !important; }
+.claims-at-glance {
+  margin: 0 0 38px;
+  padding: 16px 18px;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--border);
+  background: #fafafa;
+}
+.claims-at-glance h2 { margin: 0 0 10px; font-size: 15px; }
+.claims-at-glance > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.claims-at-glance p { margin: 0; font-size: 13px; line-height: 1.5; }
+.claims-at-glance b,
+.claims-at-glance span { display: block; }
+.claims-at-glance b { margin-bottom: 3px; color: var(--ink); }
+.claims-at-glance span { color: #555; }
 .prose-list,
 .trace-list,
 .references { margin: 0 0 20px; padding-left: 22px; }
@@ -186,7 +202,7 @@ img { display: block; max-width: 100%; }
 .task-detail-table th:nth-child(2) { width: 120px; }
 .task-detail-table th:nth-child(5) { width: 42px; }
 .task-detail-table th:nth-child(6) { width: 76px; }
-.run-summary { min-width: 620px; }
+.run-summary { min-width: 720px; }
 .run-summary th:nth-child(n+3),
 .run-summary td:nth-child(n+3) { text-align: right; font-variant-numeric: tabular-nums; }
 .premise-summary { max-width: 520px; }
@@ -216,6 +232,24 @@ img { display: block; max-width: 100%; }
 
 .runtime-contract,
 .agent-trace-explorer { margin: 22px 0 34px; }
+.runtime-details,
+.supplementary-figure {
+  margin: 22px 0 30px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.runtime-details > summary,
+.supplementary-figure > summary {
+  padding: 12px 2px;
+  cursor: pointer;
+  color: #555;
+  font-size: 13px;
+  font-weight: 600;
+}
+.runtime-details[open] > summary,
+.supplementary-figure[open] > summary { border-bottom: 1px solid var(--border); }
+.runtime-details > h3 { margin-top: 18px !important; }
+.supplementary-figure .article-figure { margin-bottom: 20px; }
 .runtime-contract > figcaption,
 .agent-trace-explorer > figcaption {
   margin-bottom: 10px;
@@ -422,6 +456,14 @@ img { display: block; max-width: 100%; }
 .interactive-note { margin: -8px 0 10px; color: var(--muted); font-size: 12px; }
 .trajectory-explorer,
 .weight-space-explorer { margin: 12px 0 34px; }
+.agent-trace-explorer,
+.trajectory-explorer,
+.weight-space-explorer,
+.runs-explorer {
+  width: min(1040px, calc(100vw - 40px));
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
 .trajectory-loading,
 .weight-space-loading { min-height: 300px; display: grid; place-items: center; color: var(--muted); }
 .trajectory-controls,
@@ -483,6 +525,16 @@ img { display: block; max-width: 100%; }
 .conclusion-columns h3 { margin-bottom: 8px !important; }
 .conclusion-columns ul { margin: 0; padding-left: 22px; }
 .conclusion-columns li { margin-top: 5px; }
+.limitation-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 22px;
+  margin: 8px 0 24px;
+  border-top: 1px solid var(--border);
+}
+.limitation-grid > div { padding: 0 0 12px; border-bottom: 1px solid var(--border); }
+.limitation-grid h3 { margin: 14px 0 5px !important; font-size: 15px !important; }
+.limitation-grid p { margin: 0 !important; color: #555; font-size: 14px !important; }
 .citation { margin: 24px 0 40px; padding: 12px; overflow-x: auto; border-radius: 4px; color: #444; background: var(--soft); font: 12px/1.55 var(--font-geist-mono); }
 .site-footer { min-height: 60px; margin-top: 40px; padding-top: 18px; padding-bottom: 18px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 18px; color: var(--muted); font-size: 12px; }
 .site-footer .wordmark strong { font-size: 17px; }
@@ -497,6 +549,13 @@ img { display: block; max-width: 100%; }
   .figure-reading,
   .figure-source { width: 100%; }
   .framework-figure { width: 100%; margin-left: 0; transform: none; }
+  .claims-at-glance > div,
+  .limitation-grid { grid-template-columns: 1fr; }
+  .claims-at-glance > div { gap: 12px; }
+  .agent-trace-explorer,
+  .trajectory-explorer,
+  .weight-space-explorer,
+  .runs-explorer { width: 100%; margin-left: 0; transform: none; }
   .boundary-table > div { grid-template-columns: 1fr; gap: 3px; }
   .explorer-head { align-items: stretch; flex-direction: column; }
   .run-rows { overflow-x: auto; }

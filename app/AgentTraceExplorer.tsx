@@ -119,7 +119,7 @@ const traces: Record<string, Trace> = {
 };
 
 export default function AgentTraceExplorer({ language }: { language: Language }) {
-  const [agent, setAgent] = useState("gpt56");
+  const [agent, setAgent] = useState("minimax");
   const [stageIndex, setStageIndex] = useState(0);
   const trace = traces[agent];
   const stage = trace.stages[stageIndex];
@@ -127,7 +127,7 @@ export default function AgentTraceExplorer({ language }: { language: Language })
 
   const selectAgent = (id: string) => { setAgent(id); setStageIndex(0); };
   return <figure className="agent-trace-explorer">
-    <figcaption><b>{tx("交互 trace 阅读器。", "Interactive trace reader.")}</b> {tx("选择 Agent，再逐步查看它如何写搜索逻辑、改变采样策略，以及分数反馈如何触发下一步。代码是根据完整 trace 还原的结构，不是逐字转录。", "Choose an Agent and step through how it wrote search logic, changed its sampling policy, and reacted to score feedback. Code is a trace-derived structural sketch, not a verbatim transcript.")}</figcaption>
+    <figcaption><b>{tx("交互 trace 阅读器。", "Interactive trace reader.")}</b> {tx("选择 Agent，再逐步查看它如何写搜索逻辑、改变采样策略，以及观察到分数后采取了什么行动。代码是根据完整 trace 还原的结构，不是逐字转录。", "Choose an agent and step through how it wrote search logic, changed its sampling policy, and what it did after observing a score. Code is a trace-derived structural sketch, not a verbatim transcript.")}</figcaption>
     <div className="trace-agent-tabs" role="tablist">
       {Object.entries(traces).map(([id, item]) => <button key={id} role="tab" aria-selected={agent === id} className={agent === id ? "active" : ""} style={{ "--trace-color": item.color } as CSSProperties} onClick={() => selectAgent(id)}>{item.label}</button>)}
     </div>
@@ -139,7 +139,7 @@ export default function AgentTraceExplorer({ language }: { language: Language })
     <div className="trace-detail">
       <div className="trace-decision"><span>{tx("研究决策", "Research decision")}</span><h4>{language === "zh" ? stage.titleZh : stage.titleEn}</h4><p>{language === "zh" ? stage.actionZh : stage.actionEn}</p><dl><div><dt>{tx("采样策略", "Sampling policy")}</dt><dd>{stage.policy}</dd></div><div><dt>{tx("当时最好分", "Running best")}</dt><dd>{stage.score}</dd></div></dl></div>
       <pre className="trace-code"><code>{stage.code}</code></pre>
-      <div className="trace-next"><span>{tx("反馈如何改变下一步", "How feedback changed the next move")}</span><p>{language === "zh" ? stage.nextZh : stage.nextEn}</p></div>
+      <div className="trace-next"><span>{tx("反馈后观察到的下一步", "Next step observed after feedback")}</span><p>{language === "zh" ? stage.nextZh : stage.nextEn}</p></div>
     </div>
     <div className="trace-conclusion" style={{ "--trace-color": trace.color } as CSSProperties}><b>{tx("案例结论", "Case conclusion")}</b><p>{language === "zh" ? trace.conclusionZh : trace.conclusionEn}</p></div>
   </figure>;

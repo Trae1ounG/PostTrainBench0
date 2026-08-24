@@ -72,6 +72,10 @@ test("ships interactive data and checked research figures", async () => {
   assert.match(runtime, /\/home\/agent/);
   assert.match(runtime, /Full instruction/);
   assert.match(trace, /How feedback changed the next move/);
+  assert.match(trace, /Kimi K2\.6 · OpenCode/);
+  assert.match(trace, /Claude Opus 4\.8 high · Cursor/);
+  assert.match(trace, /Case conclusion/);
+  assert.match(css, /--trace-columns/);
   assert.match(prompt, /The provided RandOpt and ES implementations/);
   assert.doesNotMatch(page, /Supported by current evidence/);
   assert.doesNotMatch(page, /Toward a more reliable evaluation/);

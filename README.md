@@ -126,13 +126,15 @@ npm test
 For the isolated runtime, configuration, harness adapters, and evaluator API,
 use the [`main`](https://github.com/Trae1ounG/PostTrainBench0) branch.
 
-## How to cite this preview
+## How to cite this blog
 
 ```bibtex
 @misc{tan2026posttrainbench0,
-  title  = {{PostTrainBench}$^{0}$: Can LLM Agents Automate LLM Post-Training Without Gradients?},
-  author = {Tan, Yuqiao},
-  year   = {2026},
-  note   = {Research preview}
+  title        = {{PostTrainBench}$^{0}$: Can LLM Agents Automate LLM
+                  Post-Training Without Gradients?},
+  author       = {Tan, Yuqiao},
+  year         = {2026},
+  howpublished = {Research blog},
+  url          = {https://trae1oung.github.io/posttrainbench0/}
 }
 ```

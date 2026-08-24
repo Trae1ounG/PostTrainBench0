@@ -6,6 +6,8 @@
 
 Yuqiao Tan · Minzheng Wang · Shizhu He · Jun Zhao · Kang Liu
 
+*Institute of Automation, Chinese Academy of Sciences*
+
 [Research blog](https://trae1oung.github.io/posttrainbench0/) ·
 [Task instruction](prompt.txt) ·
 [Full protocol](docs/PROTOCOL.md)

@@ -111,7 +111,7 @@ export default function Home() {
     <article className="research-article" id="top">
       <header className="article-header">
         <h1>PostTrainBench<sup>0</sup>: {tx("LLM Agent 能否在没有梯度的情况下完成模型后训练？", "Can LLM Agents Automate LLM Post-Training Without Gradients?")}</h1>
-        <p className="article-meta">{tx("日期：2026 年 8 月", "Date: August 2026")} <span>·</span> {tx("预计阅读时间：24 分钟", "Estimated Reading Time: 24 min")} <span>·</span> {tx("作者：Yuqiao Tan", "Author: Yuqiao Tan")}</p>
+        <p className="article-meta">{tx("日期：2026 年 8 月", "Date: August 2026")} <span>·</span> {tx("预计阅读时间：24 分钟", "Estimated Reading Time: 24 min")} <span>·</span> {tx("作者：Yuqiao Tan、Minzheng Wang、Shizhu He、Jun Zhao、Kang Liu", "Authors: Yuqiao Tan, Minzheng Wang, Shizhu He, Jun Zhao, Kang Liu")}</p>
         <p className="article-links"><a href="https://github.com/Trae1ounG/PostTrainBench0">Code &amp; data</a></p>
       </header>
 
@@ -225,7 +225,7 @@ export default function Home() {
         <li id="ref-3"><b>Qiu, X., Gan, Y., Hayes, C. F., Liang, Q., Xu, Y., Dailey, R., Meyerson, E., Hodjat, B., &amp; Miikkulainen, R.</b> (2026). <cite>Evolution Strategies at Scale: LLM Fine-Tuning Beyond Reinforcement Learning.</cite> ICML 2026; arXiv:2509.24372v3. <a href="https://doi.org/10.48550/arXiv.2509.24372">DOI</a> · <a href="https://github.com/VsonicV/es-at-scale">Code</a>.</li>
         <li id="ref-4"><b>Weng, L.</b> (2026). <cite>Harness Engineering for Self-Improvement.</cite> Lil&apos;Log, July 4, 2026. <a href="https://lilianweng.github.io/posts/2026-07-04-harness/">Article</a>.</li>
         <li id="ref-5"><b>Meng, F., Du, L., Chen, Q., Zhao, Z., Lu, H., Hu, M., &amp; Shieh, M. Q.</b> (2026). <cite>RSIBench-Data: Benchmarking Data-Centric Research for Recursive Self-Improvement.</cite> arXiv:2607.25886v1. <a href="https://doi.org/10.48550/arXiv.2607.25886">DOI</a> · <a href="https://github.com/evolvent-ai/RSIBench-Data">Code</a>.</li>
-      </ol><h3>{tx("如何引用本博客", "How to cite this blog")}</h3><p>{tx("如果你使用 PostTrainBench⁰，或讨论本文公开的实验与分析，请引用下面的研究博客。", "If you use PostTrainBench⁰ or discuss the experiments and analysis presented here, please cite this research blog.")}</p><pre className="citation">{`@misc{tan2026posttrainbench0,\n  title        = {{PostTrainBench}$^{0}$: Can LLM Agents Automate LLM\n                  Post-Training Without Gradients?},\n  author       = {Tan, Yuqiao},\n  year         = {2026},\n  howpublished = {Research blog},\n  url          = {https://trae1oung.github.io/posttrainbench0/}\n}`}</pre></section>
+      </ol><h3>{tx("如何引用本博客", "How to cite this blog")}</h3><p>{tx("如果你使用 PostTrainBench⁰，或讨论本文公开的实验与分析，请引用下面的研究博客。", "If you use PostTrainBench⁰ or discuss the experiments and analysis presented here, please cite this research blog.")}</p><pre className="citation">{`@misc{tan2026posttrainbench0,\n  title        = {{PostTrainBench}$^{0}$: Can LLM Agents Automate LLM\n                  Post-Training Without Gradients?},\n  author       = {Tan, Yuqiao and Wang, Minzheng and He, Shizhu and\n                  Zhao, Jun and Liu, Kang},\n  year         = {2026},\n  howpublished = {Research blog},\n  url          = {https://trae1oung.github.io/posttrainbench0/}\n}`}</pre></section>
     </article>
     <footer className="site-footer"><Wordmark /><span>Research blog · 2026</span><a href="#top">{tx("返回顶部", "Back to top")} ↑</a></footer>
   </main>;

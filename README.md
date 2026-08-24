@@ -2,6 +2,8 @@
 
 **Can LLM Agents Automate LLM Post-Training Without Gradients?**
 
+Yuqiao Tan · Minzheng Wang · Shizhu He · Jun Zhao · Kang Liu
+
 [Read the bilingual research blog](https://trae1oung.github.io/posttrainbench0/) ·
 [Benchmark prompt](public/prompt.txt) ·
 [Framework](docs/FRAMEWORK.md) ·
@@ -132,7 +134,8 @@ use the [`main`](https://github.com/Trae1ounG/PostTrainBench0) branch.
 @misc{tan2026posttrainbench0,
   title        = {{PostTrainBench}$^{0}$: Can LLM Agents Automate LLM
                   Post-Training Without Gradients?},
-  author       = {Tan, Yuqiao},
+  author       = {Tan, Yuqiao and Wang, Minzheng and He, Shizhu and
+                  Zhao, Jun and Liu, Kang},
   year         = {2026},
   howpublished = {Research blog},
   url          = {https://trae1oung.github.io/posttrainbench0/}

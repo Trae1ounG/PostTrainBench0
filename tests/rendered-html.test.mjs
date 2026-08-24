@@ -14,6 +14,10 @@ test("builds the bilingual research article for the personal site", async () => 
   assert.match(html, /<html lang="en">/);
   assert.match(html, /rel="canonical" href="https:\/\/trae1oung\.github\.io\/posttrainbench0\/"/);
   assert.match(html, /ScholarlyArticle/);
+  assert.match(html, /Minzheng Wang/);
+  assert.match(html, /Shizhu He/);
+  assert.match(html, /Jun Zhao/);
+  assert.match(html, /Kang Liu/);
   assert.match(html, /\/posttrainbench0\/assets\/index-/);
   assert.match(page, /useState<Language>\("en"\)/);
   assert.match(page, /中文/);

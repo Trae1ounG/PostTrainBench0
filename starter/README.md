@@ -1,14 +1,13 @@
-# Starter methods
+# Agent-visible starter files
 
-`randopt.py` and `es.py` are the two small starting methods shown to every
-agent. They use only Python's standard library and the score-only
-`agent_client` module mounted by the trusted benchmark runtime.
+The runtime copies this directory into each fresh Agent workspace.
 
-- `randopt.py` samples independent weight directions and records the best
-  evaluated single candidate.
-- `es.py` evaluates positive and negative perturbations, then updates a center
-  from their score differences.
+- `randopt.py` samples independent deterministic noise directions and keeps the
+  best score it observes.
+- `es.py` evaluates positive and negative probes, then adds score-weighted
+  directions to a center candidate.
+- `agent_client.py` is injected by the trusted runtime at initialization. It is
+  the only bridge to the hidden evaluator.
 
-They are not complete training recipes and do not contain the evaluator. An
-agent may modify or replace them during its run. Neither starter performs
-backpropagation or imports a gradient framework.
+Both methods are examples, not required algorithms. The Agent may edit or
+replace them. Neither starter imports a gradient framework.

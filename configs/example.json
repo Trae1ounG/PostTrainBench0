@@ -1,0 +1,37 @@
+{
+  "run_id": "qwen25-3b-kimi-k26-run01",
+  "paths": {
+    "base_model": "/models/Qwen2.5-3B-Instruct",
+    "evaluation_data": "/datasets/posttrainbench0/visible200",
+    "randopt_source": "/opt/RandOPT",
+    "runs_root": "/workspace/posttrainbench0-runs",
+    "prompt": "./prompt.txt",
+    "starter": "./starter"
+  },
+  "agent": {
+    "harness": "opencode",
+    "model": "provider/kimi-k2.6",
+    "cli_path": "/opt/opencode/bin/opencode",
+    "credential_files": {},
+    "pass_environment": ["OPENAI_API_KEY", "OPENAI_BASE_URL"],
+    "environment": {
+      "OPENCODE_DISABLE_SHARE": "1"
+    }
+  },
+  "evaluation": {
+    "samples_per_task": 200,
+    "tasks": [
+      "countdown",
+      "gsm8k",
+      "math500",
+      "olympiadbench",
+      "mbpp",
+      "rocstories",
+      "uspto50k"
+    ]
+  },
+  "runtime": {
+    "hours": 4,
+    "num_gpus": 8
+  }
+}

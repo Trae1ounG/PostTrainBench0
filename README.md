@@ -2,6 +2,11 @@
 
 **Can LLM Agents Automate LLM Post-Training Without Gradients?**
 
+[Read the bilingual research blog](https://zerogradbench-research.tanyuqiao669.chatgpt.site) ·
+[Benchmark prompt](public/prompt.txt) ·
+[Framework](docs/FRAMEWORK.md) ·
+[Validity analysis](docs/RANDOMNESS_AND_VALIDITY.md)
+
 PostTrainBench⁰ is a research preview for studying whether an LLM agent can
 improve a real language model when backpropagation is unavailable. The agent
 receives a frozen base checkpoint, two small zeroth-order starting methods, a
@@ -96,8 +101,8 @@ before interpreting the model tables as a ranking.
 ## Repository structure
 
 ```text
-public/
-  prompt.txt                     shared agent-facing instruction
+app/                             bilingual research blog and interactive figures
+public/                          blog assets, plot data, and agent prompt
 starter/
   randopt.py                     minimal random-search starting point
   es.py                          minimal antithetic ES starting point
@@ -108,18 +113,27 @@ docs/
   RANDOMNESS_AND_VALIDITY.md     what varies and how results should be read
   EXPERIMENT_PROGRESS.md         evidence snapshot and current limitations
   figures/                       checked figures, draw.io source, and PDF export
+scripts/                         data preparation and Python figure generation
 tests/
-  test_release_contract.py       checks the public no-gradient contract
+  test_release_contract.py       benchmark-contract checks
+  rendered-html.test.mjs         rendered-blog checks
 ```
 
 Raw checkpoints, hidden evaluation examples, credentials, infrastructure
 identifiers, unredacted traces, and historical protocol branches are
 intentionally excluded. They remain in a separate private experiment archive.
 
-The public contract can be checked with only the Python standard library:
+Run the benchmark-contract checks:
 
 ```bash
 python -m unittest discover -s tests -v
+```
+
+Build and verify the research blog:
+
+```bash
+npm install
+npm test
 ```
 
 ## How to cite this preview

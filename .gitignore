@@ -7,3 +7,11 @@ __pycache__/
 checkpoints/
 runs/
 logs/
+node_modules/
+.next/
+.vinext/
+dist/
+.wrangler/
+coverage/
+outputs/
+work/

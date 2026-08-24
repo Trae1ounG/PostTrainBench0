@@ -6,8 +6,7 @@
 
 [Research blog](https://trae1oung.github.io/posttrainbench0/) ·
 [Task instruction](prompt.txt) ·
-[Full protocol](docs/PROTOCOL.md) ·
-[Website source](https://github.com/Trae1ounG/PostTrainBench0/tree/website)
+[Full protocol](docs/PROTOCOL.md)
 
 </div>
 
@@ -159,7 +158,7 @@ and a prepared RandOPT checkout.
 ```bash
 python -m venv .venv
 . .venv/bin/activate
-pip install -e '.[gpu,test]'
+pip install -e '.[gpu]'
 
 cp configs/example.json configs/local.json
 # Edit every path and Agent setting in configs/local.json.
@@ -191,20 +190,18 @@ CLI invocation.
 Raw score and compliance status are separate fields: a numerically strong run
 is not accepted when its trace or isolation audit fails.
 
-## Repository boundaries
+## Citation
 
-| Location | Purpose |
-|---|---|
-| `main` | Lightweight executable benchmark runtime and protocol |
-| [`website`](https://github.com/Trae1ounG/PostTrainBench0/tree/website) | Bilingual research blog, interactive traces, and publication figures |
-| Private research archive | Historical protocol versions, raw traces, infrastructure logs, and internal experiment records |
+If you use PostTrainBench⁰ or discuss the experiments in the research blog,
+please cite:
 
-## Tests
-
-```bash
-python -m pytest -q
+```bibtex
+@misc{tan2026posttrainbench0,
+  title        = {{PostTrainBench}$^{0}$: Can LLM Agents Automate LLM
+                  Post-Training Without Gradients?},
+  author       = {Tan, Yuqiao},
+  year         = {2026},
+  howpublished = {Research blog},
+  url          = {https://trae1oung.github.io/posttrainbench0/}
+}
 ```
-
-The tests cover configuration validation, append-only initialization,
-Agent-visible files, score-only evaluation, full-suite best retention, prompt
-consistency, and the absence of gradient frameworks from the two starters.

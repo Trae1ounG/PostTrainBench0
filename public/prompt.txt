@@ -60,6 +60,8 @@ the retained checkpoint until they are evaluated on all tasks. Continue
 searching until the wall-clock deadline; no active submission command is
 required.
 
+Run bash timer.sh to see the remaining time.
+
 Resources:
 - GPUs: {num_gpus}
 - Wall-clock budget: {num_hours} hours

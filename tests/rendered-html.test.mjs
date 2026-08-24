@@ -50,10 +50,13 @@ test("ships interactive data and checked research figures", async () => {
   assert.ok(bundles.some((name) => /^index-.*\.js$/.test(name)));
   assert.ok(bundles.some((name) => /^index-.*\.css$/.test(name)));
 
-  const [page, css, drawio] = await Promise.all([
+  const [page, css, drawio, runtime, trace, prompt] = await Promise.all([
     readFile(new URL("app/page.tsx", root), "utf8"),
     readFile(new URL("app/globals.css", root), "utf8"),
     readFile(new URL("docs/figures/posttrainbench0-system.drawio", root), "utf8"),
+    readFile(new URL("app/RuntimeContract.tsx", root), "utf8"),
+    readFile(new URL("app/AgentTraceExplorer.tsx", root), "utf8"),
+    readFile(new URL("public/prompt.txt", root), "utf8"),
   ]);
   assert.match(page, /Python source:/);
   assert.match(drawio, /Trusted Evaluator/);
@@ -61,4 +64,10 @@ test("ships interactive data and checked research figures", async () => {
   assert.doesNotMatch(page, /src="[^"]+\.svg"/);
   assert.doesNotMatch(css, /Georgia|Times New Roman/);
   assert.match(css, /font-family:\s*-apple-system/);
+  assert.match(runtime, /\/home\/agent/);
+  assert.match(runtime, /Full instruction/);
+  assert.match(trace, /How feedback changed the next move/);
+  assert.match(prompt, /The provided RandOpt and ES implementations/);
+  assert.doesNotMatch(page, /Supported by current evidence/);
+  assert.doesNotMatch(page, /Toward a more reliable evaluation/);
 });

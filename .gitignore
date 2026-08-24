@@ -15,4 +15,6 @@ dist-pages/
 .wrangler/
 coverage/
 outputs/
+output/playwright/
+.playwright-cli/
 work/

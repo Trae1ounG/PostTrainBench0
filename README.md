@@ -7,17 +7,16 @@
 [Framework](docs/FRAMEWORK.md) ·
 [Validity analysis](docs/RANDOMNESS_AND_VALIDITY.md)
 
-PostTrainBench⁰ is a research preview for studying whether an LLM agent can
+This `website` branch contains only the bilingual blog, interactive trace
+readers, and publication figures. The executable benchmark runtime lives on
+the repository's [`main`](https://github.com/Trae1ounG/PostTrainBench0) branch.
+
+PostTrainBench⁰ studies whether an LLM agent can
 improve a real language model when backpropagation is unavailable. The agent
 receives a frozen base checkpoint, two small zeroth-order starting methods, a
 score-only evaluator, eight inference GPUs, and a four-hour wall-clock budget.
 It may change the search code and evaluate intermediate candidates, but the
 result must be one reloadable checkpoint.
-
-> **Status:** this repository releases a working benchmark proposal, pilot
-> evidence, and inspectable traces. The current study establishes that agents
-> can execute the loop and find better checkpoints, while repeat runs expose
-> finite-search variation as the main question for the next protocol.
 
 ## The question
 
@@ -53,11 +52,11 @@ agent*, not sampling noise inside the evaluator.
 
 ## What the agent receives
 
-- [`public/prompt.txt`](public/prompt.txt): the shared task instruction and
+- [`public/prompt.txt`](public/prompt.txt): the verbatim shared task instruction and
   immutable rules.
-- [`starter/randopt.py`](starter/randopt.py): independent random directions
+- [`starter/randopt.py`](https://github.com/Trae1ounG/PostTrainBench0/blob/main/starter/randopt.py): independent random directions
   around the base model, retaining the best single candidate.
-- [`starter/es.py`](starter/es.py): antithetic positive/negative probes and a
+- [`starter/es.py`](https://github.com/Trae1ounG/PostTrainBench0/blob/main/starter/es.py): antithetic positive/negative probes and a
   score-difference center update.
 - `bin/evaluate`, `bin/evaluate-batch`, `bin/results`, and `bin/status`:
   score-only commands supplied by the trusted runtime.
@@ -107,33 +106,15 @@ before interpreting the model tables as a ranking.
 ## Repository structure
 
 ```text
-app/                             bilingual research blog and interactive figures
-public/                          blog assets, plot data, and agent prompt
-starter/
-  randopt.py                     minimal random-search starting point
-  es.py                          minimal antithetic ES starting point
-data/derived/
-  blog_run_summary.csv           grouped public snapshot of 51 completed runs
-docs/
-  FRAMEWORK.md                   agent-visible and trusted-system boundary
-  RANDOMNESS_AND_VALIDITY.md     what varies and how results should be read
-  EXPERIMENT_PROGRESS.md         evidence snapshot and current limitations
-  figures/                       checked figures, draw.io source, and PDF export
+app/                             bilingual article and interactive readers
+public/                          plotted figures, trace data, and prompt template
 scripts/                         data preparation and Python figure generation
-tests/
-  test_release_contract.py       benchmark-contract checks
-  rendered-html.test.mjs         rendered-blog checks
+tests/rendered-html.test.mjs     publication build checks
 ```
 
 Raw checkpoints, hidden evaluation examples, credentials, infrastructure
 identifiers, unredacted traces, and historical protocol branches are
 intentionally excluded. They remain in a separate private experiment archive.
-
-Run the benchmark-contract checks:
-
-```bash
-python -m unittest discover -s tests -v
-```
 
 Build and verify the research blog:
 
@@ -141,6 +122,9 @@ Build and verify the research blog:
 npm install
 npm test
 ```
+
+For the isolated runtime, configuration, harness adapters, and evaluator API,
+use the [`main`](https://github.com/Trae1ounG/PostTrainBench0) branch.
 
 ## How to cite this preview
 

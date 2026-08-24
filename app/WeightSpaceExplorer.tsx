@@ -34,7 +34,7 @@ export default function WeightSpaceExplorer({ language }: { language: Language }
   const tr = (zh: string, en: string) => language === "zh" ? zh : en;
 
   useEffect(() => {
-    fetch("/weight-space-data.json").then((response) => response.json()).then(setData);
+    fetch(`${import.meta.env.BASE_URL}weight-space-data.json`).then((response) => response.json()).then(setData);
   }, []);
 
   useEffect(() => {

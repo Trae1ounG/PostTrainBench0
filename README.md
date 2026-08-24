@@ -2,7 +2,7 @@
 
 **Can LLM Agents Automate LLM Post-Training Without Gradients?**
 
-[Read the bilingual research blog](https://zerogradbench-research.tanyuqiao669.chatgpt.site) ·
+[Read the bilingual research blog](https://trae1oung.github.io/posttrainbench0/) ·
 [Benchmark prompt](public/prompt.txt) ·
 [Framework](docs/FRAMEWORK.md) ·
 [Validity analysis](docs/RANDOMNESS_AND_VALIDITY.md)

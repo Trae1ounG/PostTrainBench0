@@ -91,7 +91,7 @@ export default function InteractiveTrajectory({ language }: { language: Language
   const tr = (zh: string, en: string) => language === "zh" ? zh : en;
 
   useEffect(() => {
-    fetch("/trajectory-data.json").then((response) => response.json()).then(setData);
+    fetch(`${import.meta.env.BASE_URL}trajectory-data.json`).then((response) => response.json()).then(setData);
   }, []);
 
   useEffect(() => {

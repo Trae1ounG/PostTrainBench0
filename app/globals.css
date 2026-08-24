@@ -1,5 +1,3 @@
-@import "tailwindcss";
-
 :root {
   --main-width: 720px;
   --nav-width: 1024px;
@@ -19,7 +17,7 @@ body {
   margin: 0;
   color: var(--text);
   background: #fff;
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: var(--font-size-base);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;

@@ -1,53 +1,31 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
-async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-  return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
-}
+const root = new URL("../", import.meta.url);
 
-test("server-renders the PostTrainBench0 research article", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-  const html = await response.text();
-  assert.match(html, /PostTrainBench<sup>0<\/sup>/);
-  assert.match(html, /\{PostTrainBench\}\$\^\{0\}\$/);
-  assert.match(html, /Task definition and setup/);
-  assert.match(html, /Table of Contents/);
-  assert.match(html, /1,400 inferences/);
-  assert.match(html, /figures\/posttrainbench-system\.png/);
-  assert.match(html, /figures\/historical-agent-runs\.png/);
-  assert.match(html, /Run-by-run explorer/);
-  assert.match(html, /Figure 7/);
-  assert.match(html, /Table(?:\s|<!-- -->)*4/);
-  assert.match(html, /class="katex"/);
-  assert.match(html, /class="math-figure/);
-  assert.match(html, /id="ref-1"/);
-  assert.match(html, /7 × 200 = 1,400/);
-  assert.match(html, /Rank, B\., Bhatnagar, H\./);
-  assert.match(html, /Evolution Strategies at Scale/);
-  assert.match(html, /RSIBench-Data/);
-  assert.match(html, /id="ref-5"/);
-  assert.match(html, /not strict RSI/);
-  assert.match(html, /51 four-hour agent runs/);
-  assert.match(html, /9\.90-point span/);
-  assert.match(html, /Direction sampling/);
-  assert.match(html, /Candidate count/);
-  assert.match(html, /benchmark remains in validation/);
-  assert.doesNotMatch(html, /Agentic ESOpt/);
-  assert.doesNotMatch(html, /GPT-5\.5 API/);
-  assert.doesNotMatch(html, /posttrain0bench-system-design-v3\.svg/);
+test("builds the bilingual research article for the personal site", async () => {
+  const [html, page, main] = await Promise.all([
+    readFile(new URL("dist-pages/index.html", root), "utf8"),
+    readFile(new URL("app/page.tsx", root), "utf8"),
+    readFile(new URL("main.tsx", root), "utf8"),
+  ]);
+
+  assert.match(html, /<html lang="en">/);
+  assert.match(html, /rel="canonical" href="https:\/\/trae1oung\.github\.io\/posttrainbench0\/"/);
+  assert.match(html, /ScholarlyArticle/);
+  assert.match(html, /\/posttrainbench0\/assets\/index-/);
+  assert.match(page, /useState<Language>\("en"\)/);
+  assert.match(page, /中文/);
+  assert.match(page, />EN</);
+  assert.match(page, /Task definition and setup/);
+  assert.match(page, /51 four-hour agent runs/);
+  assert.match(page, /benchmark remains in validation/);
+  assert.match(main, /createRoot/);
+  assert.doesNotMatch(page, /GPT-5\.5 API/);
 });
 
-test("ships the required figure assets and a plain sans-serif reading style", async () => {
+test("ships interactive data and checked research figures", async () => {
   const requiredAssets = [
     "figures/posttrainbench-system.png",
     "figures/premise-check.png",
@@ -56,22 +34,29 @@ test("ships the required figure assets and a plain sans-serif reading style", as
     "figures/historical-agent-runs.png",
     "figures/agent_model_4h_trajectory.png",
     "figures/agent-search-directions.png",
+    "trajectory-data.json",
+    "weight-space-data.json",
+    "sitemap.xml",
   ];
-  await Promise.all(requiredAssets.map((path) => access(new URL(`../public/${path}`, import.meta.url))));
+  await Promise.all(requiredAssets.map((path) => access(new URL(`dist-pages/${path}`, root))));
   await Promise.all([
-    access(new URL("../docs/figures/posttrainbench0-system.drawio", import.meta.url)),
-    access(new URL("../docs/figures/posttrainbench0-system.pdf", import.meta.url)),
+    access(new URL("docs/figures/posttrainbench0-system.drawio", root)),
+    access(new URL("docs/figures/posttrainbench0-system.pdf", root)),
   ]);
 
+  const bundles = await readdir(new URL("dist-pages/assets/", root));
+  assert.ok(bundles.some((name) => /^index-.*\.js$/.test(name)));
+  assert.ok(bundles.some((name) => /^index-.*\.css$/.test(name)));
+
   const [page, css, drawio] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    readFile(new URL("../docs/figures/posttrainbench0-system.drawio", import.meta.url), "utf8"),
+    readFile(new URL("app/page.tsx", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+    readFile(new URL("docs/figures/posttrainbench0-system.drawio", root), "utf8"),
   ]);
   assert.match(page, /Python source:/);
   assert.match(drawio, /Trusted Evaluator/);
   assert.match(drawio, /retain the best checkpoint/);
   assert.doesNotMatch(page, /src="[^"]+\.svg"/);
   assert.doesNotMatch(css, /Georgia|Times New Roman/);
-  assert.match(css, /font-family:\s*var\(--font-geist-sans\)/);
+  assert.match(css, /font-family:\s*-apple-system/);
 });

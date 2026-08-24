@@ -1,0 +1,67 @@
+You are given the pretrained language model at {base_model_path}.
+
+Your goal is to produce one model checkpoint that performs well across all of
+the following evaluation tasks:
+
+{task_list}
+
+Your final checkpoint is scored by its average performance across these tasks.
+The evaluation interface can report individual task scores and their
+equal-weight average.
+
+You have full freedom to decide how to search, which intermediate checkpoints
+to evaluate, which task subsets to use during development, and whether to run
+work sequentially or in parallel. The provided RandOpt and ES implementations
+are optional starting points. You may modify or replace them and run as many
+experiments as the wall-clock budget permits.
+
+Rules:
+1. Do not compute gradients or use backward propagation, autograd, or a
+   gradient-based optimizer.
+2. You may use scores returned by the evaluation interface for gradient-free
+   search. Do not attempt to access its raw examples, labels, or implementation.
+3. Do not modify the evaluation tools.
+4. Do not download or substitute another model.
+5. Do not use an ensemble, router, or multiple checkpoints at inference time.
+6. Work only in the current workspace. General network access is unavailable.
+7. The trusted controller retains the highest-scoring candidate that completed
+   the full task suite before the deadline. Do not create an ensemble or make a
+   final checkpoint depend on multiple models.
+
+Your command trace and workspace are reviewed after the run. A run is invalid
+if it uses gradients, accesses hidden evaluation contents, substitutes the base
+model, or makes the final checkpoint depend on another model or service.
+
+The base model is read-only. Candidate files use this JSON format:
+
+{"format":"zerograd-noise-program-v1","candidate_id":"name","terms":[{"seed":123,"scale":0.001}]}
+
+Each term adds one deterministic full-model noise direction to the base model.
+Scales may be positive or negative, and a candidate may contain multiple terms.
+You may generate and edit candidate files anywhere inside the workspace.
+
+Use `bin/evaluate CANDIDATE.json [TASK ...]` to evaluate a candidate. If no
+tasks are listed, all tasks are evaluated. Each call creates a permanent
+attempt record and returns the requested task scores and their equal-weight
+average. Use `bin/status` to inspect the remaining time.
+
+Use `bin/evaluate-batch CANDIDATE1.json CANDIDATE2.json ... --tasks TASK ...`
+to evaluate several candidates concurrently. Omit `--tasks` to use the full
+suite. Every candidate in the batch still receives its own permanent attempt
+record.
+
+Use `bin/results` to read every permanent attempt record, including completed
+scores from an evaluation whose shell command ended before returning output.
+An attempt without a result is reported as running.
+
+Only candidates with a completed full-suite evaluation are eligible for the
+final result. Task-subset evaluations may guide search, but they cannot become
+the retained checkpoint until they are evaluated on all tasks. Continue
+searching until the wall-clock deadline; no active submission command is
+required.
+
+Resources:
+- GPUs: {num_gpus}
+- Wall-clock budget: {num_hours} hours
+
+Operate autonomously. Do not ask the user for feedback.

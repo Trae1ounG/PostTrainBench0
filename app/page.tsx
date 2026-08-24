@@ -74,8 +74,9 @@ function ResearchTable({ number, caption, children }: { number: number; caption:
 
 function ResearchFigure({ number, src, caption, interpretation, source, framework = false }: { number: number; src: string; caption: string; interpretation: string; source?: string; framework?: boolean }) {
   const [label, reading] = interpretation.split("｜");
+  const imageSrc = src.startsWith("/") ? `${import.meta.env.BASE_URL}${src.slice(1)}` : src;
   return <figure className={framework ? "article-figure framework-figure" : "article-figure"}>
-    <a href={src} target="_blank" rel="noreferrer" aria-label={`Open Figure ${number} at full resolution`}><img src={src} alt={caption} /></a>
+    <a href={imageSrc} target="_blank" rel="noreferrer" aria-label={`Open Figure ${number} at full resolution`}><img src={imageSrc} alt={caption} /></a>
     <figcaption><b>Figure {number}.</b> {caption}</figcaption>
     <p className="figure-reading"><b>{label}:</b> {reading}</p>
     {source ? <p className="figure-source">Python source: <code>{source}</code> · PNG shown; PDF retained for paper export.</p> : null}

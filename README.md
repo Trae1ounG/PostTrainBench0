@@ -14,16 +14,20 @@ score-only evaluator, eight inference GPUs, and a four-hour wall-clock budget.
 It may change the search code and evaluate intermediate candidates, but the
 result must be one reloadable checkpoint.
 
-> **Status:** this repository describes a working benchmark proposal and its
-> pilot experiments. It is not yet a stable agent leaderboard. Repeat runs show
-> that endpoint scores are strongly affected by search coverage and path luck.
+> **Status:** this repository releases a working benchmark proposal, pilot
+> evidence, and inspectable traces. The current study establishes that agents
+> can execute the loop and find better checkpoints, while repeat runs expose
+> finite-search variation as the main question for the next protocol.
 
 ## The question
 
-PostTrainBench and RSIBench-Data ask agents to improve models through explicit
-training. PostTrainBench⁰ keeps the research loop—hypothesis, implementation,
-evaluation, revision—but removes gradients. This makes each experiment cheaper
-and easier to replay while preserving a real model-editing problem.
+The existing PostTrainBench and RSIBench-Data ask agents to improve models
+through explicit training. Inspired by that direction, PostTrainBench⁰ is an
+independent gradient-free setting: it keeps the research loop—hypothesis,
+implementation, evaluation, revision—while removing gradients. The superscript
+⁰ denotes zeroth-order optimization, not a version of the original paper. This
+makes each experiment cheaper and easier to replay while preserving a real
+model-editing problem.
 
 The intended capability is not “sample random noise.” A capable agent should
 use evaluation feedback to decide which directions to test, how far to move,
@@ -82,17 +86,19 @@ checkpoint in a fresh inference process. See
 
 ## What the pilot experiments show
 
-The experiments support two observations:
+The experiments establish three observations:
 
 1. Better multi-task checkpoints exist near the tested pretrained weights. In
    the controlled Qwen3-4B study, 62 of 500 candidates exceeded the 41.08 base
    score; the best reached 46.03, while no candidate improved all seven tasks.
-2. Agent runs produce different, inspectable search strategies, but their
-   endpoint ordering is not stable. Across 51 four-hour runs, repeats of one
+2. Agents can execute the full loop. Every one of 51 four-hour runs observed a
+   complete seven-task candidate above its base checkpoint.
+3. Agent runs produce different, inspectable search strategies. Repeats of one
    agent setting differ by as much as 9.90 points.
 
-The second result is central. A best-of-run score is an extreme statistic: it
-rewards both search quality and the number of candidates evaluated. Direction
+The third result opens the central research question. A best-of-run score is an
+extreme statistic: it rewards both search quality and the number of candidates
+evaluated. Direction
 sampling, scale selection, incumbent path dependence, system throughput, and
 repeated adaptation to the same development view are all mixed into the final
 number. Read [`docs/RANDOMNESS_AND_VALIDITY.md`](docs/RANDOMNESS_AND_VALIDITY.md)

@@ -20,7 +20,9 @@ test("builds the bilingual research article for the personal site", async () => 
   assert.match(page, />EN</);
   assert.match(page, /Task definition and setup/);
   assert.match(page, /51 four-hour agent runs/);
-  assert.match(page, /benchmark remains in validation/);
+  assert.match(page, /We release PostTrainBench⁰/);
+  assert.doesNotMatch(page, /The conclusion of this blog is neither/);
+  assert.doesNotMatch(page, /href="https:\/\/arxiv\.org\/abs\/2603\.08640">PostTrainBench/);
   assert.match(main, /createRoot/);
   assert.doesNotMatch(page, /GPT-5\.5 API/);
 });

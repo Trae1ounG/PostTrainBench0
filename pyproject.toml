@@ -10,7 +10,13 @@ requires-python = ">=3.10"
 dependencies = []
 
 [project.optional-dependencies]
-gpu = ["numpy>=1.26", "ray>=2.40", "transformers>=4.57", "vllm>=0.11"]
+gpu = [
+  "numpy==1.26.4",
+  "transformers==4.56.0",
+  "vllm==0.8.5",
+  "datasets==4.2.0",
+  "pyarrow==25.0.1",
+]
 test = ["pytest>=8"]
 
 [project.scripts]

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+import multiprocessing
 import os
 from pathlib import Path
 import shutil
 import subprocess
 import sys
+import traceback
 from concurrent.futures import ThreadPoolExecutor
 from typing import Mapping
 
@@ -28,8 +30,98 @@ CUDA_CONTEXT_FAILURE_MARKERS = (
 )
 
 
+def _engine_process(connection, gpu_devices: str, kwargs: dict) -> None:
+    """Own one persistent vLLM engine in a GPU-isolated child process."""
+
+    try:
+        os.environ["CUDA_VISIBLE_DEVICES"] = gpu_devices
+        os.environ["VLLM_ENABLE_V1_MULTIPROCESSING"] = "0"
+        from vllm import LLM, SamplingParams
+
+        engine = LLM(**kwargs)
+        engine.collective_rpc("store_base_weights", args=())
+        connection.send({"ok": True, "result": "ready"})
+        while True:
+            request = connection.recv()
+            operation = request["operation"]
+            if operation == "close":
+                connection.send({"ok": True, "result": None})
+                return
+            if operation == "collective_rpc":
+                result = engine.collective_rpc(
+                    request["method"], args=tuple(request.get("args", ()))
+                )
+            elif operation == "generate":
+                params = SamplingParams(**request["sampling"])
+                result = engine.generate(request["prompts"], params, use_tqdm=False)
+            else:
+                raise ValueError(f"unknown engine operation: {operation}")
+            connection.send({"ok": True, "result": result})
+    except BaseException as error:
+        try:
+            connection.send(
+                {
+                    "ok": False,
+                    "error": f"{type(error).__name__}: {error}",
+                    "traceback": traceback.format_exc(),
+                }
+            )
+        except Exception:
+            pass
+    finally:
+        connection.close()
+
+
+class _LocalVllmEngine:
+    def __init__(self, *, gpu_devices: str, kwargs: dict, startup_timeout: float = 1800) -> None:
+        context = multiprocessing.get_context("spawn")
+        parent, child = context.Pipe()
+        self._connection = parent
+        self._process = context.Process(
+            target=_engine_process,
+            args=(child, gpu_devices, kwargs),
+            name=f"posttrainbench0-vllm-{gpu_devices}",
+        )
+        self._process.start()
+        child.close()
+        if not parent.poll(startup_timeout):
+            self._process.terminate()
+            self._process.join(timeout=10)
+            raise TimeoutError(f"vLLM engine on GPU {gpu_devices} did not start")
+        self._receive()
+
+    def _receive(self):
+        try:
+            response = self._connection.recv()
+        except EOFError as error:
+            raise RuntimeError("local vLLM engine exited without a response") from error
+        if not response["ok"]:
+            raise RuntimeError(
+                f"local vLLM engine failed: {response['error']}\n{response['traceback']}"
+            )
+        return response["result"]
+
+    def call(self, operation: str, **payload):
+        if not self._process.is_alive():
+            raise RuntimeError("local vLLM engine is not running")
+        self._connection.send({"operation": operation, **payload})
+        return self._receive()
+
+    def close(self) -> None:
+        if self._process.is_alive():
+            try:
+                self.call("close")
+            except Exception:
+                self._process.terminate()
+        self._process.join(timeout=15)
+        if self._process.is_alive():
+            self._process.kill()
+            self._process.join(timeout=5)
+        self._connection.close()
+
+
 class RandOptVllmBackend:
-    """Trusted seven-task evaluator backed by resident vLLM Ray actors."""
+    """Trusted seven-task evaluator backed by local resident vLLM processes."""
 
     def __init__(
         self,
@@ -43,7 +135,6 @@ class RandOptVllmBackend:
         tensor_parallel_size: int = 1,
         global_seed: int = 42,
         sandbox_tools_root: Path | None = None,
-        placement_group_timeout_seconds: float = 120,
     ) -> None:
         self.model_path = model_path.resolve()
         self.data_root = data_root.resolve()
@@ -56,16 +147,10 @@ class RandOptVllmBackend:
         self.sandbox_tools_root = (
             sandbox_tools_root.resolve() if sandbox_tools_root is not None else None
         )
-        if placement_group_timeout_seconds <= 0:
-            raise ValueError("placement_group_timeout_seconds must be positive")
-        self.placement_group_timeout_seconds = placement_group_timeout_seconds
         self.engines = []
-        self.placement_groups = []
         self.handlers = {}
         self.task_data = {}
         self.prompts = {}
-        self._ray = None
-        self._sampling_params = None
 
     def start(self) -> None:
         if self.engines:
@@ -73,36 +158,27 @@ class RandOptVllmBackend:
         import sys
 
         sys.path.insert(0, str(self.randopt_source))
-        import ray
-        from ray.util.placement_group import placement_group
-        from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
         from transformers import AutoTokenizer
-        from vllm import LLM, SamplingParams
 
         from data_handlers import get_dataset_handler
 
-        worker_env = {
-            key: os.environ[key]
-            for key in ("PYTHONPATH", "TOKENIZERS_PARALLELISM", "VLLM_USE_V1")
-            if key in os.environ
-        }
-        runtime_env = {"env_vars": worker_env} if worker_env else None
-        if os.environ.get("RAY_ADDRESS"):
-            ray.init(
-                address="auto",
-                ignore_reinit_error=True,
-                runtime_env=runtime_env,
-            )
-        else:
-            ray.init(
-                address="local",
-                ignore_reinit_error=True,
-                runtime_env=runtime_env,
-            )
         required_gpus = self.num_engines * self.tensor_parallel_size
-        visible_gpus = int(ray.cluster_resources().get("GPU", 0))
-        if visible_gpus < required_gpus:
-            raise RuntimeError(f"Ray exposes {visible_gpus} GPUs; {required_gpus} required")
+        configured = os.environ.get("CUDA_VISIBLE_DEVICES", "").strip()
+        if configured:
+            gpu_tokens = [item.strip() for item in configured.split(",") if item.strip()]
+        else:
+            process = subprocess.run(
+                ["nvidia-smi", "--query-gpu=index", "--format=csv,noheader"],
+                text=True,
+                capture_output=True,
+            )
+            if process.returncode != 0:
+                raise RuntimeError(f"nvidia-smi failed: {process.stderr.strip()}")
+            gpu_tokens = [line.strip() for line in process.stdout.splitlines() if line.strip()]
+        if len(gpu_tokens) < required_gpus:
+            raise RuntimeError(
+                f"{len(gpu_tokens)} GPUs are visible; {required_gpus} are required"
+            )
 
         tokenizer = AutoTokenizer.from_pretrained(self.model_path)
         is_instruct = any(
@@ -132,62 +208,30 @@ class RandOptVllmBackend:
             self.task_data[task] = rows
             self.prompts[task] = [format_prompt(row["messages"]) for row in rows]
 
-        class ZeroGradLLM(LLM):
-            def __init__(self, *args, **kwargs):
-                os.environ.pop("CUDA_VISIBLE_DEVICES", None)
-                os.environ["VLLM_ENABLE_V1_MULTIPROCESSING"] = "0"
-                super().__init__(*args, **kwargs)
-
-        bundles = [{"GPU": 1, "CPU": 0} for _ in range(self.tensor_parallel_size)]
-        self.placement_groups = [
-            placement_group(bundles) for _ in range(self.num_engines)
-        ]
         try:
-            ray.get(
-                [group.ready() for group in self.placement_groups],
-                timeout=self.placement_group_timeout_seconds,
-            )
-            strategies = [
-                PlacementGroupSchedulingStrategy(
-                    placement_group=group,
-                    placement_group_capture_child_tasks=True,
-                    placement_group_bundle_index=0,
-                )
-                for group in self.placement_groups
-            ]
             kwargs = {
                 "model": str(self.model_path),
                 "tensor_parallel_size": self.tensor_parallel_size,
-                "distributed_executor_backend": "ray",
                 "worker_extension_cls": "posttrainbench0.evaluators.randopt_worker.PostTrainBenchWorker",
                 "dtype": self.precision,
                 "enforce_eager": True,
                 "gpu_memory_utilization": 0.75,
                 "disable_log_stats": True,
             }
-            # vLLM creates a local torch.distributed TCP store even when each
-            # engine uses one GPU. Starting all eight constructors at once can
-            # make two processes select the same free port before either binds
-            # it. Initialize each resident engine fully before starting the
-            # next; this time is outside the Agent's wall-clock window.
-            for strategy in strategies:
-                engine = ray.remote(
-                    num_cpus=0,
-                    num_gpus=0,
-                    scheduling_strategy=strategy,
-                )(ZeroGradLLM).remote(**kwargs)
-                self.engines.append(engine)
-                ray.get(
-                    engine.collective_rpc.remote("store_base_weights", args=())
+            if self.tensor_parallel_size > 1:
+                kwargs["distributed_executor_backend"] = "mp"
+            for index in range(self.num_engines):
+                start = index * self.tensor_parallel_size
+                devices = ",".join(gpu_tokens[start : start + self.tensor_parallel_size])
+                self.engines.append(
+                    _LocalVllmEngine(gpu_devices=devices, kwargs=kwargs)
                 )
         except Exception:
             self.close()
             raise
-        self._ray = ray
-        self._sampling_params = SamplingParams
 
     def _require_started(self) -> None:
-        if not self.engines or self._ray is None or self._sampling_params is None:
+        if not self.engines:
             raise RuntimeError("backend.start() must be called first")
 
     @staticmethod
@@ -212,35 +256,43 @@ class RandOptVllmBackend:
         if unknown:
             raise ValueError(f"unknown tasks: {unknown}")
 
-        ray = self._ray
         active = self.engines[: len(candidates)]
         try:
-            ray.get(
-                [
-                    engine.collective_rpc.remote(
-                        "apply_noise_program", args=(self._serialized_terms(candidate),)
+            with ThreadPoolExecutor(max_workers=len(active)) as executor:
+                list(
+                    executor.map(
+                        lambda pair: pair[0].call(
+                            "collective_rpc",
+                            method="apply_noise_program",
+                            args=(self._serialized_terms(pair[1]),),
+                        ),
+                        zip(active, candidates),
                     )
-                    for engine, candidate in zip(active, candidates)
-                ]
-            )
+                )
             scores = self._score_active_engines(active, tasks)
-            ray.get(
-                [
-                    engine.collective_rpc.remote("reset_to_base_weights", args=())
-                    for engine in active
-                ]
-            )
+            with ThreadPoolExecutor(max_workers=len(active)) as executor:
+                list(
+                    executor.map(
+                        lambda engine: engine.call(
+                            "collective_rpc", method="reset_to_base_weights", args=()
+                        ),
+                        active,
+                    )
+                )
             return scores
         except Exception as error:
             if self._recover_if_cuda_context_failed(error):
                 raise
             try:
-                ray.get(
-                    [
-                        engine.collective_rpc.remote("reset_to_base_weights", args=())
-                        for engine in active
-                    ]
-                )
+                with ThreadPoolExecutor(max_workers=len(active)) as executor:
+                    list(
+                        executor.map(
+                            lambda engine: engine.call(
+                                "collective_rpc", method="reset_to_base_weights", args=()
+                            ),
+                            active,
+                        )
+                    )
             except Exception as reset_error:
                 self._recover_if_cuda_context_failed(reset_error)
             raise
@@ -260,17 +312,20 @@ class RandOptVllmBackend:
     def _score_active_engines(self, engines, tasks: tuple[str, ...]) -> list[dict[str, float]]:
         results: list[dict[str, float]] = [{} for _ in engines]
         for task in tasks:
-            params = self._sampling_params(
-                temperature=0.0,
-                seed=self.global_seed,
-                max_tokens=self.handlers[task].default_max_tokens,
-            )
-            outputs = self._ray.get(
-                [
-                    engine.generate.remote(self.prompts[task], params, use_tqdm=False)
-                    for engine in engines
-                ]
-            )
+            sampling = {
+                "temperature": 0.0,
+                "seed": self.global_seed,
+                "max_tokens": self.handlers[task].default_max_tokens,
+            }
+            with ThreadPoolExecutor(max_workers=len(engines)) as executor:
+                outputs = list(
+                    executor.map(
+                        lambda engine: engine.call(
+                            "generate", prompts=self.prompts[task], sampling=sampling
+                        ),
+                        engines,
+                    )
+                )
             if task == "mbpp":
                 with ThreadPoolExecutor(max_workers=len(outputs)) as executor:
                     scores = list(executor.map(self._score_mbpp_outputs, outputs))
@@ -288,94 +343,77 @@ class RandOptVllmBackend:
 
         responses = [output.outputs[0].text for output in outputs]
         ground_truths = [row["ground_truth"] for row in self.task_data["mbpp"]]
-        scorer_args = [
-            "-m",
-            "posttrainbench0.mbpp_scorer",
-            "--samples",
-            str(self.samples_per_task),
-            "--randopt-source",
-            str(self.randopt_source),
-        ]
-        child_env = {
-            "HOME": "/tmp",
-            "LANG": "C.UTF-8",
-            "PATH": "/usr/local/bin:/usr/bin:/bin",
-            "PYTHONNOUSERSITE": "1",
-                "PYTHONPATH": os.pathsep.join(
-                (str(Path(__file__).resolve().parents[2]), str(self.randopt_source))
-            ),
-        }
-        command = [sys.executable, *scorer_args]
+        source_root = Path(__file__).resolve().parents[2]
         if self.sandbox_tools_root is not None:
             tools_bin = self.sandbox_tools_root / "root" / "usr" / "bin"
             tools_lib = self.sandbox_tools_root / "root" / "usr" / "lib" / "x86_64-linux-gnu"
             bwrap = tools_bin / "bwrap"
             if not bwrap.is_file():
                 raise FileNotFoundError(f"missing Bubblewrap executable: {bwrap}")
-            source_root = Path(__file__).resolve().parents[2]
-            binds: list[str] = []
-            for path in ("/bin", "/usr", "/usr/local", "/lib", "/lib64"):
-                if Path(path).exists():
-                    binds.extend(("--ro-bind", path, path))
-            command = [
-                str(bwrap),
-                "--unshare-all",
-                "--die-with-parent",
-                "--new-session",
-                "--clearenv",
-                *binds,
-                "--dir",
-                "/dev",
-                "--dev-bind",
-                "/dev/null",
-                "/dev/null",
-                "--dev-bind",
-                "/dev/urandom",
-                "/dev/urandom",
-                "--dev-bind",
-                "/dev/zero",
-                "/dev/zero",
-                "--tmpfs",
-                "/tmp",
-                "--dir",
-                "/home",
-                "--dir",
-                "/opt",
-                "--ro-bind",
-                str(self.randopt_source),
-                "/opt/randopt",
-                "--ro-bind",
-                str(source_root),
-                "/opt/posttrainbench0-src",
-                "--setenv",
-                "HOME",
-                "/home",
-                "--setenv",
-                "LANG",
-                "C.UTF-8",
-                "--setenv",
-                "PATH",
-                "/usr/local/bin:/usr/bin:/bin",
-                "--setenv",
-                "PYTHONNOUSERSITE",
-                "1",
-                "--setenv",
-                "PYTHONPATH",
-                "/opt/posttrainbench0-src:/opt/randopt",
-                "--chdir",
-                "/tmp",
-                "/usr/bin/python3",
-                "-m",
-                "posttrainbench0.mbpp_scorer",
-                "--samples",
-                str(self.samples_per_task),
-                "--randopt-source",
-                "/opt/randopt",
-            ]
             child_env = {
                 "LD_LIBRARY_PATH": str(tools_lib),
                 "PATH": f"{tools_bin}:/usr/local/bin:/usr/bin:/bin",
             }
+            sandbox_python = "/usr/bin/python3"
+        else:
+            executable = shutil.which("bwrap")
+            if executable is None:
+                raise FileNotFoundError("bubblewrap is required to score MBPP safely")
+            bwrap = Path(executable)
+            sandbox_python = sys.executable
+            child_env = {"PATH": "/usr/local/bin:/usr/bin:/bin"}
+        binds: list[str] = []
+        for path in ("/bin", "/usr", "/usr/local", "/lib", "/lib64"):
+            if Path(path).exists():
+                binds.extend(("--ro-bind", path, path))
+        command = [
+            str(bwrap),
+            "--unshare-all",
+            "--die-with-parent",
+            "--new-session",
+            "--clearenv",
+            *binds,
+            "--dev",
+            "/dev",
+            "--proc",
+            "/proc",
+            "--tmpfs",
+            "/tmp",
+            "--dir",
+            "/home",
+            "--dir",
+            "/opt",
+            "--ro-bind",
+            str(self.randopt_source),
+            "/opt/randopt",
+            "--ro-bind",
+            str(source_root),
+            "/opt/posttrainbench0-src",
+            "--setenv",
+            "HOME",
+            "/home",
+            "--setenv",
+            "LANG",
+            "C.UTF-8",
+            "--setenv",
+            "PATH",
+            "/usr/local/bin:/usr/bin:/bin",
+            "--setenv",
+            "PYTHONNOUSERSITE",
+            "1",
+            "--setenv",
+            "PYTHONPATH",
+            "/opt/posttrainbench0-src:/opt/randopt",
+            "--chdir",
+            "/tmp",
+            sandbox_python,
+            "-m",
+            "posttrainbench0.mbpp_scorer",
+            "--samples",
+            str(self.samples_per_task),
+            "--randopt-source",
+            "/opt/randopt",
+        ]
         process = subprocess.run(
             command,
             input=json.dumps({"responses": responses, "ground_truths": ground_truths}),
@@ -405,20 +443,21 @@ class RandOptVllmBackend:
         output_dir.mkdir(parents=True)
         state_path = output_dir / "model_state.pt"
         engine = self.engines[0]
-        ray = self._ray
-        ray.get(
-            engine.collective_rpc.remote(
-                "apply_noise_program", args=(self._serialized_terms(candidate),)
-            )
+        engine.call(
+            "collective_rpc",
+            method="apply_noise_program",
+            args=(self._serialized_terms(candidate),),
         )
         try:
-            metadata = ray.get(
-                engine.collective_rpc.remote(
-                    "save_posttrainbench0_checkpoint", args=(str(state_path),)
-                )
+            metadata = engine.call(
+                "collective_rpc",
+                method="save_posttrainbench0_checkpoint",
+                args=(str(state_path),),
             )[0]
         finally:
-            ray.get(engine.collective_rpc.remote("reset_to_base_weights", args=()))
+            engine.call(
+                "collective_rpc", method="reset_to_base_weights", args=()
+            )
 
         for filename in (
             "config.json",
@@ -454,10 +493,10 @@ class RandOptVllmBackend:
         if checkpoint.get("format") != "posttrainbench0-vllm-state-v1":
             raise ValueError("unsupported checkpoint format")
         state_path = checkpoint_dir / checkpoint["state_file"]
-        return self._ray.get(
-            self.engines[0].collective_rpc.remote(
-                "load_posttrainbench0_checkpoint", args=(str(state_path),)
-            )
+        return self.engines[0].call(
+            "collective_rpc",
+            method="load_posttrainbench0_checkpoint",
+            args=(str(state_path),),
         )[0]
 
     def evaluate_loaded_checkpoint(self, tasks: tuple[str, ...]) -> Mapping[str, float]:
@@ -470,30 +509,12 @@ class RandOptVllmBackend:
         return self._score_active_engines(self.engines[:1], tasks)[0]
 
     def close(self) -> None:
-        if self._ray is None:
-            try:
-                import ray
-            except ImportError:
-                return
-        else:
-            ray = self._ray
-        from ray.util.placement_group import remove_placement_group
-
         for engine in self.engines:
             try:
-                ray.kill(engine)
-            except Exception:
-                pass
-        for group in self.placement_groups:
-            try:
-                remove_placement_group(group)
+                engine.close()
             except Exception:
                 pass
         self.engines = []
-        self.placement_groups = []
-        if ray.is_initialized():
-            ray.shutdown()
-        self._ray = None
 
     def __enter__(self):
         self.start()

@@ -66,7 +66,7 @@ A candidate is a compact deterministic program:
 ```json
 {
   "format": "zerograd-noise-program-v1",
-  "candidate_id": "trial-017",
+  "candidate_id": "candidate-017",
   "terms": [
     {"seed": 123, "scale": 0.001},
     {"seed": 987, "scale": -0.0004}

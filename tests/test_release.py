@@ -3,12 +3,14 @@ from __future__ import annotations
 import ast
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 from posttrainbench0.config import RunConfig
 from posttrainbench0.controller import EpisodeController
 from posttrainbench0.episode import initialize
+from posttrainbench0.evaluators.randopt_vllm import RandOptVllmBackend, _LocalVllmEngine
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -123,3 +125,79 @@ def test_prompt_and_starters_match_the_public_contract() -> None:
 def test_main_branch_has_no_blog_application() -> None:
     assert not (ROOT / "app" / "page.tsx").exists()
     assert not (ROOT / "package.json").exists()
+
+
+def test_reference_data_and_container_contract_are_shipped() -> None:
+    manifest = json.loads((ROOT / "data" / "visible200" / "data_manifest.json").read_text())
+    assert manifest["rows_per_task"] == 200
+    assert set(manifest["tasks"]) == {
+        "countdown",
+        "gsm8k",
+        "math500",
+        "olympiadbench",
+        "mbpp",
+        "rocstories",
+        "uspto50k",
+    }
+    for relative in manifest["tasks"].values():
+        assert (ROOT / "data" / "visible200" / relative).exists()
+    dockerfile = (ROOT / "docker" / "Dockerfile").read_text(encoding="utf-8")
+    assert "python:3.11-slim-bookworm" in dockerfile
+    assert "vllm==0.8.5" in dockerfile
+    assert "80ec7f6d97e0e3e56b9d58fcf22094a73dd489f6" in dockerfile
+
+
+def test_local_engine_process_uses_direct_ipc(tmp_path: Path, monkeypatch) -> None:
+    fake_package = tmp_path / "vllm"
+    fake_package.mkdir()
+    (fake_package / "__init__.py").write_text(
+        "class SamplingParams:\n"
+        "    def __init__(self, **values): self.values = values\n"
+        "class LLM:\n"
+        "    def __init__(self, **values): self.values = values\n"
+        "    def collective_rpc(self, method, args=()): return [method, list(args)]\n"
+        "    def generate(self, prompts, params, use_tqdm=False):\n"
+        "        return [{'prompt': item, 'sampling': params.values} for item in prompts]\n",
+        encoding="utf-8",
+    )
+    monkeypatch.syspath_prepend(str(tmp_path))
+    engine = _LocalVllmEngine(gpu_devices="0", kwargs={})
+    try:
+        assert engine.call(
+            "collective_rpc", method="apply_noise_program", args=([{"seed": 1}],)
+        )[0] == "apply_noise_program"
+        generated = engine.call(
+            "generate", prompts=["hello"], sampling={"temperature": 0.0}
+        )
+        assert generated == [{"prompt": "hello", "sampling": {"temperature": 0.0}}]
+    finally:
+        engine.close()
+
+
+def test_mbpp_scoring_always_uses_the_networkless_sandbox(tmp_path: Path, monkeypatch) -> None:
+    backend = RandOptVllmBackend(
+        model_path=tmp_path,
+        data_root=tmp_path,
+        randopt_source=tmp_path,
+        samples_per_task=1,
+        num_engines=1,
+    )
+    backend.task_data["mbpp"] = [{"ground_truth": "tests"}]
+    captured = {}
+
+    def fake_run(command, **kwargs):
+        captured["command"] = command
+        captured["environment"] = kwargs["env"]
+        return SimpleNamespace(
+            returncode=0,
+            stdout='ZEROGRAD_MBPP_RESULT={"score": 1.0}\n',
+            stderr="",
+        )
+
+    monkeypatch.setattr("posttrainbench0.evaluators.randopt_vllm.shutil.which", lambda _: "/usr/bin/bwrap")
+    monkeypatch.setattr("posttrainbench0.evaluators.randopt_vllm.subprocess.run", fake_run)
+    output = SimpleNamespace(outputs=[SimpleNamespace(text="def answer(): pass")])
+    assert backend._score_mbpp_outputs([output]) == 1.0
+    assert "--unshare-all" in captured["command"]
+    assert "--share-net" not in captured["command"]
+    assert captured["environment"] == {"PATH": "/usr/local/bin:/usr/bin:/bin"}

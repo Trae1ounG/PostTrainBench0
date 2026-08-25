@@ -1,0 +1,37 @@
+{
+  "run_id": "qwen25-3b-opencode-run01",
+  "paths": {
+    "base_model": "/models/base",
+    "evaluation_data": "/opt/posttrainbench0/data/visible200",
+    "randopt_source": "/opt/RandOPT",
+    "runs_root": "/runs",
+    "prompt": "/opt/posttrainbench0/prompt.txt",
+    "starter": "/opt/posttrainbench0/starter"
+  },
+  "agent": {
+    "harness": "opencode",
+    "model": "provider/model-name",
+    "cli_path": "/opt/agent-cli/opencode",
+    "credential_files": {},
+    "pass_environment": ["OPENAI_API_KEY", "OPENAI_BASE_URL"],
+    "environment": {
+      "OPENCODE_DISABLE_SHARE": "1"
+    }
+  },
+  "evaluation": {
+    "samples_per_task": 200,
+    "tasks": [
+      "countdown",
+      "gsm8k",
+      "math500",
+      "olympiadbench",
+      "mbpp",
+      "rocstories",
+      "uspto50k"
+    ]
+  },
+  "runtime": {
+    "hours": 4,
+    "num_gpus": 8
+  }
+}

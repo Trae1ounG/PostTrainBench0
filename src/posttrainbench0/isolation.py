@@ -58,7 +58,7 @@ class CommandBroker:
 def _bwrap() -> str:
     executable = shutil.which("bwrap")
     if executable is None:
-        raise FileNotFoundError("bubblewrap (bwrap) is required on the Linux Trial")
+        raise FileNotFoundError("bubblewrap (bwrap) is required on the Linux host")
     return executable
 
 

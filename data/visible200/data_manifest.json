@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "posttrainbench0-visible200-20260808-r2",
+  "selection": "first 200 rows in source order",
+  "tasks": {
+    "countdown": "countdown/countdown.json",
+    "gsm8k": "gsm8k/train.parquet",
+    "math500": "math-500/test.jsonl",
+    "olympiadbench": "olympiadbench/OE_TO_maths_en_COMP.parquet",
+    "mbpp": "mbpp_full",
+    "rocstories": "rocstories/train.parquet",
+    "uspto50k": "uspto_50k/train.parquet"
+  },
+  "rows_per_task": 200,
+  "purpose": "fixed score-visible evaluation data used by the seven-task public protocol"
+}

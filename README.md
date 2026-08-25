@@ -6,7 +6,8 @@
 
 [Research blog](https://trae1oung.github.io/posttrainbench0/) ·
 [Task instruction](prompt.txt) ·
-[Full protocol](docs/PROTOCOL.md)
+[Full protocol](docs/PROTOCOL.md) ·
+[Reference environment](docs/ENVIRONMENT.md)
 
 </div>
 
@@ -152,8 +153,39 @@ provide working evaluator calls—not to prescribe the final algorithm.
 
 ## Run it
 
-The reference runtime targets a Linux GPU Trial with Bubblewrap, Ray, vLLM,
-and a prepared RandOPT checkout.
+The reference runtime runs directly on one Linux GPU host with Bubblewrap,
+vLLM, and a prepared RandOPT checkout. It does not require a cluster scheduler
+or a separate task-submission service. The exact seven-task, 200-example evaluation
+snapshot is included in [`data/visible200`](data/visible200); it is read only by
+the trusted evaluator and is never mounted into the Agent workspace.
+
+### Docker: closest public match to the measured environment
+
+The checked Docker image uses Python 3.11, CUDA 12.4 PyTorch 2.6.0, vLLM
+0.8.5, Transformers 4.56.0, the fixed data snapshot, and RandOPT
+commit `80ec7f6d97e0e3e56b9d58fcf22094a73dd489f6`.
+
+```bash
+docker build -f docker/Dockerfile -t posttrainbench0:0.1.0 .
+
+cp configs/docker.example.json configs/local.json
+# Set the Agent model and make cli_path match a file in AGENT_CLI_DIR.
+
+mkdir -p runs
+docker/run.sh \
+  configs/local.json \
+  /absolute/path/to/Qwen2.5-3B-Instruct \
+  ./runs \
+  /absolute/path/to/agent-cli-directory \
+  /absolute/path/to/agent-api.env
+```
+
+Docker must already have access to the requested NVIDIA GPUs. The runner does
+not allocate a cloud machine. `--privileged` is required so Bubblewrap can
+create the nested Agent namespace; the Agent still sees only the documented
+workspace and read-only base-model mounts.
+
+### Existing Linux GPU environment
 
 ```bash
 python -m venv .venv
@@ -168,6 +200,12 @@ posttrainbench0 --config configs/local.json --init-only
 
 # Use a new run_id after preflight; run IDs are never overwritten.
 posttrainbench0 --config configs/local.json
+```
+
+Before a full run, verify the data, Python stack and visible GPUs:
+
+```bash
+python scripts/check_environment.py --data-root data/visible200
 ```
 
 Harness adapters live in [`agents/`](agents/). They only translate the shared

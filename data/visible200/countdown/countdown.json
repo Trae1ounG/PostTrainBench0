@@ -1,0 +1,1802 @@
+[
+  {
+    "numbers": [
+      2,
+      1,
+      5,
+      4
+    ],
+    "target": 12
+  },
+  {
+    "numbers": [
+      4,
+      3,
+      2,
+      9
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      2,
+      7,
+      1,
+      1
+    ],
+    "target": 11
+  },
+  {
+    "numbers": [
+      2,
+      4,
+      4,
+      9
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      1,
+      9,
+      4,
+      9
+    ],
+    "target": 23
+  },
+  {
+    "numbers": [
+      7,
+      4,
+      8,
+      5
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      1,
+      3,
+      7,
+      6
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      5,
+      3,
+      4,
+      6
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      2,
+      2,
+      7,
+      2
+    ],
+    "target": 13
+  },
+  {
+    "numbers": [
+      6,
+      6,
+      5,
+      1
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      8,
+      9,
+      2,
+      7
+    ],
+    "target": 26
+  },
+  {
+    "numbers": [
+      2,
+      9,
+      5,
+      6
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      4,
+      2,
+      1,
+      4
+    ],
+    "target": 11
+  },
+  {
+    "numbers": [
+      5,
+      2,
+      4,
+      2
+    ],
+    "target": 13
+  },
+  {
+    "numbers": [
+      7,
+      5,
+      8,
+      6
+    ],
+    "target": 26
+  },
+  {
+    "numbers": [
+      3,
+      6,
+      6,
+      4
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      5,
+      2,
+      3,
+      9
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      4,
+      3,
+      8,
+      7
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      5,
+      9,
+      4,
+      6
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      1,
+      4,
+      1,
+      6
+    ],
+    "target": 12
+  },
+  {
+    "numbers": [
+      7,
+      5,
+      2,
+      4
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      6,
+      4,
+      8,
+      7
+    ],
+    "target": 25
+  },
+  {
+    "numbers": [
+      8,
+      3,
+      5,
+      3
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      4,
+      9,
+      9,
+      5
+    ],
+    "target": 27
+  },
+  {
+    "numbers": [
+      7,
+      7,
+      6,
+      4
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      3,
+      9,
+      8,
+      2
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      1,
+      2,
+      3,
+      3
+    ],
+    "target": 9
+  },
+  {
+    "numbers": [
+      7,
+      2,
+      7,
+      7
+    ],
+    "target": 23
+  },
+  {
+    "numbers": [
+      8,
+      9,
+      5,
+      9
+    ],
+    "target": 31
+  },
+  {
+    "numbers": [
+      1,
+      2,
+      9,
+      5
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      6,
+      2,
+      5,
+      7
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      3,
+      8,
+      1,
+      5
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      9,
+      3,
+      9,
+      2
+    ],
+    "target": 23
+  },
+  {
+    "numbers": [
+      5,
+      9,
+      4,
+      3
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      6,
+      3,
+      9,
+      9
+    ],
+    "target": 27
+  },
+  {
+    "numbers": [
+      1,
+      6,
+      8,
+      1
+    ],
+    "target": 16
+  },
+  {
+    "numbers": [
+      2,
+      6,
+      5,
+      4
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      1,
+      4,
+      2,
+      2
+    ],
+    "target": 9
+  },
+  {
+    "numbers": [
+      8,
+      2,
+      9,
+      3
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      3,
+      8,
+      9,
+      3
+    ],
+    "target": 23
+  },
+  {
+    "numbers": [
+      5,
+      9,
+      7,
+      4
+    ],
+    "target": 25
+  },
+  {
+    "numbers": [
+      9,
+      4,
+      5,
+      7
+    ],
+    "target": 25
+  },
+  {
+    "numbers": [
+      6,
+      8,
+      9,
+      8
+    ],
+    "target": 31
+  },
+  {
+    "numbers": [
+      2,
+      4,
+      4,
+      2
+    ],
+    "target": 12
+  },
+  {
+    "numbers": [
+      6,
+      1,
+      9,
+      4
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      4,
+      1,
+      2,
+      1
+    ],
+    "target": 8
+  },
+  {
+    "numbers": [
+      4,
+      2,
+      1,
+      6
+    ],
+    "target": 13
+  },
+  {
+    "numbers": [
+      2,
+      9,
+      4,
+      5
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      8,
+      4,
+      9,
+      3
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      8,
+      4,
+      8,
+      7
+    ],
+    "target": 27
+  },
+  {
+    "numbers": [
+      4,
+      2,
+      2,
+      7
+    ],
+    "target": 15
+  },
+  {
+    "numbers": [
+      6,
+      7,
+      7,
+      8
+    ],
+    "target": 28
+  },
+  {
+    "numbers": [
+      1,
+      2,
+      1,
+      7
+    ],
+    "target": 11
+  },
+  {
+    "numbers": [
+      6,
+      2,
+      4,
+      4
+    ],
+    "target": 16
+  },
+  {
+    "numbers": [
+      4,
+      9,
+      8,
+      3
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      7,
+      3,
+      5,
+      8
+    ],
+    "target": 23
+  },
+  {
+    "numbers": [
+      4,
+      2,
+      8,
+      9
+    ],
+    "target": 23
+  },
+  {
+    "numbers": [
+      2,
+      1,
+      9,
+      1
+    ],
+    "target": 13
+  },
+  {
+    "numbers": [
+      2,
+      4,
+      3,
+      7
+    ],
+    "target": 16
+  },
+  {
+    "numbers": [
+      8,
+      8,
+      4,
+      7
+    ],
+    "target": 27
+  },
+  {
+    "numbers": [
+      1,
+      3,
+      7,
+      1
+    ],
+    "target": 12
+  },
+  {
+    "numbers": [
+      7,
+      5,
+      8,
+      5
+    ],
+    "target": 25
+  },
+  {
+    "numbers": [
+      7,
+      9,
+      8,
+      3
+    ],
+    "target": 27
+  },
+  {
+    "numbers": [
+      4,
+      5,
+      4,
+      1
+    ],
+    "target": 14
+  },
+  {
+    "numbers": [
+      9,
+      1,
+      6,
+      1
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      1,
+      8,
+      9,
+      9
+    ],
+    "target": 27
+  },
+  {
+    "numbers": [
+      3,
+      1,
+      9,
+      2
+    ],
+    "target": 15
+  },
+  {
+    "numbers": [
+      3,
+      2,
+      2,
+      4
+    ],
+    "target": 11
+  },
+  {
+    "numbers": [
+      7,
+      2,
+      4,
+      1
+    ],
+    "target": 14
+  },
+  {
+    "numbers": [
+      2,
+      7,
+      9,
+      6
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      5,
+      4,
+      6,
+      4
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      5,
+      7,
+      3,
+      5
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      8,
+      6,
+      2,
+      1
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      8,
+      2,
+      2,
+      9
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      4,
+      9,
+      5,
+      3
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      6,
+      2,
+      4,
+      6
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      5,
+      3,
+      8,
+      9
+    ],
+    "target": 25
+  },
+  {
+    "numbers": [
+      5,
+      9,
+      1,
+      9
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      5,
+      2,
+      3,
+      5
+    ],
+    "target": 15
+  },
+  {
+    "numbers": [
+      2,
+      2,
+      9,
+      3
+    ],
+    "target": 16
+  },
+  {
+    "numbers": [
+      5,
+      5,
+      4,
+      6
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      4,
+      5,
+      9,
+      8
+    ],
+    "target": 26
+  },
+  {
+    "numbers": [
+      5,
+      1,
+      2,
+      7
+    ],
+    "target": 15
+  },
+  {
+    "numbers": [
+      5,
+      1,
+      1,
+      6
+    ],
+    "target": 13
+  },
+  {
+    "numbers": [
+      3,
+      5,
+      3,
+      8
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      9,
+      7,
+      9,
+      1
+    ],
+    "target": 26
+  },
+  {
+    "numbers": [
+      2,
+      2,
+      3,
+      9
+    ],
+    "target": 16
+  },
+  {
+    "numbers": [
+      1,
+      6,
+      9,
+      3
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      7,
+      3,
+      1,
+      5
+    ],
+    "target": 16
+  },
+  {
+    "numbers": [
+      6,
+      1,
+      6,
+      4
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      4,
+      2,
+      6,
+      9
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      7,
+      3,
+      4,
+      3
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      3,
+      7,
+      1,
+      3
+    ],
+    "target": 14
+  },
+  {
+    "numbers": [
+      6,
+      7,
+      4,
+      5
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      3,
+      2,
+      7,
+      1
+    ],
+    "target": 13
+  },
+  {
+    "numbers": [
+      8,
+      4,
+      4,
+      8
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      6,
+      5,
+      4,
+      4
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      1,
+      4,
+      7,
+      6
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      5,
+      2,
+      5,
+      6
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      9,
+      7,
+      9,
+      6
+    ],
+    "target": 31
+  },
+  {
+    "numbers": [
+      1,
+      2,
+      5,
+      3
+    ],
+    "target": 11
+  },
+  {
+    "numbers": [
+      5,
+      1,
+      2,
+      7
+    ],
+    "target": 15
+  },
+  {
+    "numbers": [
+      6,
+      6,
+      7,
+      9
+    ],
+    "target": 28
+  },
+  {
+    "numbers": [
+      2,
+      7,
+      4,
+      5
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      1,
+      7,
+      1,
+      9
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      9,
+      4,
+      6,
+      7
+    ],
+    "target": 26
+  },
+  {
+    "numbers": [
+      2,
+      6,
+      6,
+      2
+    ],
+    "target": 16
+  },
+  {
+    "numbers": [
+      5,
+      9,
+      5,
+      7
+    ],
+    "target": 26
+  },
+  {
+    "numbers": [
+      6,
+      7,
+      5,
+      9
+    ],
+    "target": 27
+  },
+  {
+    "numbers": [
+      3,
+      4,
+      7,
+      7
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      3,
+      5,
+      7,
+      9
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      1,
+      5,
+      5,
+      4
+    ],
+    "target": 15
+  },
+  {
+    "numbers": [
+      7,
+      6,
+      8,
+      8
+    ],
+    "target": 29
+  },
+  {
+    "numbers": [
+      8,
+      4,
+      9,
+      8
+    ],
+    "target": 29
+  },
+  {
+    "numbers": [
+      3,
+      2,
+      5,
+      9
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      6,
+      2,
+      4,
+      5
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      4,
+      4,
+      3,
+      1
+    ],
+    "target": 12
+  },
+  {
+    "numbers": [
+      1,
+      4,
+      8,
+      2
+    ],
+    "target": 15
+  },
+  {
+    "numbers": [
+      8,
+      7,
+      4,
+      7
+    ],
+    "target": 26
+  },
+  {
+    "numbers": [
+      8,
+      7,
+      4,
+      3
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      1,
+      2,
+      7,
+      4
+    ],
+    "target": 14
+  },
+  {
+    "numbers": [
+      3,
+      9,
+      8,
+      1
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      9,
+      4,
+      2,
+      8
+    ],
+    "target": 23
+  },
+  {
+    "numbers": [
+      3,
+      8,
+      9,
+      9
+    ],
+    "target": 29
+  },
+  {
+    "numbers": [
+      6,
+      8,
+      9,
+      7
+    ],
+    "target": 30
+  },
+  {
+    "numbers": [
+      9,
+      8,
+      3,
+      8
+    ],
+    "target": 28
+  },
+  {
+    "numbers": [
+      8,
+      5,
+      4,
+      5
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      9,
+      8,
+      4,
+      5
+    ],
+    "target": 26
+  },
+  {
+    "numbers": [
+      8,
+      2,
+      5,
+      4
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      5,
+      6,
+      6,
+      9
+    ],
+    "target": 26
+  },
+  {
+    "numbers": [
+      2,
+      3,
+      3,
+      4
+    ],
+    "target": 12
+  },
+  {
+    "numbers": [
+      7,
+      3,
+      4,
+      2
+    ],
+    "target": 16
+  },
+  {
+    "numbers": [
+      7,
+      7,
+      6,
+      9
+    ],
+    "target": 29
+  },
+  {
+    "numbers": [
+      8,
+      7,
+      1,
+      4
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      7,
+      7,
+      1,
+      7
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      8,
+      1,
+      6,
+      5
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      7,
+      7,
+      9,
+      9
+    ],
+    "target": 32
+  },
+  {
+    "numbers": [
+      4,
+      8,
+      4,
+      5
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      7,
+      8,
+      1,
+      7
+    ],
+    "target": 23
+  },
+  {
+    "numbers": [
+      6,
+      7,
+      3,
+      8
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      3,
+      9,
+      1,
+      7
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      1,
+      2,
+      7,
+      3
+    ],
+    "target": 13
+  },
+  {
+    "numbers": [
+      8,
+      3,
+      1,
+      5
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      7,
+      6,
+      4,
+      8
+    ],
+    "target": 25
+  },
+  {
+    "numbers": [
+      6,
+      6,
+      7,
+      5
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      7,
+      5,
+      2,
+      8
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      1,
+      9,
+      1,
+      6
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      4,
+      2,
+      1,
+      1
+    ],
+    "target": 8
+  },
+  {
+    "numbers": [
+      4,
+      4,
+      1,
+      3
+    ],
+    "target": 12
+  },
+  {
+    "numbers": [
+      4,
+      3,
+      8,
+      2
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      4,
+      8,
+      5,
+      6
+    ],
+    "target": 23
+  },
+  {
+    "numbers": [
+      3,
+      2,
+      3,
+      5
+    ],
+    "target": 13
+  },
+  {
+    "numbers": [
+      2,
+      1,
+      5,
+      7
+    ],
+    "target": 15
+  },
+  {
+    "numbers": [
+      7,
+      4,
+      2,
+      4
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      2,
+      5,
+      2,
+      1
+    ],
+    "target": 10
+  },
+  {
+    "numbers": [
+      6,
+      9,
+      7,
+      6
+    ],
+    "target": 28
+  },
+  {
+    "numbers": [
+      2,
+      9,
+      6,
+      1
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      7,
+      8,
+      2,
+      7
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      6,
+      8,
+      3,
+      7
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      3,
+      9,
+      5,
+      9
+    ],
+    "target": 26
+  },
+  {
+    "numbers": [
+      8,
+      8,
+      7,
+      5
+    ],
+    "target": 28
+  },
+  {
+    "numbers": [
+      6,
+      4,
+      2,
+      5
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      8,
+      4,
+      8,
+      7
+    ],
+    "target": 27
+  },
+  {
+    "numbers": [
+      6,
+      1,
+      8,
+      6
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      3,
+      8,
+      4,
+      6
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      5,
+      6,
+      5,
+      5
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      9,
+      1,
+      9,
+      4
+    ],
+    "target": 23
+  },
+  {
+    "numbers": [
+      2,
+      4,
+      7,
+      8
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      9,
+      4,
+      8,
+      8
+    ],
+    "target": 29
+  },
+  {
+    "numbers": [
+      8,
+      1,
+      2,
+      5
+    ],
+    "target": 16
+  },
+  {
+    "numbers": [
+      4,
+      7,
+      4,
+      5
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      6,
+      8,
+      9,
+      9
+    ],
+    "target": 32
+  },
+  {
+    "numbers": [
+      6,
+      7,
+      9,
+      6
+    ],
+    "target": 28
+  },
+  {
+    "numbers": [
+      6,
+      8,
+      5,
+      5
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      5,
+      4,
+      2,
+      4
+    ],
+    "target": 15
+  },
+  {
+    "numbers": [
+      6,
+      2,
+      9,
+      3
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      4,
+      4,
+      8,
+      5
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      9,
+      5,
+      2,
+      4
+    ],
+    "target": 20
+  },
+  {
+    "numbers": [
+      5,
+      4,
+      6,
+      3
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      5,
+      1,
+      9,
+      3
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      5,
+      1,
+      1,
+      9
+    ],
+    "target": 16
+  },
+  {
+    "numbers": [
+      5,
+      3,
+      8,
+      2
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      1,
+      5,
+      8,
+      8
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      8,
+      6,
+      3,
+      1
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      5,
+      8,
+      2,
+      2
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      7,
+      8,
+      2,
+      1
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      3,
+      3,
+      5,
+      2
+    ],
+    "target": 13
+  },
+  {
+    "numbers": [
+      4,
+      2,
+      9,
+      7
+    ],
+    "target": 22
+  },
+  {
+    "numbers": [
+      4,
+      9,
+      7,
+      8
+    ],
+    "target": 28
+  },
+  {
+    "numbers": [
+      8,
+      5,
+      7,
+      5
+    ],
+    "target": 25
+  },
+  {
+    "numbers": [
+      1,
+      2,
+      4,
+      4
+    ],
+    "target": 11
+  },
+  {
+    "numbers": [
+      5,
+      2,
+      3,
+      4
+    ],
+    "target": 14
+  },
+  {
+    "numbers": [
+      3,
+      9,
+      2,
+      3
+    ],
+    "target": 17
+  },
+  {
+    "numbers": [
+      1,
+      7,
+      8,
+      8
+    ],
+    "target": 24
+  },
+  {
+    "numbers": [
+      5,
+      1,
+      4,
+      5
+    ],
+    "target": 15
+  },
+  {
+    "numbers": [
+      5,
+      8,
+      2,
+      4
+    ],
+    "target": 19
+  },
+  {
+    "numbers": [
+      5,
+      4,
+      7,
+      2
+    ],
+    "target": 18
+  },
+  {
+    "numbers": [
+      9,
+      4,
+      3,
+      5
+    ],
+    "target": 21
+  },
+  {
+    "numbers": [
+      3,
+      2,
+      1,
+      3
+    ],
+    "target": 9
+  },
+  {
+    "numbers": [
+      5,
+      5,
+      8,
+      2
+    ],
+    "target": 20
+  }
+]

@@ -20,8 +20,8 @@ agent finishes. The outer episode runner owns hard timeout and log capture.
 
 Adapters must not enable web search or bypass the harness sandbox. They should
 run without interactive approval, with writes limited to the agent workspace,
-and without loading user-specific Codex configuration. The outer Trial
-container remains responsible for restricting what the process can read and
+and without loading user-specific Codex configuration. The benchmark container
+remains responsible for restricting what the process can read and
 for disabling non-agent network routes.
 
 The release includes thin adapters for Codex, Cursor Agent, and OpenCode. API

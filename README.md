@@ -4,10 +4,6 @@
 
 ### Can LLM agents automate LLM post-training without gradients?
 
-Yuqiao Tan · Minzheng Wang · Shizhu He · Jun Zhao · Kang Liu
-
-*Institute of Automation, Chinese Academy of Sciences*
-
 [Research blog](https://trae1oung.github.io/posttrainbench0/) ·
 [Task instruction](prompt.txt) ·
 [Full protocol](docs/PROTOCOL.md)
@@ -200,11 +196,9 @@ If you use PostTrainBench⁰ or discuss the experiments in the research blog,
 please cite:
 
 ```bibtex
-@misc{tan2026posttrainbench0,
+@misc{posttrainbenchzero2026,
   title        = {{PostTrainBench}$^{0}$: Can LLM Agents Automate LLM
                   Post-Training Without Gradients?},
-  author       = {Tan, Yuqiao and Wang, Minzheng and He, Shizhu and
-                  Zhao, Jun and Liu, Kang},
   year         = {2026},
   howpublished = {Research blog},
   url          = {https://trae1oung.github.io/posttrainbench0/}

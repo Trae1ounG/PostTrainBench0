@@ -23,18 +23,18 @@ const tasks = [
 
 const qwen25: RunGroup[] = [
   { name: "GPT-5.5 high", harness: "Codex", scores: [47.5621, 49.2307] },
-  { name: "Kimi K2.6", harness: "OpenCode", scores: [47.5143, 47.5114, 49.25] },
-  { name: "GPT-5.5 xhigh", harness: "Codex", scores: [48.1657, 47.6579, 45.8964, 48.125] },
-  { name: "GPT-5.6 xhigh", harness: "Codex", scores: [46.8129, 48.6443, 46.5114, 47.3207, 46.6293] },
-  { name: "GPT-5.6 high", harness: "Codex", scores: [46.9757, 47.2793, 46.2736] },
+  { name: "Kimi K2.6", harness: "OpenCode", scores: [49.25, 47.5143] },
+  { name: "GPT-5.5 xhigh", harness: "Codex", scores: [48.1657, 48.125] },
+  { name: "GPT-5.6 xhigh", harness: "Codex", scores: [48.6443, 47.3207] },
+  { name: "GPT-5.6 high", harness: "Codex", scores: [47.2793, 46.9757] },
   { name: "GPT-5.4 Pro", harness: "OpenCode", scores: [46.8271] },
-  { name: "GPT-5.6 medium", harness: "Codex", scores: [46.69] },
-  { name: "DeepSeek V4 Pro", harness: "OpenCode", scores: [46.945, 45.6179, 47.1107] },
-  { name: "Opus 4.8 high", harness: "Cursor", scores: [46.0964, 46.0393, 47.1329] },
-  { name: "Sonnet 4.6 medium", harness: "Cursor", scores: [47.9164, 45.7171, 45.5929, 45.2393] },
-  { name: "GLM-5.1", harness: "OpenCode", scores: [45.8857, 45.885, 46.19] },
+  { name: "GPT-5.6 medium", harness: "Codex", scores: [47.6529, 46.69] },
+  { name: "DeepSeek V4 Pro", harness: "OpenCode", scores: [47.1107, 46.945] },
+  { name: "Opus 4.8 high", harness: "Cursor", scores: [47.1329, 46.0964] },
+  { name: "Sonnet 4.6 medium", harness: "Cursor", scores: [47.9164, 45.7171] },
+  { name: "GLM-5.1", harness: "OpenCode", scores: [46.19, 45.8857] },
   { name: "MiniMax M2.7", harness: "OpenCode", scores: [45.75] },
-  { name: "Qwen3.7-Max", harness: "OpenCode", scores: [45.70] },
+  { name: "Qwen3.7-Max", harness: "OpenCode", scores: [46.1543, 45.70] },
 ];
 
 const qwen3: RunGroup[] = [
@@ -45,8 +45,7 @@ const qwen3: RunGroup[] = [
   { name: "GPT-5.6 xhigh", harness: "Codex", scores: [43.29, 53.19] },
   { name: "GLM-5.1", harness: "OpenCode", scores: [46.6714, 44.7421] },
   { name: "GPT-5.5 xhigh", harness: "Codex", scores: [47.4157, 42.9629] },
-  { name: "Qwen3.7-Max", harness: "OpenCode", scores: [44.38] },
-  { name: "GPT-5.5 Codex", harness: "Codex", scores: [42.91, 43.5993] },
+  { name: "Qwen3.7-Max", harness: "OpenCode", scores: [44.6236, 44.38] },
 ];
 
 function mean(values: number[]) { return values.reduce((sum, value) => sum + value, 0) / values.length; }
@@ -92,7 +91,7 @@ function RunsExplorer({ language }: { language: Language }) {
   const domain = model === "qwen25" ? [43.5, 50] : [40.5, 54];
   const place = (value: number) => `${((value - domain[0]) / (domain[1] - domain[0])) * 100}%`;
   return <div className="runs-explorer">
-    <div className="explorer-head"><div><strong>{language === "zh" ? "逐次运行浏览" : "Run-by-run explorer"}</strong><span>{language === "zh" ? "每个蓝点是一轮完整运行，短黑线是该设置的平均值。" : "Each blue dot is one complete run; the black tick is the setting mean."}</span></div><div className="model-tabs" aria-label="Base model"><button className={model === "qwen25" ? "active" : ""} onClick={() => setModel("qwen25")}>Qwen2.5-3B</button><button className={model === "qwen3" ? "active" : ""} onClick={() => setModel("qwen3")}>Qwen3-4B</button></div></div>
+    <div className="explorer-head"><div><strong>{language === "zh" ? "逐次运行浏览" : "Run-by-run explorer"}</strong><span>{language === "zh" ? "每个设置最多展示分数最高的两次完整运行；短黑线是这两次的平均值。" : "Each setting shows at most its two highest-scoring complete runs; the black tick is their mean."}</span></div><div className="model-tabs" aria-label="Base model"><button className={model === "qwen25" ? "active" : ""} onClick={() => setModel("qwen25")}>Qwen2.5-3B</button><button className={model === "qwen3" ? "active" : ""} onClick={() => setModel("qwen3")}>Qwen3-4B</button></div></div>
     <div className="run-axis"><span>{domain[0]}</span><span>{((domain[0] + domain[1]) / 2).toFixed(1)}</span><span>{domain[1]}</span></div>
     <div className="run-rows">{rows.map((row) => { const average = mean(row.scores); return <div className="run-row" key={row.name}><div className="run-label"><strong>{row.name}</strong><small>{row.harness} · n={row.scores.length}</small></div><div className="run-track"><i className="base-reference" style={{ left: place(base) }} />{row.scores.map((score, index) => <button key={`${score}-${index}`} className="run-dot" style={{ left: place(score) }} title={`${row.name}: ${score.toFixed(2)}`} aria-label={`${row.name} score ${score.toFixed(2)}`} />)}<i className="mean-reference" style={{ left: place(average) }} /></div><b>{average.toFixed(2)}</b></div>; })}</div>
   </div>;
@@ -197,9 +196,9 @@ export default function Home() {
           <tr><td><b>{tx("开发集适应", "Development-set adaptation")}</b></td><td>{tx("Agent 可以反复看到同一批任务的分数，并据此选择候选。", "The agent repeatedly observes scores on the same task set and selects candidates accordingly.")}</td><td>{tx("最终高分可能包含对这 200 条样本的适应，而不代表不可见数据上的泛化。", "The final score may include adaptation to these 200 examples rather than hidden-data generalization.")}</td></tr>
         </tbody></table></ResearchTable>
         <p>{tx("这里最关键的统计事实是：我们记录的是一次运行中观察到的最好值。最好值是一个极值统计量，它同时奖励搜索质量和搜索数量。如果两个 Agent 分别完成 20 次和 200 次完整评测，即使它们从同一个分布随机抽样，后者也更可能得到更高的最好分。因此，当前结果适合分析行为和提出问题，不适合直接宣称模型能力排序。", "The key statistical fact is that we record the best value observed during a run. A maximum rewards both search quality and search quantity. If two agents complete 20 and 200 full evaluations, the latter is more likely to report a higher best score even when both sample from the same distribution. The present results are therefore useful for behavioral analysis and benchmark design, but not for claiming a clean capability ranking.")}</p>
-        <ResearchFigure number={5} src="/figures/historical-agent-runs.png" caption={tx("Qwen2.5-3B-Instruct 与 Qwen3-4B-Base 上的全部历史完整运行。蓝点是一轮运行中的最好完整分数，黑线是同一设置的平均，虚线是基础模型。", "All complete historical runs on Qwen2.5-3B-Instruct and Qwen3-4B-Base. Blue dots are the best complete scores in individual runs, black ticks are setting means, and dashed lines are base checkpoints.")} source="scripts/render_blog_figures.py" interpretation={tx("发现｜Qwen2.5-3B 上的结果较集中，但不同 Agent 的均值差距不大；Qwen3-4B 上单个设置的重复跨度可接近 10 分。最高分能够展示搜索上限，却不足以单独构成稳定的 Agent 排名。", "Finding｜Results are tighter on Qwen2.5-3B, but mean gaps between agents are small. On Qwen3-4B, repeats of one setting can span nearly ten points. A best score reveals search potential but is insufficient for a stable agent ranking.")} />
-        <h3>Qwen2.5-3B-Instruct · 34 {tx("次完整运行", "complete runs")}</h3><p>{tx("基础模型为 44.08。按已完成运行的平均分，GPT-5.5 high 与 Kimi K2.6 位于最前，但二者均只有 2–3 次重复；多数设置的平均分集中在 45.7–48.4。这里能看到稳定提升，却看不到与通用 Agent 排名一致的单调排序。", "The base score is 44.08. GPT-5.5 high and Kimi K2.6 lead by the mean of completed runs, but each has only two or three repeats; most settings fall between 45.7 and 48.4. Improvements are consistent, but the ordering is not monotonic with general agent rankings.")}</p><ResearchTable number={4} caption={tx("Qwen2.5-3B-Instruct 上的 34 次独立四小时运行，按 Agent 名称排列，避免把样本很少的平均值误读为排行榜。n 是完整运行数；跨度是同一设置最高与最低运行之差。基础 checkpoint 的七任务均分为 44.08。", "All 34 independent four-hour runs on Qwen2.5-3B-Instruct, ordered alphabetically by agent to avoid presenting small-sample means as a leaderboard. n is the number of complete runs; Spread is the gap between the highest and lowest repeat. The base checkpoint scores 44.08.")}><RunSummaryTable rows={qwen25} language={language} /></ResearchTable>
-        <h3>Qwen3-4B-Base · 17 {tx("次完整运行", "complete runs")}</h3><p>{tx("基础模型为 41.08。MiniMax M2.7 的两次运行都接近 49；GPT-5.6 xhigh 同时得到 53.19 和 43.29，跨越 9.90 分；Kimi K2.6、DeepSeek V4 Pro 和 GPT-5.4 Pro 也有明显的重复波动。这说明目标模型本身会改变搜索地形和可重复性。", "The base score is 41.08. Both MiniMax M2.7 runs are near 49; GPT-5.6 xhigh reaches both 53.19 and 43.29, a 9.90-point span; Kimi K2.6, DeepSeek V4 Pro, and GPT-5.4 Pro also vary substantially. The target model changes both the search landscape and repeatability.")}</p><ResearchTable number={5} caption={tx("Qwen3-4B-Base 上的 17 次独立四小时运行，按 Agent 名称排列，统计定义与 Table 4 相同。基础 checkpoint 的七任务均分为 41.08；应优先比较同一设置的重复跨度。", "All 17 independent four-hour runs on Qwen3-4B-Base, ordered alphabetically by agent and using the same statistics as Table 4. The base checkpoint scores 41.08; the primary comparison is repeat spread within each setting.")}><RunSummaryTable rows={qwen3} language={language} /></ResearchTable>
+        <ResearchFigure number={5} src="/figures/historical-agent-runs.png" caption={tx("Qwen2.5-3B-Instruct 与 Qwen3-4B-Base 上，每个精确 Agent 设置最多保留分数最高的两次运行。蓝点是一轮运行中的最好完整分数，黑线是所示运行的平均，虚线是基础模型。", "For each exact Agent setting on Qwen2.5-3B-Instruct and Qwen3-4B-Base, we retain at most the two highest-scoring runs. Blue dots are the best complete scores in retained runs, black ticks are their means, and dashed lines are base checkpoints.")} source="scripts/render_historical_agent_runs.py" interpretation={tx("发现｜Qwen2.5-3B 上的高分运行较集中；Qwen3-4B 上即使只看最高两次，同一设置仍可能相差接近 10 分。这个视图用于比较已观察到的搜索上限，不把它解释成稳定排行榜。", "Finding｜High-scoring runs are tighter on Qwen2.5-3B. On Qwen3-4B, even the top two runs of one setting can differ by nearly ten points. This view compares observed search ceilings rather than claiming a stable leaderboard.")} />
+        <h3>Qwen2.5-3B-Instruct · 24 {tx("次展示运行", "displayed runs")}</h3><p>{tx("基础模型为 44.08。下表对每个精确设置最多保留分数最高的两次；没有最终提交但完成过七任务评测的运行，采用其观测到的最高完整分。这个选择便于紧凑展示各设置达到过的高分区域，但不用于估计完整运行分布。", "The base score is 44.08. The table retains at most the two highest-scoring runs for each exact setting. If a run has no final submission but completed a seven-task evaluation, its best observed complete score is used. This compact view shows the high-score region reached by each setting; it is not an estimate of the full run distribution.")}</p><ResearchTable number={4} caption={tx("Qwen2.5-3B-Instruct 上每个设置最高的至多两次分数。n 是本表展示的运行数；跨度仅描述这两个保留值。完整历史运行仍保存在实验记录中。", "Up to the two highest scores per setting on Qwen2.5-3B-Instruct. Here n is the number of displayed runs and Spread describes only those retained values. The complete run history remains in the experiment records.")}><RunSummaryTable rows={qwen25} language={language} /></ResearchTable>
+        <h3>Qwen3-4B-Base · 16 {tx("次展示运行", "displayed runs")}</h3><p>{tx("基础模型为 41.08。MiniMax M2.7 的两个高分运行都接近 49；GPT-5.6 xhigh 的两个保留值为 53.19 和 43.29，相差 9.90 分。GPT-5.5 旧版与 Codex 0.124 的组合不再纳入展示。", "The base score is 41.08. MiniMax M2.7 has two retained runs near 49, while the two retained GPT-5.6 xhigh runs score 53.19 and 43.29, a 9.90-point gap. The legacy GPT-5.5 plus Codex 0.124 configuration is no longer shown.")}</p><ResearchTable number={5} caption={tx("Qwen3-4B-Base 上每个设置最高的至多两次分数，统计口径与 Table 4 相同。", "Up to the two highest scores per setting on Qwen3-4B-Base, using the same selection rule as Table 4.")}><RunSummaryTable rows={qwen3} language={language} /></ResearchTable>
         <h3>{tx("交互查看每一次运行", "Inspect every run interactively")}</h3><p>{tx("下面的视图读取与 Figure 5 相同的记录。切换目标模型并悬停蓝点，可以直接看到每次运行的分数，而不是只看平均值。", "The view below reads the same records as Figure 5. Switch the target model and hover over a blue dot to inspect individual runs rather than only their mean.")}</p><RunsExplorer language={language} />
         <div className="section-finding"><b>{tx("这些分数应该怎样读", "How these scores should be read")}</b><p>{tx("这些运行证明了多种 Agent 都能把流程跑通并找到涨分候选，也展示了各自可能达到的搜索上限。它们尚不能构成稳定排名：重复数量有限、每轮完成的候选数不同，而且最好分会放大采样运气。", "These runs show that several agents can execute the workflow and find improving candidates, while revealing their possible search ceilings. They do not yet form a stable ranking: repeats are limited, candidate counts differ, and best-of-run scores amplify sampling luck.")}</p></div>
       </section>

@@ -38,9 +38,11 @@ const displayScore = (value: number) => (value * 100).toFixed(2);
 const COLORS = ["#2457ff", "#de5b3f", "#078b71", "#8a4bd0", "#d39400", "#1686b0", "#cc3d7e", "#667085", "#76a000", "#6b4f3f", "#111827"];
 
 function cleanAgentName(agent: string, language: Language) {
+  const [model, effort] = agent.split(":");
+  const suffix = effort ? ` ${effort}` : "";
   if (agent === "es-conservative") return language === "zh" ? "进化策略 · 保守更新" : "Evolution strategy · conservative";
   if (agent === "es-original") return language === "zh" ? "进化策略 · 原始更新" : "Evolution strategy · original";
-  return agent
+  return model
     .replace("claude-4.6-sonnet-medium", "Sonnet 4.6 medium")
     .replace("claude-opus-4-8-high", "Opus 4.8 high")
     .replace("ali-deepseek-v4-pro", "DeepSeek V4 Pro")
@@ -50,16 +52,34 @@ function cleanAgentName(agent: string, language: Language) {
     .replace("glm-5.1", "GLM-5.1")
     .replace("openai_qwen3.7-max", "Qwen3.7-Max")
     .replace("Minimax-M2.7-highspeed", "MiniMax M2.7")
-    .replace("randopt", "RandOPT");
+    .replace("randopt", "RandOPT") + suffix;
 }
 
 function agentGroup(run: Run) {
   if (run.agent === "es") return run.runId.includes("conservative") ? "es-conservative" : "es-original";
+  const effort = run.label.match(/\[(medium|high|xhigh)\]/)?.[1];
+  if (effort) return `${run.agent}:${effort}`;
   return run.agent;
 }
 
 function isExcludedRun(run: Run) {
-  return run.agent === "gpt-5.5-2026-04-24";
+  return run.agent === "gpt-5.5-2026-04-24" && run.harness === "codex-cli@0.124.0";
+}
+
+function scoreOf(run: Run) {
+  return run.observedBest ?? run.finalScore;
+}
+
+function topTwoPerSetting(runs: Run[]) {
+  const grouped = new Map<string, Run[]>();
+  for (const run of runs) {
+    const key = `${agentGroup(run)}|${run.harness}`;
+    grouped.set(key, [...(grouped.get(key) ?? []), run]);
+  }
+  return [...grouped.values()].flatMap((group) => [...group]
+    .filter((run) => scoreOf(run) !== null)
+    .sort((left, right) => (scoreOf(right) ?? -Infinity) - (scoreOf(left) ?? -Infinity))
+    .slice(0, 2));
 }
 
 function median(values: number[]) {
@@ -114,11 +134,11 @@ export default function InteractiveTrajectory({ language }: { language: Language
 
   const eligibleRuns = useMemo(() => {
     if (!data) return [];
-    return data.runs.filter((run) =>
+    return topTwoPerSetting(data.runs.filter((run) =>
       !run.runId.includes("smoke") &&
       !isExcludedRun(run) &&
       (showBaselines || run.kind === "agent"),
-    );
+    ));
   }, [data, showBaselines]);
 
   const displayedAgents = useMemo(
@@ -363,7 +383,7 @@ export default function InteractiveTrajectory({ language }: { language: Language
           ) : viewMode === "summary" ? (
             <>
               <strong>{tr("每条实线代表一种 Agent 设置", "One line per Agent setting")}</strong>
-              <p>{tr("实线表示多次运行当前最佳分数的中位数，阴影覆盖最低到最高运行。阴影越宽，说明同一 Agent 的搜索结果越不稳定。所有得到完整七任务分数的运行都直接计入。", "The line is the median best-so-far score across runs. The shaded area spans the lowest to highest run. A wider band means the search is less stable. Every run with a complete score is included directly.")}</p>
+              <p>{tr("实线表示同一设置最高两次完整运行的当前最佳分数中位数，阴影覆盖两次运行的范围。没有最终提交但产生完整七任务分数的运行，按其观测到的最高完整分计入。", "The line is the median best-so-far score across the two highest-scoring complete runs for a setting, and the band spans those runs. A run without a final submission is still included by its best observed complete seven-task score.")}</p>
               <div className="readout-swatch"><i /> {tr("中位轨迹", "median")} <span /> {tr("运行范围", "run range")}</div>
             </>
           ) : (
@@ -382,7 +402,7 @@ export default function InteractiveTrajectory({ language }: { language: Language
 
       <div className="trajectory-footer">
         <span>{tr("当前显示", "Showing")} <b>{series.length}</b> {viewMode === "summary" ? tr("条 Agent 汇总曲线", "Agent summaries") : tr("条单次运行曲线", "individual runs")}</span>
-        <span>{tr("Qwen2.5-3B-Instruct · 34 次完整运行", "Qwen2.5-3B-Instruct · 34 complete runs")}</span>
+        <span>{tr("每个精确设置最多保留最高两次", "At most the top two runs per exact setting")}</span>
         <span>{tr("水平虚线：未修改模型", "Dashed horizontal line: unmodified model")} {displayScore(BASE_SCORE)}</span>
         <span>{xAxis === "minute" ? tr("时间包含评测等待", "Time includes evaluation latency") : tr("一次完整评测覆盖全部七项任务", "One full evaluation covers all seven tasks")}</span>
       </div>

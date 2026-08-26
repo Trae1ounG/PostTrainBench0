@@ -95,6 +95,8 @@ test("uses one 0–100 score scale across interactive figures", async () => {
   ]);
   assert.match(trajectory, /const displayScore = \(value: number\) => \(value \* 100\)\.toFixed\(2\)/);
   assert.match(trajectory, /Best seven-task mean so far \(0–100\)/);
-  assert.match(trajectory, /Qwen2\.5-3B-Instruct · 34 complete runs/);
+  assert.match(trajectory, /At most the top two runs per exact setting/);
+  assert.match(trajectory, /topTwoPerSetting/);
+  assert.match(trajectory, /codex-cli@0\.124\.0/);
   assert.match(weight, /displayScore\(selected\.scores\.joint\)/);
 });

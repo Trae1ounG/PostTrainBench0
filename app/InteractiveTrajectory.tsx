@@ -88,6 +88,14 @@ function median(values: number[]) {
   return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 }
 
+function metric(values: number[], digits = 1) {
+  if (!values.length) return "—";
+  const center = median(values);
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  return low === high ? center.toFixed(digits) : `${center.toFixed(digits)} (${low.toFixed(digits)}–${high.toFixed(digits)})`;
+}
+
 function valueAt(run: Run, x: number, axis: XAxis) {
   let value = BASE_SCORE;
   for (const point of run.points) {
@@ -327,6 +335,30 @@ export default function InteractiveTrajectory({ language }: { language: Language
   const selectedRuns = eligibleRuns.filter((run) => agentGroup(run) === activeSelectedAgent);
   const selectedEnds = selectedRuns.map((run) => run.points.at(-1)?.best ?? BASE_SCORE);
   const readoutSeries = hover?.series;
+  const trajectoryStats = displayedAgents.map((agent) => {
+    const runs = eligibleRuns.filter((run) => agentGroup(run) === agent);
+    const firstImprovements = runs.flatMap((run) => {
+      const point = run.points.find((candidate) => candidate.best > BASE_SCORE + 1e-9);
+      return point ? [point.minute] : [];
+    });
+    const bestTimes = runs.flatMap((run) => {
+      const endpoint = run.points.at(-1)?.best;
+      const point = endpoint === undefined ? undefined : run.points.find((candidate) => candidate.best >= endpoint - 1e-9);
+      return point ? [point.minute] : [];
+    });
+    const improvementCounts = runs.map((run) => {
+      let incumbent = BASE_SCORE;
+      let count = 0;
+      for (const point of run.points) {
+        if (point.best > incumbent + 1e-9) { incumbent = point.best; count += 1; }
+      }
+      return count;
+    });
+    const evaluations = runs.map((run) => run.evaluations);
+    const endpoints = runs.map((run) => (run.points.at(-1)?.best ?? BASE_SCORE) * 100);
+    const gainsAfterTwoHours = runs.map((run) => ((run.points.at(-1)?.best ?? BASE_SCORE) - valueAt(run, 120, "minute")) * 100);
+    return { agent, runs, firstImprovements, bestTimes, improvementCounts, evaluations, endpoints, gainsAfterTwoHours };
+  }).filter((row) => row.runs.length);
 
   if (!data) return <div className="trajectory-loading">{tr("正在加载实验轨迹…", "Loading search trajectories…")}</div>;
 
@@ -405,6 +437,24 @@ export default function InteractiveTrajectory({ language }: { language: Language
         <span>{tr("每个精确设置最多保留最高两次", "At most the top two runs per exact setting")}</span>
         <span>{tr("水平虚线：未修改模型", "Dashed horizontal line: unmodified model")} {displayScore(BASE_SCORE)}</span>
         <span>{xAxis === "minute" ? tr("时间包含评测等待", "Time includes evaluation latency") : tr("一次完整评测覆盖全部七项任务", "One full evaluation covers all seven tasks")}</span>
+      </div>
+      <div className="trajectory-detail-table">
+        <div className="explorer-head"><div><strong>{tr("关键时间点与搜索效率", "Milestones and search efficiency")}</strong><span>{tr("数值为所保留运行的中位数；括号内为最低–最高。时间从 Agent 启动开始计算。", "Values are medians across retained runs; parentheses show min–max. Time starts when the Agent starts.")}</span></div></div>
+        <div className="table-scroll"><table className="data-table"><thead><tr>
+          <th>{tr("Agent 设置", "Agent setting")}</th><th>n</th>
+          <th>{tr("首次超过基础分（分钟）", "First gain (min)")}</th>
+          <th>{tr("达到最好分（分钟）", "Best reached (min)")}</th>
+          <th>{tr("刷新最好分次数", "Incumbent updates")}</th>
+          <th>{tr("完整评测数", "Full evaluations")}</th>
+          <th>{tr("两小时后新增分数", "Gain after 2h")}</th>
+          <th>{tr("最好分数", "Best score")}</th>
+        </tr></thead><tbody>{trajectoryStats.map((row) => <tr key={row.agent}>
+          <td><b>{cleanAgentName(row.agent, language)}</b><small className="table-harness">{[...new Set(row.runs.map((run) => run.harness))].join(" / ")}</small></td>
+          <td>{row.runs.length}</td><td>{metric(row.firstImprovements)}</td><td>{metric(row.bestTimes)}</td>
+          <td>{metric(row.improvementCounts, 0)}</td><td>{metric(row.evaluations, 0)}</td>
+          <td>{metric(row.gainsAfterTwoHours, 2)}</td><td>{metric(row.endpoints, 2)}</td>
+        </tr>)}</tbody></table></div>
+        <p className="figure-source">{tr("“两小时后新增分数” = 四小时内最好分 − 第 120 分钟时的 running-best；它区分早期发现与后半程继续优化。", "Gain after 2h = final running-best minus the running-best at minute 120; it separates early discovery from continued improvement in the second half.")}</p>
       </div>
     </div>
   );

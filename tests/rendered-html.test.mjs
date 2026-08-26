@@ -98,5 +98,7 @@ test("uses one 0–100 score scale across interactive figures", async () => {
   assert.match(trajectory, /At most the top two runs per exact setting/);
   assert.match(trajectory, /topTwoPerSetting/);
   assert.match(trajectory, /codex-cli@0\.124\.0/);
+  assert.match(trajectory, /Milestones and search efficiency/);
+  assert.match(trajectory, /Gain after 2h/);
   assert.match(weight, /displayScore\(selected\.scores\.joint\)/);
 });

@@ -518,6 +518,12 @@ img { display: block; max-width: 100%; }
 .weight-footer { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 8px 0; border-top: 1px solid var(--border); color: #777; font-size: 9px; }
 .trajectory-footer b,
 .weight-footer b { color: var(--ink); }
+.trajectory-detail-table { margin-top: 22px; }
+.trajectory-detail-table .explorer-head { margin-bottom: 10px; }
+.trajectory-detail-table .data-table { min-width: 960px; font-size: 12px; }
+.trajectory-detail-table .data-table th { white-space: normal; }
+.trajectory-detail-table .data-table td { font-variant-numeric: tabular-nums; }
+.table-harness { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; font-weight: 400; white-space: nowrap; }
 .weight-footer i { width: 100px; height: 7px; background: linear-gradient(90deg,#2246aa,#fffef0,#d0422e); }
 
 .conclusion-columns { margin: 18px 0 20px; }

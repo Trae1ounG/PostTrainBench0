@@ -89,16 +89,33 @@ test("ships interactive data and checked research figures", async () => {
 });
 
 test("uses one 0–100 score scale across interactive figures", async () => {
-  const [trajectory, weight] = await Promise.all([
+  const [trajectory, weight, trajectoryRenderer, page, trajectoryData] = await Promise.all([
     readFile(new URL("app/InteractiveTrajectory.tsx", root), "utf8"),
     readFile(new URL("app/WeightSpaceExplorer.tsx", root), "utf8"),
+    readFile(new URL("scripts/render_agent_4h_trajectory.py", root), "utf8"),
+    readFile(new URL("app/page.tsx", root), "utf8"),
+    readFile(new URL("public/trajectory-data.json", root), "utf8"),
   ]);
   assert.match(trajectory, /const displayScore = \(value: number\) => \(value \* 100\)\.toFixed\(2\)/);
   assert.match(trajectory, /Best seven-task mean so far \(0–100\)/);
-  assert.match(trajectory, /At most the top two runs per exact setting/);
-  assert.match(trajectory, /topTwoPerSetting/);
+  assert.match(trajectory, /At most the top three runs per exact setting/);
+  assert.match(trajectory, /topThreePerSetting/);
   assert.match(trajectory, /gpt-5\.5-2026-04-24/);
   assert.match(trajectory, /Milestones and search efficiency/);
   assert.match(trajectory, /Gain after 2h/);
   assert.match(weight, /displayScore\(selected\.scores\.joint\)/);
+  assert.match(trajectoryRenderer, /top_three_per_setting/);
+  assert.match(trajectoryRenderer, /TIME_LIMIT_MINUTES = 240\.0/);
+  assert.match(trajectoryRenderer, /gpt-5\.5-2026-04-24/);
+  assert.match(page, /same run records, model set, colors, and top-three-per-exact-setting selection/);
+
+  const colorPattern = /#[0-9a-f]{6}/gi;
+  const interactiveColors = trajectory.match(/const COLORS = \[(.*?)\];/s)?.[1].match(colorPattern);
+  const staticColors = trajectoryRenderer.match(/COLORS = \[(.*?)\]/s)?.[1].match(colorPattern);
+  assert.deepEqual(staticColors, interactiveColors);
+
+  const groups = new Set(JSON.parse(trajectoryData).runs
+    .filter((run) => run.kind === "agent" && !run.runId.includes("smoke") && run.agent !== "gpt-5.5-2026-04-24")
+    .map((run) => `${run.agent}:${run.label.match(/\[(medium|high|xhigh)\]/)?.[1] ?? ""}`));
+  assert.ok(groups.size >= 13);
 });

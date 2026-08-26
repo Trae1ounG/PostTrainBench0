@@ -45,7 +45,7 @@ type Hover = { series: Series; point: ChartPoint; px: number; py: number };
 const BASE_SCORE = 0.440764;
 const TIME_LIMIT_MINUTES = 240;
 const displayScore = (value: number) => (value * 100).toFixed(2);
-const COLORS = ["#2457ff", "#de5b3f", "#078b71", "#8a4bd0", "#d39400", "#1686b0", "#cc3d7e", "#667085", "#76a000", "#6b4f3f", "#111827"];
+const COLORS = ["#2457ff", "#de5b3f", "#078b71", "#8a4bd0", "#d39400", "#1686b0", "#cc3d7e", "#667085", "#76a000", "#6b4f3f", "#111827", "#00a3a3", "#e11d48", "#f97316", "#4f46e5", "#059669"];
 
 function cleanAgentName(agent: string, language: Language) {
   const [model, effort] = agent.split(":");
@@ -80,7 +80,7 @@ function scoreOf(run: Run) {
   return run.observedBest ?? run.finalScore;
 }
 
-function topTwoPerSetting(runs: Run[]) {
+function topThreePerSetting(runs: Run[]) {
   const grouped = new Map<string, Run[]>();
   for (const run of runs) {
     const key = `${agentGroup(run)}|${run.harness}`;
@@ -89,7 +89,7 @@ function topTwoPerSetting(runs: Run[]) {
   return [...grouped.values()].flatMap((group) => [...group]
     .filter((run) => scoreOf(run) !== null)
     .sort((left, right) => (scoreOf(right) ?? -Infinity) - (scoreOf(left) ?? -Infinity))
-    .slice(0, 2));
+    .slice(0, 3));
 }
 
 function median(values: number[]) {
@@ -191,7 +191,7 @@ export default function InteractiveTrajectory({ language }: { language: Language
 
   const eligibleRuns = useMemo(() => {
     if (!data) return [];
-    return topTwoPerSetting(data.runs.filter((run) =>
+    return topThreePerSetting(data.runs.filter((run) =>
       !run.runId.includes("smoke") &&
       !isExcludedRun(run) &&
       (showBaselines || run.kind === "agent"),
@@ -480,7 +480,7 @@ export default function InteractiveTrajectory({ language }: { language: Language
           ) : viewMode === "summary" ? (
             <>
               <strong>{tr("每条实线代表一种 Agent 设置", "One line per Agent setting")}</strong>
-              <p>{tr("实线表示同一设置最高两次完整运行的当前最佳分数中位数，阴影覆盖两次运行的范围。没有最终提交但产生完整七任务分数的运行，按其观测到的最高完整分计入。", "The line is the median best-so-far score across the two highest-scoring complete runs for a setting, and the band spans those runs. A run without a final submission is still included by its best observed complete seven-task score.")}</p>
+              <p>{tr("实线表示同一设置最高三次完整运行的当前最佳分数中位数，阴影覆盖这些运行的范围。没有最终提交但产生完整七任务分数的运行，按其观测到的最高完整分计入。", "The line is the median best-so-far score across the three highest-scoring complete runs for a setting, and the band spans those runs. A run without a final submission is still included by its best observed complete seven-task score.")}</p>
               <div className="readout-swatch"><i /> {tr("中位轨迹", "median")} <span /> {tr("运行范围", "run range")}</div>
             </>
           ) : (
@@ -499,7 +499,7 @@ export default function InteractiveTrajectory({ language }: { language: Language
 
       <div className="trajectory-footer">
         <span>{tr("当前显示", "Showing")} <b>{series.length}</b> {viewMode === "summary" ? tr("条 Agent 汇总曲线", "Agent summaries") : tr("条单次运行曲线", "individual runs")}</span>
-        <span>{tr("每个精确设置最多保留最高两次", "At most the top two runs per exact setting")}</span>
+        <span>{tr("每个精确设置最多保留最高三次", "At most the top three runs per exact setting")}</span>
         <span>{tr("水平虚线：未修改模型", "Dashed horizontal line: unmodified model")} {displayScore(BASE_SCORE)}</span>
         <span>{xAxis === "minute" ? tr("时间包含评测等待", "Time includes evaluation latency") : tr("一次完整评测覆盖全部七项任务", "One full evaluation covers all seven tasks")}</span>
       </div>

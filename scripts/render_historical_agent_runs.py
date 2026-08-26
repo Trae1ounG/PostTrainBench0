@@ -4,19 +4,19 @@ import matplotlib.pyplot as plt
 
 
 QWEN25 = [
-    ("GPT-5.5 high", [49.2307, 48.3879]),
-    ("Kimi K2.6", [49.25, 47.5143]),
-    ("GPT-5.5 xhigh", [48.1657, 48.125]),
-    ("GPT-5.6 xhigh", [48.6443, 47.3207]),
-    ("GPT-5.6 high", [47.2793, 46.9757]),
-    ("GPT-5.4 Pro", [46.8271, 45.8436]),
-    ("GPT-5.6 medium", [48.8271, 47.6529]),
-    ("DeepSeek V4 Pro", [47.1107, 46.945]),
-    ("Opus 4.8 high", [47.1329, 46.0964]),
-    ("Sonnet 4.6 medium", [47.9164, 45.7171]),
-    ("GLM-5.1", [46.19, 45.8857]),
-    ("MiniMax M2.7", [47.1207, 45.7457]),
-    ("Qwen3.7-Max", [46.1543, 46.08]),
+    ("GPT-5.5 high", [49.2307, 48.3879, 47.5621]),
+    ("Kimi K2.6", [49.25, 47.5143, 47.5114]),
+    ("GPT-5.5 xhigh", [48.1657, 48.125, 47.6579]),
+    ("GPT-5.6 xhigh", [48.6443, 47.3207, 46.8129]),
+    ("GPT-5.6 high", [47.2793, 46.9757, 46.2736]),
+    ("GPT-5.4 Pro", [46.8271, 45.8436, 45.6079]),
+    ("GPT-5.6 medium", [48.8271, 47.6529, 46.6907]),
+    ("DeepSeek V4 Pro", [47.1107, 46.945, 45.6179]),
+    ("Opus 4.8 high", [47.1329, 46.0964, 46.0393]),
+    ("Sonnet 4.6 medium", [47.9164, 45.7171, 45.5929]),
+    ("GLM-5.1", [46.19, 45.8857, 45.885]),
+    ("MiniMax M2.7", [47.1207, 45.7457, 45.4043]),
+    ("Qwen3.7-Max", [46.1543, 46.08, 45.6993]),
 ]
 
 QWEN3 = [
@@ -55,7 +55,7 @@ def main():
     figure, axes = plt.subplots(1, 2, figsize=(14.4, 8.1), gridspec_kw={"wspace": 0.42})
     panel(axes[0], QWEN25, "Qwen2.5-3B-Instruct", 44.0764, (43.5, 50.0))
     panel(axes[1], QWEN3, "Qwen3-4B-Base", 41.0821, (40.5, 54.0))
-    figure.suptitle("Top two score-bearing runs per Agent setting", fontsize=18, fontweight="bold", y=0.985)
+    figure.suptitle("Up to three score-bearing runs per Agent setting", fontsize=18, fontweight="bold", y=0.985)
     figure.text(0.5, 0.945, "Runs without a final submission count by their best complete seven-task score.", ha="center", color="#64748b", fontsize=10)
     handles = [
         plt.Line2D([], [], marker="o", linestyle="", color="#2563eb", label="One retained run"),

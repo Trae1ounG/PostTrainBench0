@@ -111,6 +111,11 @@ def main() -> None:
         arrowprops={"arrowstyle": "-", "color": "#64748B", "lw": 0.8},
     )
     left.set_title("(a)  Joint objective", loc="left", fontsize=10.5, pad=7)
+    left.text(
+        0.02, 0.98, r"independent from base  ·  $\sigma=0.0005$",
+        transform=left.transAxes, ha="left", va="top", fontsize=7.8, color="#475569",
+        bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.82, "pad": 2.0},
+    )
     left.set_xlabel("parameter projection 1")
     left.set_ylabel("parameter projection 2")
     left.set_aspect("equal", adjustable="box")

@@ -1,0 +1,22 @@
+target_model,base_score,agent_model,harness,n,mean_score,min_score,max_score
+Qwen2.5-3B-Instruct,44.0764,GPT-5.5 high,Codex,3,48.3936,47.5621,49.2307
+Qwen2.5-3B-Instruct,44.0764,Kimi K2.6,OpenCode,3,48.0919,47.5114,49.2500
+Qwen2.5-3B-Instruct,44.0764,GPT-5.5 xhigh,Codex,3,47.9829,47.6579,48.1657
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 medium,Codex,3,47.7236,46.6907,48.8271
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 xhigh,Codex,3,47.5926,46.8129,48.6443
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 high,Codex,3,46.8429,46.2736,47.2793
+Qwen2.5-3B-Instruct,44.0764,Sonnet 4.6 medium,Cursor,3,46.4088,45.5929,47.9164
+Qwen2.5-3B-Instruct,44.0764,Opus 4.8 high,Cursor,3,46.4229,46.0393,47.1329
+Qwen2.5-3B-Instruct,44.0764,GPT-5.4 Pro,OpenCode,3,46.0929,45.6079,46.8271
+Qwen2.5-3B-Instruct,44.0764,MiniMax M2.7,OpenCode,3,46.0902,45.4043,47.1207
+Qwen2.5-3B-Instruct,44.0764,Qwen3.7-Max,OpenCode,3,45.9779,45.6993,46.1543
+Qwen2.5-3B-Instruct,44.0764,DeepSeek V4 Pro,OpenCode,3,46.5579,45.6179,47.1107
+Qwen2.5-3B-Instruct,44.0764,GLM-5.1,OpenCode,3,45.9869,45.8850,46.1900
+Qwen3-4B-Base,41.0821,MiniMax M2.7,OpenCode,2,49.0018,48.9357,49.0679
+Qwen3-4B-Base,41.0821,Kimi K2.6,OpenCode,2,48.9122,45.8807,51.9436
+Qwen3-4B-Base,41.0821,GPT-5.4 Pro,OpenCode,2,48.5450,47.1979,49.8921
+Qwen3-4B-Base,41.0821,DeepSeek V4 Pro,OpenCode,2,48.2486,46.2893,50.2079
+Qwen3-4B-Base,41.0821,GPT-5.6 xhigh,Codex,2,48.2400,43.2900,53.1900
+Qwen3-4B-Base,41.0821,GLM-5.1,OpenCode,2,45.7068,44.7421,46.6714
+Qwen3-4B-Base,41.0821,GPT-5.5 xhigh,Codex,2,45.1893,42.9629,47.4157
+Qwen3-4B-Base,41.0821,Qwen3.7-Max,OpenCode,2,44.5018,44.3800,44.6236

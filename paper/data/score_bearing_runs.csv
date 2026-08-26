@@ -1,0 +1,56 @@
+target_model,base_score,agent_model,harness,display_rank,score
+Qwen2.5-3B-Instruct,44.0764,GPT-5.5 high,Codex,1,49.2307
+Qwen2.5-3B-Instruct,44.0764,GPT-5.5 high,Codex,2,48.3879
+Qwen2.5-3B-Instruct,44.0764,GPT-5.5 high,Codex,3,47.5621
+Qwen2.5-3B-Instruct,44.0764,Kimi K2.6,OpenCode,1,49.2500
+Qwen2.5-3B-Instruct,44.0764,Kimi K2.6,OpenCode,2,47.5143
+Qwen2.5-3B-Instruct,44.0764,Kimi K2.6,OpenCode,3,47.5114
+Qwen2.5-3B-Instruct,44.0764,GPT-5.5 xhigh,Codex,1,48.1657
+Qwen2.5-3B-Instruct,44.0764,GPT-5.5 xhigh,Codex,2,48.1250
+Qwen2.5-3B-Instruct,44.0764,GPT-5.5 xhigh,Codex,3,47.6579
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 medium,Codex,1,48.8271
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 medium,Codex,2,47.6529
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 medium,Codex,3,46.6907
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 xhigh,Codex,1,48.6443
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 xhigh,Codex,2,47.3207
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 xhigh,Codex,3,46.8129
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 high,Codex,1,47.2793
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 high,Codex,2,46.9757
+Qwen2.5-3B-Instruct,44.0764,GPT-5.6 high,Codex,3,46.2736
+Qwen2.5-3B-Instruct,44.0764,Sonnet 4.6 medium,Cursor,1,47.9164
+Qwen2.5-3B-Instruct,44.0764,Sonnet 4.6 medium,Cursor,2,45.7171
+Qwen2.5-3B-Instruct,44.0764,Sonnet 4.6 medium,Cursor,3,45.5929
+Qwen2.5-3B-Instruct,44.0764,Opus 4.8 high,Cursor,1,47.1329
+Qwen2.5-3B-Instruct,44.0764,Opus 4.8 high,Cursor,2,46.0964
+Qwen2.5-3B-Instruct,44.0764,Opus 4.8 high,Cursor,3,46.0393
+Qwen2.5-3B-Instruct,44.0764,GPT-5.4 Pro,OpenCode,1,46.8271
+Qwen2.5-3B-Instruct,44.0764,GPT-5.4 Pro,OpenCode,2,45.8436
+Qwen2.5-3B-Instruct,44.0764,GPT-5.4 Pro,OpenCode,3,45.6079
+Qwen2.5-3B-Instruct,44.0764,MiniMax M2.7,OpenCode,1,47.1207
+Qwen2.5-3B-Instruct,44.0764,MiniMax M2.7,OpenCode,2,45.7457
+Qwen2.5-3B-Instruct,44.0764,MiniMax M2.7,OpenCode,3,45.4043
+Qwen2.5-3B-Instruct,44.0764,Qwen3.7-Max,OpenCode,1,46.1543
+Qwen2.5-3B-Instruct,44.0764,Qwen3.7-Max,OpenCode,2,46.0800
+Qwen2.5-3B-Instruct,44.0764,Qwen3.7-Max,OpenCode,3,45.6993
+Qwen2.5-3B-Instruct,44.0764,DeepSeek V4 Pro,OpenCode,1,47.1107
+Qwen2.5-3B-Instruct,44.0764,DeepSeek V4 Pro,OpenCode,2,46.9450
+Qwen2.5-3B-Instruct,44.0764,DeepSeek V4 Pro,OpenCode,3,45.6179
+Qwen2.5-3B-Instruct,44.0764,GLM-5.1,OpenCode,1,46.1900
+Qwen2.5-3B-Instruct,44.0764,GLM-5.1,OpenCode,2,45.8857
+Qwen2.5-3B-Instruct,44.0764,GLM-5.1,OpenCode,3,45.8850
+Qwen3-4B-Base,41.0821,MiniMax M2.7,OpenCode,1,49.0679
+Qwen3-4B-Base,41.0821,MiniMax M2.7,OpenCode,2,48.9357
+Qwen3-4B-Base,41.0821,Kimi K2.6,OpenCode,1,51.9436
+Qwen3-4B-Base,41.0821,Kimi K2.6,OpenCode,2,45.8807
+Qwen3-4B-Base,41.0821,GPT-5.4 Pro,OpenCode,1,49.8921
+Qwen3-4B-Base,41.0821,GPT-5.4 Pro,OpenCode,2,47.1979
+Qwen3-4B-Base,41.0821,DeepSeek V4 Pro,OpenCode,1,50.2079
+Qwen3-4B-Base,41.0821,DeepSeek V4 Pro,OpenCode,2,46.2893
+Qwen3-4B-Base,41.0821,GPT-5.6 xhigh,Codex,1,53.1900
+Qwen3-4B-Base,41.0821,GPT-5.6 xhigh,Codex,2,43.2900
+Qwen3-4B-Base,41.0821,GLM-5.1,OpenCode,1,46.6714
+Qwen3-4B-Base,41.0821,GLM-5.1,OpenCode,2,44.7421
+Qwen3-4B-Base,41.0821,GPT-5.5 xhigh,Codex,1,47.4157
+Qwen3-4B-Base,41.0821,GPT-5.5 xhigh,Codex,2,42.9629
+Qwen3-4B-Base,41.0821,Qwen3.7-Max,OpenCode,1,44.6236
+Qwen3-4B-Base,41.0821,Qwen3.7-Max,OpenCode,2,44.3800

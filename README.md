@@ -94,8 +94,8 @@ The experiments establish three observations:
 1. Better multi-task checkpoints exist near the tested pretrained weights. In
    the controlled Qwen3-4B study, 62 of 500 candidates exceeded the 41.08 base
    score; the best reached 46.03, while no candidate improved all seven tasks.
-2. Agents can execute the full loop. Every one of 51 four-hour runs observed a
-   complete seven-task candidate above its base checkpoint.
+2. Agents can execute the full loop. All 66 score-bearing runs observed a
+   complete seven-task candidate above their base checkpoints.
 3. Agent runs produce different, inspectable search strategies. Repeats of one
    agent setting differ by as much as 9.90 points.
 

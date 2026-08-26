@@ -356,8 +356,12 @@ img { display: block; max-width: 100%; }
 }
 .trace-steps button {
   position: relative;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
   min-width: 0;
-  padding: 12px 7px 11px;
+  min-height: 164px;
+  padding: 11px 9px 10px;
   border: 0;
   border-right: 1px solid var(--border);
   color: #777;
@@ -368,6 +372,7 @@ img { display: block; max-width: 100%; }
 .trace-steps button:last-child { border-right: 0; }
 .trace-steps button i,
 .trace-steps button span,
+.trace-steps button small,
 .trace-steps button b { display: block; }
 .trace-steps button i {
   width: 18px;
@@ -378,8 +383,15 @@ img { display: block; max-width: 100%; }
   font: normal 10px/16px var(--font-geist-mono);
   text-align: center;
 }
-.trace-steps button span { min-height: 34px; font-size: 10px; line-height: 1.35; }
-.trace-steps button b { margin-top: 5px; font: 600 12px var(--font-geist-mono); }
+.trace-steps button span { font-size: 10px; font-weight: 600; line-height: 1.35; }
+.trace-steps button small {
+  margin-top: 6px;
+  color: #777;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+.trace-steps button b { margin-top: auto; padding-top: 8px; font: 600 12px var(--font-geist-mono); }
 .trace-steps button.active { color: var(--ink); background: #fafafa; }
 .trace-steps button.active i { color: #fff; border-color: var(--trace-color); background: var(--trace-color); }
 .trace-detail {
@@ -488,7 +500,12 @@ img { display: block; max-width: 100%; }
 .trajectory-legend button small { color: #999; font: 9px var(--font-geist-mono); }
 .trajectory-legend button.enabled { color: var(--ink); }
 .trajectory-legend button.enabled i { background: var(--series-color); }
-.trajectory-stage,
+.trajectory-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 20px;
+  align-items: start;
+}
 .weight-stage { display: block; }
 .trajectory-canvas-wrap,
 .weight-canvas { position: relative; min-width: 0; min-height: 390px; }
@@ -497,12 +514,23 @@ img { display: block; max-width: 100%; }
 .y-axis-title { position: absolute; left: 5px; top: 16px; color: #888; font-size: 9px; writing-mode: vertical-rl; transform: rotate(180deg); }
 .trajectory-readout,
 .weight-readout { padding: 12px 0; border-top: 1px solid var(--border); }
+.trajectory-readout {
+  min-height: 180px;
+  padding: 16px 0 14px 18px;
+  border-top: 0;
+  border-left: 1px solid var(--border);
+}
 .readout-kicker,
 .weight-readout > span { display: block; color: var(--muted); font-size: 10px; }
 .trajectory-readout > strong,
 .weight-readout > strong { display: block; margin: 5px 0; font-size: 18px; }
 .trajectory-readout > p,
 .weight-readout p { margin: 0 !important; color: #555; font-size: 11px !important; }
+.trajectory-readout > .trajectory-point-description {
+  margin-top: 9px !important;
+  color: #333;
+  line-height: 1.55;
+}
 .trajectory-readout dl,
 .weight-readout dl { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 10px 0 0; }
 .trajectory-readout dl div,
@@ -577,12 +605,14 @@ img { display: block; max-width: 100%; }
   .runtime-panel-head { align-items: flex-start; flex-direction: column; gap: 3px; }
   .runtime-panel-head span { text-align: left; }
   .trace-steps { display: flex; overflow-x: auto; }
-  .trace-steps button { flex: 0 0 124px; }
+  .trace-steps button { flex: 0 0 160px; min-height: 176px; }
   .trace-agent-tabs { display: flex; overflow-x: auto; }
   .trace-agent-tabs button { flex: 0 0 auto; white-space: nowrap; }
   .trace-code { min-height: 120px; border-top: 1px solid var(--border); border-left: 0; }
   .trajectory-canvas-wrap,
   .weight-canvas { min-height: 330px; }
+  .trajectory-stage { display: block; }
+  .trajectory-readout { min-height: 0; padding: 12px 0; border-top: 1px solid var(--border); border-left: 0; }
   .site-footer { flex-wrap: wrap; }
 }
 

@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const inventory = new URL(
-  "../../docs/data/qwen25_3b_inventory_final_20260815_1518/",
+  "../../zerogradbench/docs/data/qwen25_3b_inventory_supplemented_20260826_1922/",
   import.meta.url,
 );
 const output = new URL("../public/trajectory-data.json", import.meta.url);

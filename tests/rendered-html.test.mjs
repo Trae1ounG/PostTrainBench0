@@ -24,7 +24,7 @@ test("builds the bilingual research article for the personal site", async () => 
   assert.match(page, /中文/);
   assert.match(page, />EN</);
   assert.match(page, /Task definition and setup/);
-  assert.match(page, /51 included complete agent runs/);
+  assert.match(page, /66 score-bearing agent runs/);
   assert.match(page, /PostTrainBench⁰ reformulates LLM post-training/);
   assert.doesNotMatch(page, /The conclusion of this blog is neither/);
   assert.doesNotMatch(page, /href="https:\/\/arxiv\.org\/abs\/2603\.08640">PostTrainBench/);
@@ -97,7 +97,7 @@ test("uses one 0–100 score scale across interactive figures", async () => {
   assert.match(trajectory, /Best seven-task mean so far \(0–100\)/);
   assert.match(trajectory, /At most the top two runs per exact setting/);
   assert.match(trajectory, /topTwoPerSetting/);
-  assert.match(trajectory, /codex-cli@0\.124\.0/);
+  assert.match(trajectory, /gpt-5\.5-2026-04-24/);
   assert.match(trajectory, /Milestones and search efficiency/);
   assert.match(trajectory, /Gain after 2h/);
   assert.match(weight, /displayScore\(selected\.scores\.joint\)/);

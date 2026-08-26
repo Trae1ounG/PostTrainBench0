@@ -134,7 +134,7 @@ export default function AgentTraceExplorer({ language }: { language: Language })
     <div className="trace-context"><div><span>{tx("目标模型", "Target model")}</span><b>{trace.target}</b></div><div><span>{tx("该案例结果", "Case outcome")}</span><b>{language === "zh" ? trace.outcomeZh : trace.outcomeEn}</b></div></div>
     <p className="trace-summary">{language === "zh" ? trace.summaryZh : trace.summaryEn}</p>
     <div className="trace-steps" style={{ "--trace-color": trace.color, "--trace-columns": trace.stages.length } as CSSProperties}>
-      {trace.stages.map((item, index) => <button key={item.titleEn} className={stageIndex === index ? "active" : ""} onClick={() => setStageIndex(index)}><i>{index + 1}</i><span>{language === "zh" ? item.titleZh : item.titleEn}</span><b>{item.score}</b></button>)}
+      {trace.stages.map((item, index) => <button key={item.titleEn} className={stageIndex === index ? "active" : ""} onClick={() => setStageIndex(index)}><i>{index + 1}</i><span>{language === "zh" ? item.titleZh : item.titleEn}</span><small>{language === "zh" ? item.actionZh : item.actionEn}</small><b>{item.score}</b></button>)}
     </div>
     <div className="trace-detail">
       <div className="trace-decision"><span>{tx("研究决策", "Research decision")}</span><h4>{language === "zh" ? stage.titleZh : stage.titleEn}</h4><p>{language === "zh" ? stage.actionZh : stage.actionEn}</p><dl><div><dt>{tx("采样策略", "Sampling policy")}</dt><dd>{stage.policy}</dd></div><div><dt>{tx("当时最好分", "Running best")}</dt><dd>{stage.score}</dd></div></dl></div>

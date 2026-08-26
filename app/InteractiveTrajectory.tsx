@@ -19,7 +19,16 @@ type Dataset = { runs: Run[] };
 type Language = "zh" | "en";
 type XAxis = "minute" | "evaluation";
 type ViewMode = "summary" | "runs";
-type ChartPoint = { x: number; best: number; low: number; high: number; source?: Point };
+type ChartPoint = {
+  x: number;
+  best: number;
+  low: number;
+  high: number;
+  source?: Point;
+  milestone?: boolean;
+  descriptionZh?: string;
+  descriptionEn?: string;
+};
 type Series = {
   id: string;
   agent: string;
@@ -34,6 +43,7 @@ type Series = {
 type Hover = { series: Series; point: ChartPoint; px: number; py: number };
 
 const BASE_SCORE = 0.440764;
+const TIME_LIMIT_MINUTES = 240;
 const displayScore = (value: number) => (value * 100).toFixed(2);
 const COLORS = ["#2457ff", "#de5b3f", "#078b71", "#8a4bd0", "#d39400", "#1686b0", "#cc3d7e", "#667085", "#76a000", "#6b4f3f", "#111827"];
 
@@ -63,7 +73,7 @@ function agentGroup(run: Run) {
 }
 
 function isExcludedRun(run: Run) {
-  return run.agent === "gpt-5.5-2026-04-24" && run.harness === "codex-cli@0.124.0";
+  return run.agent === "gpt-5.5-2026-04-24";
 }
 
 function scoreOf(run: Run) {
@@ -104,6 +114,45 @@ function valueAt(run: Run, x: number, axis: XAxis) {
     value = point.best;
   }
   return value;
+}
+
+function pointsForRun(run: Run, axis: XAxis): ChartPoint[] {
+  let previousBest = BASE_SCORE;
+  const points = run.points.map((point, index) => {
+    const improved = point.best > previousBest + 1e-9;
+    const prior = previousBest;
+    previousBest = Math.max(previousBest, point.best);
+    const x = axis === "minute" ? Math.min(point.minute, TIME_LIMIT_MINUTES) : point.evaluation;
+    return {
+      x,
+      best: point.best,
+      low: point.best,
+      high: point.best,
+      source: point,
+      milestone: improved || index === 0,
+      descriptionZh: improved
+        ? `第 ${point.evaluation} 次完整评测刷新最好分：${displayScore(prior)} → ${displayScore(point.best)}。`
+        : `第 ${point.evaluation} 次完整评测没有刷新最好分，当前最好分保持 ${displayScore(point.best)}。`,
+      descriptionEn: improved
+        ? `Full evaluation ${point.evaluation} raises the incumbent from ${displayScore(prior)} to ${displayScore(point.best)}.`
+        : `Full evaluation ${point.evaluation} leaves the incumbent at ${displayScore(point.best)}.`,
+    };
+  });
+  if (axis === "minute" && points.length) {
+    const endpoint = points.at(-1)!;
+    if (endpoint.x < TIME_LIMIT_MINUTES) {
+      points.push({
+        x: TIME_LIMIT_MINUTES,
+        best: endpoint.best,
+        low: endpoint.low,
+        high: endpoint.high,
+        milestone: false,
+        descriptionZh: `按四小时预算展示，最后观测到的最好分 ${displayScore(endpoint.best)} 保持到第 240 分钟。`,
+        descriptionEn: `Shown over the full four-hour budget; the last observed incumbent, ${displayScore(endpoint.best)}, is carried to minute 240.`,
+      });
+    }
+  }
+  return points;
 }
 
 export default function InteractiveTrajectory({ language }: { language: Language }) {
@@ -169,17 +218,13 @@ export default function InteractiveTrajectory({ language }: { language: Language
           kind: run.kind,
           runCount: 1,
           color: colorByAgent.get(agentGroup(run)) ?? "#2457ff",
-          points: run.points.map((point) => ({
-            x: xAxis === "minute" ? point.minute : point.evaluation,
-            best: point.best,
-            low: point.best,
-            high: point.best,
-            source: point,
-          })),
+          points: pointsForRun(run, xAxis),
         }));
     }
 
-    const maxX = Math.max(1, ...eligibleRuns.flatMap((run) => run.points.map((point) => xAxis === "minute" ? point.minute : point.evaluation)));
+    const maxX = xAxis === "minute"
+      ? TIME_LIMIT_MINUTES
+      : Math.max(1, ...eligibleRuns.flatMap((run) => run.points.map((point) => point.evaluation)));
     return displayedAgents
       .filter((agent) => !enabledAgents || enabledAgents.has(agent))
       .map((agent) => {
@@ -206,9 +251,11 @@ export default function InteractiveTrajectory({ language }: { language: Language
   }, [activeSelectedAgent, colorByAgent, displayedAgents, eligibleRuns, enabledAgents, language, viewMode, xAxis]);
 
   const geometry = useMemo(() => {
-    const height = width < 620 ? 420 : 510;
+    const height = width < 620 ? 390 : 450;
     const margin = width < 620 ? { left: 48, right: 14, top: 24, bottom: 48 } : { left: 64, right: 25, top: 28, bottom: 54 };
-    const maxX = Math.max(1, ...series.flatMap((item) => item.points.map((point) => point.x)));
+    const maxX = xAxis === "minute"
+      ? TIME_LIMIT_MINUTES
+      : Math.max(1, ...series.flatMap((item) => item.points.map((point) => point.x)));
     const allY = series.flatMap((item) => item.points.flatMap((point) => [point.low, point.high]));
     const rawMin = Math.min(BASE_SCORE, ...allY);
     const rawMax = Math.max(BASE_SCORE, ...allY);
@@ -220,7 +267,7 @@ export default function InteractiveTrajectory({ language }: { language: Language
       x: (value: number) => margin.left + (value / maxX) * (width - margin.left - margin.right),
       y: (value: number) => margin.top + ((maxY - value) / (maxY - minY)) * (height - margin.top - margin.bottom),
     };
-  }, [series, width]);
+  }, [series, width, xAxis]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -293,6 +340,23 @@ export default function InteractiveTrajectory({ language }: { language: Language
         if (index === 0) context.moveTo(x, y); else context.lineTo(x, y);
       });
       context.stroke(); context.restore();
+    }
+
+    if (viewMode === "runs") {
+      for (const item of series) {
+        for (const point of item.points) {
+          if (!point.milestone) continue;
+          context.save();
+          context.fillStyle = "#ffffff";
+          context.strokeStyle = item.color;
+          context.lineWidth = 1.8;
+          context.beginPath();
+          context.arc(geometry.x(point.x), geometry.y(point.best), 3.4, 0, Math.PI * 2);
+          context.fill();
+          context.stroke();
+          context.restore();
+        }
+      }
     }
 
     if (hover) {
@@ -405,6 +469,7 @@ export default function InteractiveTrajectory({ language }: { language: Language
             <>
               <strong>{readoutSeries?.label}</strong>
               <p>{readoutSeries?.harness}</p>
+              {viewMode === "runs" && hover.point.descriptionZh && <p className="trajectory-point-description">{language === "zh" ? hover.point.descriptionZh : hover.point.descriptionEn}</p>}
               <dl>
                 <div><dt>{viewMode === "summary" ? tr("中位最佳分", "Median best") : tr("最佳分数", "Best score")}</dt><dd>{displayScore(hover.point.best)}</dd></div>
                 {viewMode === "summary" && <div><dt>{tr("重复运行范围", "Run range")}</dt><dd>{displayScore(hover.point.low)}–{displayScore(hover.point.high)}</dd></div>}

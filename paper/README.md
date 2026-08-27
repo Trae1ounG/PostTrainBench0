@@ -11,14 +11,14 @@ python3 scripts/render_paper_figures.py
 latexmk -pdf main.tex
 ```
 
-The plotting script reads the immutable files in `data/traces/` plus
-`data/score_bearing_runs.csv` and its derived `data/agent_run_summary.csv`.
+The public repository contains `data/score_bearing_runs.csv` and its derived
+`data/agent_run_summary.csv`. Raw trace records are retained in a private
+research archive and are not part of the public release.
 The comparison keeps the three highest complete seven-task runs per exact
 Qwen2.5 setting and the two available same-protocol Qwen3 runs. Submission and
-audit status remain separate from score-bearing completion. The script writes vector PDF figures for the paper and
-high-resolution PNG previews from the same source. Trace inputs are retained
-separately from derived figures so later analyses can be regenerated without
-overwriting the original exports. The paper and blog share
+audit status remain separate from score-bearing completion. The plotting
+scripts write local vector PDF figures and high-resolution PNG previews, but
+compiled PDFs are not committed to the public repository. The paper and blog share
 `../docs/assets/system-overview.png` as the benchmark pipeline figure.
 
 The current draft reports visible-development experiments. A submission version

@@ -11,3 +11,5 @@ node_modules/
 .vinext/
 .openai/
 uv.lock
+*.pdf
+paper/data/traces/

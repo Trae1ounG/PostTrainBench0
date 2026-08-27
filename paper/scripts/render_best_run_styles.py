@@ -82,6 +82,7 @@ def render() -> None:
                 "one_direction_candidates": run["one_term_candidates"],
                 "composed_candidates": run["multi_term_candidates"],
                 "selected_direction_count": run["best_observed_term_count"],
+                "submission_minute": 240.0 - run["submission_margin_seconds"] / 60.0,
             }
             for run in selected
         ],
@@ -129,15 +130,38 @@ def render() -> None:
         running_best = np.array(
             [BASE_SCORE] + [point["best"] * 100 for point in trajectory["points"]]
         )
+        submission_minute = float(
+            np.clip(240.0 - run["submission_margin_seconds"] / 60.0, minutes[-1], 240.0)
+        )
+        solid_minutes = np.append(minutes, submission_minute)
+        solid_best = np.append(running_best, running_best[-1])
         ax.step(
-            minutes,
-            running_best,
+            solid_minutes,
+            solid_best,
             where="post",
             lw=1.7,
             color=color,
             label=run["display_name"],
         )
-        ax.scatter(minutes[-1], running_best[-1], s=18, color=color, zorder=4)
+        if submission_minute < 240.0:
+            ax.plot(
+                [submission_minute, 240.0],
+                [running_best[-1], running_best[-1]],
+                lw=1.0,
+                ls=(0, (2, 2)),
+                color=color,
+                alpha=0.35,
+            )
+        ax.scatter(
+            submission_minute,
+            running_best[-1],
+            s=19,
+            marker="s",
+            color=color,
+            edgecolor="white",
+            linewidth=0.45,
+            zorder=4,
+        )
 
     ax.axhline(BASE_SCORE, color="#7A8494", lw=0.8, ls=(0, (4, 3)))
     ax.text(238, BASE_SCORE + 0.10, "base 44.08", ha="right", va="bottom", color="#667085")

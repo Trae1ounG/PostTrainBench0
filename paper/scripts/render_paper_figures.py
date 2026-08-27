@@ -585,6 +585,13 @@ def render_trace_cases() -> None:
     for run in runs:
         record = valid.get(run["runId"])
         if record and record.get("agent_variant") in labels and run.get("points"):
+            run["submissionMinute"] = float(
+                np.clip(
+                    240.0 - record["submission_margin_seconds"] / 60.0,
+                    run["points"][-1]["minute"],
+                    240.0,
+                )
+            )
             groups[record["agent_variant"]].append(run)
     representatives: list[tuple[str, str, dict, int]] = []
     for label, variant in CONFIG_SPECS:
@@ -605,10 +612,35 @@ def render_trace_cases() -> None:
         minute = np.array([point["minute"] for point in points])
         score = np.array([point["score"] * 100 for point in points])
         best = np.array([point["best"] * 100 for point in points])
+        submission_minute = run["submissionMinute"]
         updates = int(np.sum(np.diff(best) > 1e-9))
         ax.scatter(minute, score, s=8, color="#B7C0CC", alpha=0.55, linewidths=0, rasterized=True)
-        ax.step(minute, best, where="post", color=color, lw=1.55)
-        ax.scatter(minute[-1], best[-1], s=24, color=color, edgecolor="white", linewidth=0.6, zorder=3)
+        ax.step(
+            np.append(minute, submission_minute),
+            np.append(best, best[-1]),
+            where="post",
+            color=color,
+            lw=1.55,
+        )
+        if submission_minute < 240.0:
+            ax.plot(
+                [submission_minute, 240.0],
+                [best[-1], best[-1]],
+                color=color,
+                lw=0.9,
+                ls=(0, (2, 2)),
+                alpha=0.35,
+            )
+        ax.scatter(
+            submission_minute,
+            best[-1],
+            s=23,
+            marker="s",
+            color=color,
+            edgecolor="white",
+            linewidth=0.6,
+            zorder=3,
+        )
         ax.axhline(44.08, color=INK, ls="--", lw=0.8)
         ax.set(xlim=(0, 240), ylim=(39.5, 50.0))
         ax.grid(True)

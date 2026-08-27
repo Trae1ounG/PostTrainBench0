@@ -8,15 +8,17 @@
       "best_score": 49.25,
       "one_direction_candidates": 129,
       "composed_candidates": 349,
-      "selected_direction_count": 3
+      "selected_direction_count": 3,
+      "submission_minute": 234.65281553268431
     },
     {
       "model": "GPT-5.5 high",
-      "run_id": "train_joint7_qwen25_3b_gpt55_codex_high_4h_20260813_0030",
-      "best_score": 47.56214285714287,
-      "one_direction_candidates": 297,
-      "composed_candidates": 55,
-      "selected_direction_count": 1
+      "run_id": "train_joint7_qwen25_3b_gpt55_codex_high_4h_repeat3_handoff_20260826",
+      "best_score": 48.38785714285714,
+      "one_direction_candidates": 135,
+      "composed_candidates": 214,
+      "selected_direction_count": 5,
+      "submission_minute": 209.38897288242975
     },
     {
       "model": "GPT-5.5 xhigh",
@@ -24,7 +26,8 @@
       "best_score": 48.16571428571428,
       "one_direction_candidates": 233,
       "composed_candidates": 69,
-      "selected_direction_count": 2
+      "selected_direction_count": 2,
+      "submission_minute": 161.22782716751098
     },
     {
       "model": "GPT-5.6 high",
@@ -32,7 +35,17 @@
       "best_score": 47.27928571428572,
       "one_direction_candidates": 6,
       "composed_candidates": 406,
-      "selected_direction_count": 9
+      "selected_direction_count": 9,
+      "submission_minute": 211.16340948343276
+    },
+    {
+      "model": "GPT-5.6 medium",
+      "run_id": "train_joint7_qwen25_3b_gpt56_sol_codex_medium_4h_repeat3_retry1_20260826_1255",
+      "best_score": 48.82714285714286,
+      "one_direction_candidates": 7,
+      "composed_candidates": 447,
+      "selected_direction_count": 17,
+      "submission_minute": 199.12025516827902
     },
     {
       "model": "GPT-5.6 xhigh",
@@ -40,7 +53,8 @@
       "best_score": 48.644285714285715,
       "one_direction_candidates": 140,
       "composed_candidates": 332,
-      "selected_direction_count": 4
+      "selected_direction_count": 4,
+      "submission_minute": 231.55835644801456
     },
     {
       "model": "Claude Sonnet 4.6",
@@ -48,7 +62,8 @@
       "best_score": 47.916428571428575,
       "one_direction_candidates": 142,
       "composed_candidates": 160,
-      "selected_direction_count": 3
+      "selected_direction_count": 3,
+      "submission_minute": 228.3530873656273
     },
     {
       "model": "Claude Opus 4.8",
@@ -56,7 +71,8 @@
       "best_score": 47.13285714285715,
       "one_direction_candidates": 16,
       "composed_candidates": 376,
-      "selected_direction_count": 9
+      "selected_direction_count": 9,
+      "submission_minute": 223.82939399878182
     },
     {
       "model": "DeepSeek V4 Pro",
@@ -64,7 +80,8 @@
       "best_score": 47.11071428571429,
       "one_direction_candidates": 201,
       "composed_candidates": 125,
-      "selected_direction_count": 4
+      "selected_direction_count": 4,
+      "submission_minute": 239.9522366166115
     },
     {
       "model": "GLM-5.1",
@@ -72,7 +89,26 @@
       "best_score": 46.19,
       "one_direction_candidates": 40,
       "composed_candidates": 82,
-      "selected_direction_count": 1
+      "selected_direction_count": 1,
+      "submission_minute": 132.05608294804892
+    },
+    {
+      "model": "MiniMax M2.7",
+      "run_id": "train_joint7_qwen25_3b_minimax_m27_opencode_4h_repeat3_20260826_1205",
+      "best_score": 47.120714285714286,
+      "one_direction_candidates": 71,
+      "composed_candidates": 110,
+      "selected_direction_count": 1,
+      "submission_minute": 172.7452238837878
+    },
+    {
+      "model": "Qwen3.7-Max",
+      "run_id": "train_joint7_qwen25_3b_qwen37max_opencode_4h_repeat2_retry2_20260825_2130",
+      "best_score": 46.15428571428571,
+      "one_direction_candidates": 138,
+      "composed_candidates": 292,
+      "selected_direction_count": 3,
+      "submission_minute": 226.0490070184072
     }
   ]
 }

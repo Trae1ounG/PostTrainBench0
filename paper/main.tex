@@ -9,6 +9,17 @@
 \hypersetup{hidelinks}
 \usepackage{url}
 
+% Prefer top-aligned figures and avoid vertically centered float-only pages.
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.80}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.80}
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\makeatother
+
 \title{\textsc{PostTrainBench}$^{0}$: Can LLM Agents Automate\\
 LLM Post-Training Without Gradients?}
 \author{Anonymous Authors}
@@ -82,7 +93,7 @@ Our study makes three contributions:
 
 \section[PostTrainBench0: Setup]{\bench: Setup}
 
-\begin{figure}[H]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{../docs/assets/system-overview.png}
     \caption{\textbf{\bench{} pipeline.} An agent receives a frozen base checkpoint,
@@ -202,7 +213,7 @@ then resamples the same fixed pool to show how the median and 10th--90th percent
 $M_N(\sigma)$ change with $N$. The increasing curve quantifies the advantage obtained from
 candidate count alone.
 
-\begin{figure}[H]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig2-search-space.pdf}
     \caption{\textbf{The local search space contains signal and substantial best-of-$N$
@@ -236,7 +247,7 @@ the best candidate for one task is generally not the best candidate for another.
 panel compresses these competing effects: 356 candidates improve the seven-task average,
 and the best joint gain is $+2.7$ points.
 
-\begin{figure}[H]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig3-weight-space-landscape.pdf}
     \caption{\textbf{Accuracy landscapes from 1,000 random perturbations of the primary
@@ -259,7 +270,7 @@ none improves all seven. The preliminary therefore establishes three properties 
 the benchmark: improvements exist, finite-budget outcomes vary, and task-specialist gains
 do not automatically compose into one jointly strong checkpoint.
 
-\begin{figure}[H]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig4-task-conflict.pdf}
     \caption{\textbf{The joint objective contains genuine task conflict.} (A) Per-task
@@ -416,6 +427,13 @@ threshold after two hours, and 12 cross it after three hours (Figure~\ref{fig:be
 to one hour would therefore remove much of the adaptive part of the task and favor agents
 that happen to find a strong first batch.
 
+Every run in this trace subset ends through an explicit agent-side submission rather than
+an infrastructure timeout. Submission times range from minute 132 to the four-hour
+deadline, with a median of 222 minutes. Some agents call \texttt{bin/submit} directly;
+others invoke the same operation from their self-written search program. In trajectory
+figures, a faint dashed segment carries the submitted score to minute 240 only to align
+the visual horizon; it does not represent additional evaluations after submission.
+
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig6-agent-behavior.pdf}
@@ -438,7 +456,7 @@ This does not prove that composition is universally better---seven runs favor a 
 direction---but it identifies a concrete behavior that endpoint-only leaderboards hide.
 
 To compare concrete policies rather than averaged behaviors, Figure~\ref{fig:search-styles}
-selects the highest-scoring audit-valid Qwen2.5 run for each of nine agent configurations.
+selects the highest-scoring audit-valid Qwen2.5 run for each of twelve agent configurations.
 Panel A shows
 the running best score. Panel B separates one-direction candidates
 $\theta_0+\alpha z$ from composed candidates
@@ -455,13 +473,14 @@ probe-heavy but obtains its best score from four combined directions. Thus, simi
 endpoint scores can be reached through substantially different uses of the evaluator
 budget.
 
-\begin{figure}[H]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig6b-best-run-search-styles.pdf}
     \caption{\textbf{Best-run search behavior differs across agent configurations.} For
-    each of the nine configurations with audit-valid detailed traces, we select its
+    each of the twelve configurations with audit-valid detailed traces, we select its
     highest-scoring run on Qwen2.5-3B-Instruct. (A) Running best
-    seven-task score over the four-hour episode. Dots mark the final best observed score.
+    seven-task score over the four-hour episode. Squares mark explicit submissions; faint
+    dashed plateaus extend submitted scores to minute 240 for visual alignment only.
     (B) Share of classified candidate programs using one perturbation direction versus a
     linear combination of multiple directions. The right annotation gives the number of
     directions $k$ in the best checkpoint and its score. The figure describes search
@@ -531,8 +550,10 @@ endpoints are similar.
     \caption{\textbf{Four-hour trajectories for every configuration with complete detailed
     traces.} Gray points are retained candidate evaluations and colored steps are the
     running best. Each panel displays the audit-valid run closest to that configuration's
-    median endpoint; the upper-right annotation reports the repetition count, candidate
-    evaluations in the displayed run, and final best score.}
+    median endpoint. A square marks the explicit submission time, and a faint dashed
+    plateau extends the submitted score to minute 240 for visual alignment only. The
+    upper-right annotation reports the repetition count, candidate evaluations in the
+    displayed run, and final best score.}
     \label{fig:trajectory}
 \end{figure}
 
@@ -638,7 +659,7 @@ budget, trajectory, composition, and target controls needed for reliable compari
 \section{Qwen3-4B-Base Target Ablation}
 \label{app:qwen3}
 
-\begin{table}[h]
+\begin{table}[t]
 \centering
 \small
 \setlength{\tabcolsep}{5pt}

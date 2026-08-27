@@ -8,7 +8,7 @@ from pathlib import Path
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
+import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -38,19 +38,6 @@ def select_runs() -> list[dict]:
         best = max(candidates, key=lambda run: run["best_observed_full_suite_score"])
         selected.append({**best, "display_name": display_name, "color": color})
     return selected
-
-
-def format_scale(scale: float) -> str:
-    return f"{scale:+.2e}".replace("e-0", "e-").replace("e+0", "e+")
-
-
-def operation_lines(terms: list[dict]) -> list[str]:
-    lines = ["state = copy(base)"]
-    for term in terms:
-        lines.append(
-            f"state += {format_scale(term['scale'])} * noise(seed={term['seed']})"
-        )
-    return lines
 
 
 def render() -> None:
@@ -83,7 +70,7 @@ def render() -> None:
         {
             "font.family": "sans-serif",
             "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
-            "font.size": 8,
+            "font.size": 8.5,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
             "svg.fonttype": "none",
@@ -93,84 +80,121 @@ def render() -> None:
         }
     )
 
-    fig, axes = plt.subplots(3, 2, figsize=(7.15, 6.75))
+    positive = "#2A7F62"
+    negative = "#C97649"
+    neutral = "#7A8494"
+    grid = "#E5E9EF"
+    text = "#202938"
+    muted = "#667085"
+
+    fig, axes = plt.subplots(3, 2, figsize=(7.15, 5.55), sharex=True)
     fig.patch.set_facecolor("white")
 
-    for ax, run in zip(axes.flat, selected):
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
-        ax.axis("off")
-
-        panel = Rectangle(
-            (0.01, 0.015), 0.98, 0.97,
-            facecolor="#FCFDFE", edgecolor="#CDD5DF", linewidth=0.65,
-        )
-        ax.add_patch(panel)
-        ax.plot([0.025, 0.975], [0.935, 0.935], color=run["color"], lw=2.2)
-
+    for panel_index, (ax, run) in enumerate(zip(axes.flat, selected)):
+        terms = run["best_observed_terms"]
+        coefficients = np.array([term["scale"] * 1e3 for term in terms])
+        positions = np.arange(len(terms))
+        colors = [positive if value >= 0 else negative for value in coefficients]
         score = run["best_observed_full_suite_score"] * 100
-        ax.text(
-            0.045,
-            0.875,
-            run["display_name"],
-            ha="left",
-            va="center",
-            fontsize=9.2,
-            weight="semibold",
-            color="#172033",
+        ax.axvline(0, color="#B8C0CC", lw=0.9, zorder=0)
+        ax.hlines(positions, 0, coefficients, colors=colors, lw=2.2, zorder=2)
+        ax.scatter(
+            coefficients,
+            positions,
+            s=24,
+            c=colors,
+            edgecolors="white",
+            linewidths=0.55,
+            zorder=3,
         )
-        ax.text(
-            0.955,
-            0.875,
-            f"{score:.2f}",
-            ha="right",
-            va="center",
-            fontsize=9.2,
-            weight="semibold",
-            color=run["color"],
-        )
-        ax.text(
-            0.045,
-            0.795,
-            f"evaluated {run['one_term_candidates']} probes + "
-            f"{run['multi_term_candidates']} compositions",
-            ha="left",
-            va="center",
-            fontsize=6.9,
-            color="#596579",
-        )
-
-        lines = operation_lines(run["best_observed_terms"])
-        y_top = 0.705
-        y_bottom = 0.18
-        step = min(0.092, (y_top - y_bottom) / max(len(lines) - 1, 1))
-        font_size = 7.0 if len(lines) <= 5 else 6.35
-        for index, line in enumerate(lines):
+        for y_value, coefficient in zip(positions, coefficients):
+            offset = 0.055 if coefficient >= 0 else -0.055
             ax.text(
-                0.055,
-                y_top - index * step,
-                line,
-                ha="left",
+                coefficient + offset,
+                y_value,
+                f"{coefficient:+.2f}",
+                ha="left" if coefficient >= 0 else "right",
                 va="center",
-                fontsize=font_size,
-                family="DejaVu Sans Mono",
-                color="#25324A",
+                fontsize=6.8,
+                color=text,
             )
 
-        final_y = 0.075
+        ax.set_xlim(-1.55, 1.55)
+        ax.set_ylim(len(terms) - 0.35, -0.75)
+        ax.set_yticks(positions, [rf"$z_{{{index + 1}}}$" for index in positions])
+        ax.set_xticks(np.arange(-1.5, 1.51, 0.5))
+        ax.grid(axis="x", color=grid, linewidth=0.55, zorder=0)
+        ax.tick_params(axis="y", length=0, pad=3, labelsize=7.2, colors=muted)
+        ax.tick_params(axis="x", length=2.5, width=0.6, labelsize=7.0, colors=muted)
+        for spine in ("top", "right", "left"):
+            ax.spines[spine].set_visible(False)
+        ax.spines["bottom"].set_color("#B8C0CC")
+        ax.spines["bottom"].set_linewidth(0.65)
+
         ax.text(
-            0.055,
-            final_y,
-            f"evaluate(state)  ->  {score:.2f}",
+            -0.11,
+            1.10,
+            chr(ord("a") + panel_index),
+            transform=ax.transAxes,
             ha="left",
-            va="center",
-            fontsize=font_size,
-            family="DejaVu Sans Mono",
-            color=run["color"],
+            va="top",
+            fontsize=9,
+            color=text,
             weight="semibold",
         )
+        ax.text(
+            0.0,
+            1.10,
+            run["display_name"],
+            transform=ax.transAxes,
+            ha="left",
+            va="top",
+            fontsize=8.8,
+            color=text,
+        )
+        ax.text(
+            1.0,
+            1.10,
+            f"score {score:.2f}",
+            transform=ax.transAxes,
+            ha="right",
+            va="top",
+            fontsize=8.2,
+            color=text,
+        )
+        ax.text(
+            0.0,
+            1.01,
+            f"k={len(terms)}  |  {run['one_term_candidates']} probes  |  "
+            f"{run['multi_term_candidates']} compositions",
+            transform=ax.transAxes,
+            ha="left",
+            va="top",
+            fontsize=6.7,
+            color=muted,
+        )
 
-    fig.subplots_adjust(left=0.01, right=0.99, top=0.995, bottom=0.005, wspace=0.065, hspace=0.075)
+    for ax in axes[-1, :]:
+        ax.set_xlabel(r"Signed coefficient  $\alpha_i \times 10^{-3}$", fontsize=7.8, color=text)
+
+    legend_handles = [
+        mpl.lines.Line2D([0], [0], color=positive, marker="o", lw=2, markersize=4,
+                         label="positive coefficient"),
+        mpl.lines.Line2D([0], [0], color=negative, marker="o", lw=2, markersize=4,
+                         label="negative coefficient"),
+    ]
+    fig.legend(
+        handles=legend_handles,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.995),
+        ncol=2,
+        frameon=False,
+        fontsize=7.4,
+        labelcolor=text,
+        handlelength=1.8,
+        columnspacing=1.6,
+    )
+    fig.subplots_adjust(left=0.075, right=0.985, top=0.91, bottom=0.075, wspace=0.20, hspace=0.48)
     OUT.mkdir(parents=True, exist_ok=True)
     for suffix in ("pdf", "png", "svg"):
         fig.savefig(OUT / f"fig6c-concrete-agent-operations.{suffix}")

@@ -50,14 +50,30 @@
     },
     {
       "model": "GPT-5.5 high",
-      "run_id": "train_joint7_qwen25_3b_gpt55_codex_high_4h_20260813_0030",
-      "best_score": 47.56214285714287,
-      "one_direction_candidates": 297,
-      "composed_candidates": 55,
+      "run_id": "train_joint7_qwen25_3b_gpt55_codex_high_4h_repeat3_handoff_20260826",
+      "best_score": 48.38785714285714,
+      "one_direction_candidates": 135,
+      "composed_candidates": 214,
       "selected_terms": [
         {
-          "scale": -0.001875,
-          "seed": 2067989539
+          "scale": -0.001,
+          "seed": 1863244118
+        },
+        {
+          "scale": 0.0006000000000000001,
+          "seed": 2082552850
+        },
+        {
+          "scale": -0.00025,
+          "seed": 325918308
+        },
+        {
+          "scale": -0.00011999999999999999,
+          "seed": 1896201431
+        },
+        {
+          "scale": -5e-05,
+          "seed": 1022825767
         }
       ]
     },

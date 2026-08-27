@@ -492,24 +492,19 @@ budget.
     \label{fig:search-styles}
 \end{figure}
 
-The aggregate counts above do not reveal what an agent actually wrote into its checkpoint.
-Figure~\ref{fig:operations} therefore reconstructs the exact best checkpoint from every
-selected run in a common executable notation. Each \texttt{noise(seed)} call regenerates
-one deterministic full-model Gaussian direction, and each signed coefficient is the scale
-recorded in the trace. The six programs expose qualitatively different decisions. Kimi
-keeps three positive directions; GPT-5.6 combines one dominant negative direction with
-three smaller signed corrections; GPT-5.5 high selects one negative direction; Sonnet and
-DeepSeek use short signed compositions; and Opus accumulates nine directions. These are
-the concrete model edits behind the curves in Figure~\ref{fig:search-styles}, not inferred
-labels or post-hoc strategy names.
+The aggregate counts above do not reveal the structure of the checkpoint retained by each
+run. Figure~\ref{fig:operations} decomposes each checkpoint into signed coefficients over
+its recorded perturbation directions. The shared horizontal scale makes step size, sign,
+and composition depth directly comparable. Kimi keeps three positive directions, while
+GPT-5.6 and Sonnet mix signs. Opus builds the deepest composition with nine directions.
+These are exact replay terms from the traces.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig6c-concrete-agent-operations.pdf}
-    \caption{\textbf{Best-checkpoint programs for six agents on Qwen2.5-3B-Instruct.}
-    Panels show Kimi K2.6, GPT-5.6 xhigh, GPT-5.5 high, Sonnet 4.6, Opus 4.8, and
-    DeepSeek V4 Pro. Each reconstructs the base plus its recorded seeded directions and
-    scales.}
+    \caption{Perturbation programs retained by six agents on Qwen2.5-3B-Instruct.
+    Each row shows one deterministic direction in application order. Bar length gives its
+    signed coefficient on a shared scale, and $k$ is the number of retained directions.}
     \label{fig:operations}
 \end{figure}
 

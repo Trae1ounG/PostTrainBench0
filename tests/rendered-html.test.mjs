@@ -25,6 +25,12 @@ test("builds the bilingual research article for the personal site", async () => 
   assert.match(page, />EN</);
   assert.match(page, /Task definition and setup/);
   assert.match(page, /66 score-bearing agent runs/);
+  assert.match(page, /retain 55 runs for compact comparison/);
+  assert.match(page, /31 Qwen2\.5-3B runs with replayable candidate-level trajectories/);
+  assert.match(page, /GPT-5\.5 high therefore has the higher repeated-run mean/);
+  assert.match(page, /GPT-5\.6 Sol xhigh/);
+  assert.match(page, /Retained mean/);
+  assert.match(page, /Best run/);
   assert.match(page, /PostTrainBench⁰ reformulates LLM post-training/);
   assert.doesNotMatch(page, /The conclusion of this blog is neither/);
   assert.doesNotMatch(page, /href="https:\/\/arxiv\.org\/abs\/2603\.08640">PostTrainBench/);

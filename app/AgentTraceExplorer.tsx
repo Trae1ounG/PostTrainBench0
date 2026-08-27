@@ -31,7 +31,7 @@ type Trace = {
 
 const traces: Record<string, Trace> = {
   gpt56: {
-    label: "GPT-5.6 xhigh · Codex",
+    label: "GPT-5.6 Sol xhigh · Codex",
     color: "#2767cc",
     target: "Qwen3-4B-Base",
     outcomeZh: "41.08 → 53.19（该设置的最高运行）",
@@ -127,7 +127,7 @@ export default function AgentTraceExplorer({ language }: { language: Language })
 
   const selectAgent = (id: string) => { setAgent(id); setStageIndex(0); };
   return <figure className="agent-trace-explorer">
-    <figcaption><b>{tx("交互 trace 阅读器。", "Interactive trace reader.")}</b> {tx("选择 Agent，再逐步查看它如何写搜索逻辑、改变采样策略，以及观察到分数后采取了什么行动。代码是根据完整 trace 还原的结构，不是逐字转录。", "Choose an agent and step through how it wrote search logic, changed its sampling policy, and what it did after observing a score. Code is a trace-derived structural sketch, not a verbatim transcript.")}</figcaption>
+    <figcaption><b>{tx("交互 trace 阅读器。", "Interactive trace reader.")}</b> {tx("每个案例选自具有候选级可重放轨迹的运行，用于说明具体搜索行为，不代表该 Agent 的多次运行平均排名。选择 Agent，可以逐步查看它如何写搜索逻辑、改变采样策略，以及观察到分数后采取了什么行动。代码是根据完整 trace 还原的结构，不是逐字转录。", "Each case is selected from runs with replayable candidate-level trajectories to illustrate concrete search behavior; it is not the agent's repeated-run ranking. Choose an agent and step through how it wrote search logic, changed its sampling policy, and what it did after observing a score. Code is a trace-derived structural sketch, not a verbatim transcript.")}</figcaption>
     <div className="trace-agent-tabs" role="tablist">
       {Object.entries(traces).map(([id, item]) => <button key={id} role="tab" aria-selected={agent === id} className={agent === id ? "active" : ""} style={{ "--trace-color": item.color } as CSSProperties} onClick={() => selectAgent(id)}>{item.label}</button>)}
     </div>

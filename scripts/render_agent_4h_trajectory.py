@@ -33,7 +33,7 @@ def clean_agent_name(agent: str) -> str:
         "claude-opus-4-8-high": "Opus 4.8 high",
         "ali-deepseek-v4-pro": "DeepSeek V4 Pro",
         "gpt-5.4-pro-2026-03-05": "GPT-5.4 Pro",
-        "gpt-5.6-sol": "GPT-5.6",
+        "gpt-5.6-sol": "GPT-5.6 Sol",
         "kimi-k2.6": "Kimi K2.6",
         "glm-5.1": "GLM-5.1",
         "openai_qwen3.7-max": "Qwen3.7-Max",

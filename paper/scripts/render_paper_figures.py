@@ -612,7 +612,7 @@ def render_trace_cases() -> None:
                RED, PURPLE, "#B279A2", GRAY, "#9C755F", "#76B7B2"]
     fig, axes = plt.subplots(4, 3, figsize=(7.15, 6.95), sharex=True, sharey=True,
                              gridspec_kw={"wspace": 0.11, "hspace": 0.24})
-    for index, (ax, (label, _, run, repeat_count), color) in enumerate(zip(axes.flat, representatives, palette)):
+    for index, (ax, (label, _, run, _repeat_count), color) in enumerate(zip(axes.flat, representatives, palette)):
         points = run["points"]
         minute = np.array([point["minute"] for point in points])
         score = np.array([point["score"] * 100 for point in points])
@@ -652,7 +652,7 @@ def render_trace_cases() -> None:
         letter = chr(ord("a") + index)
         ax.text(0.0, 1.02, letter, transform=ax.transAxes, weight="bold", fontsize=8.2)
         ax.set_title(label, x=0.085, ha="left", fontsize=7.2, pad=2)
-        ax.text(0.97, 0.95, f"{repeat_count} runs · {run['evaluations']} evals · {best[-1]:.2f}",
+        ax.text(0.97, 0.95, f"{run['evaluations']} evals · best {best[-1]:.2f}",
                 transform=ax.transAxes, ha="right", va="top", color=GRAY, fontsize=5.4)
     fig.supxlabel("Elapsed minutes", y=-0.005, fontsize=8)
     fig.supylabel("Seven-task score", x=0.01, fontsize=8)

@@ -96,11 +96,11 @@ Our study makes three contributions:
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{../docs/assets/system-overview.png}
-    \caption{\textbf{\bench{} pipeline.} An agent receives a frozen base checkpoint,
-    score-only evaluation access, and a four-hour compute budget. It iterates inside a
-    writable workspace and produces one candidate checkpoint. A trusted audit rejects
-    gradients, model substitution, evaluator access, and multi-model submission; valid
-    checkpoints are reloaded in a fresh process and evaluated on all seven tasks.}
+    \caption{\textbf{One \bench{} episode.} A research agent edits one frozen checkpoint
+    using score-only feedback for four hours. The main target is Qwen2.5-3B-Instruct; the
+    ablation target is Qwen3-4B-Base. A trusted evaluator reloads one submitted checkpoint
+    on seven tasks, while the audit rejects gradients, external weights, evaluator access,
+    and ensembles.}
     \label{fig:system}
 \end{figure}
 
@@ -216,11 +216,9 @@ candidate count alone.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig2-search-space.pdf}
-    \caption{\textbf{The local search space contains signal and substantial best-of-$N$
-    variation.} (A) All 1,000 exact-reset Qwen2.5-3B candidates sorted by joint score.
-    (B) Expected best score after $N$ random candidates, estimated from 2,000 random
-    permutations of the fixed pool; the band contains the 10th--90th percentiles. More
-    evaluations improve the expected maximum even without a better search strategy.}
+    \caption{\textbf{Random search on Qwen2.5-3B-Instruct.} (A) Joint scores of 1,000
+    exact-reset perturbations. (B) Best score after $N$ candidates over 2,000 permutations
+    of this pool; the band is the 10th--90th percentile.}
     \label{fig:premise}
 \end{figure}
 
@@ -250,12 +248,10 @@ and the best joint gain is $+2.7$ points.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig3-weight-space-landscape.pdf}
-    \caption{\textbf{Accuracy landscapes from 1,000 random perturbations of the primary
-    Qwen2.5 target.} All panels use the same score-blind random projection. Color represents
-    task-normalized change from the frozen checkpoint (blue: lower; white: base; red:
-    higher). Every panel prints its best gain and the number of candidates above base. The
-    black star is the base, the gold star is the best sampled perturbation for that panel,
-    and the dashed circle marks the typical projected perturbation range.}
+    \caption{\textbf{Projected Qwen2.5-3B-Instruct weight neighborhood.} The same 1,000
+    perturbations and score-blind projection appear in every panel. Color is task-normalized
+    change from base; black and gold stars mark the base and best sampled checkpoint, and
+    the dashed circle marks the typical projected range.}
     \label{fig:landscape}
 \end{figure}
 
@@ -273,10 +269,9 @@ do not automatically compose into one jointly strong checkpoint.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig4-task-conflict.pdf}
-    \caption{\textbf{The joint objective contains genuine task conflict.} (A) Per-task
-    changes for seven specialist checkpoints, each selected only by the row task.
-    (B) Number of tasks improved by every candidate in the 1,000-point pool. No sampled
-    checkpoint improves all seven tasks.}
+    \caption{\textbf{Task conflict on Qwen2.5-3B-Instruct.} (A) Per-task changes for seven
+    task-specialist checkpoints. (B) Number of tasks improved by each of the 1,000 random
+    perturbations; none improves all seven.}
     \label{fig:conflict}
 \end{figure}
 
@@ -292,7 +287,9 @@ the highest complete seven-task score reached during the run and report checkpoi
 and audit status separately. For a balanced primary comparison, we keep the three highest
 score-bearing runs for each of 13 exact agent--harness--reasoning settings, yielding 39
 displayed runs. The stricter trace analysis uses the 31 runs that also pass audit and fresh
-checkpoint replay.
+checkpoint replay. It covers 12 of the 13 settings, with 2--4 complete traces per setting;
+GPT-5.4 Pro is absent because no run has a complete audit replay. We use this unbalanced
+subset only for process diagnostics, not for the primary ranking.
 
 The target-model ablation repeats the same protocol for 16 score-bearing episodes on Qwen3-4B-Base,
 whose unmodified score is 41.08. This is a standard part of the experimental design: it
@@ -321,11 +318,9 @@ are retained separately.
 \centering
 \small
 \setlength{\tabcolsep}{7pt}
-\caption{\textbf{Primary results on Qwen2.5-3B-Instruct (0--100).} Each agent row uses
-the three highest score-bearing runs for one exact model, harness, and reasoning setting.
-A score-bearing run contributes its best complete seven-task score even if final submission
-failed; audit-valid replay is analyzed separately. Random-500 selects the best joint
-checkpoint from one fixed sequence of 500 independent perturbations.}
+\caption{\textbf{Primary Qwen2.5-3B-Instruct results (0--100; three runs per setting).}
+Rows specify the exact agent model and harness. We report each run's best complete
+seven-task score; Random-500 is the best checkpoint among 500 fixed perturbations.}
 \label{tab:main}
 \begin{tabular}{llrrr}
 \toprule
@@ -376,17 +371,15 @@ optimized, rather than a target-independent agent capability score.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig3-target-dependence.pdf}
-    \caption{\textbf{Agent outcomes depend strongly on the target checkpoint.} (A) Rank
-    changes for the eight settings shared by the primary and auxiliary targets; labels
-    report mean gain over the corresponding base. (B) The ten largest retained-run ranges
-    across both targets. Blue ticks denote Qwen2.5 means and orange ticks denote Qwen3
-    means; gray endpoints mark the observed minimum and maximum.}
+    \caption{\textbf{Target sensitivity: Qwen2.5-3B-Instruct versus Qwen3-4B-Base.}
+    (A) Rank changes for the eight shared agent--harness settings. (B) Their ten largest
+    within-setting score ranges; ticks are means and gray endpoints are minima and maxima.}
     \label{fig:target-dependence}
 \end{figure}
 
 \subsection{Where the joint-score gains come from}
 
-Figure~\ref{fig:tasks} compares Random-500 with all nine agent configurations for which a
+Figure~\ref{fig:tasks} compares Random-500 with all twelve agent configurations for which a
 fresh replay provides complete seven-task scores. Random search mainly improves GSM8K and MATH-500,
 whereas agents discover qualitatively different trade-offs. Kimi K2.6 improves GSM8K,
 MBPP, and USPTO-50K together; Opus 4.8 obtains the largest Countdown gain; and the GPT-5.6
@@ -396,11 +389,11 @@ therefore does not correspond to one universal perturbation direction.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig4-task-breakdown.pdf}
-    \caption{\textbf{Task-level changes on the primary Qwen2.5 target.} Cells show
-    percentage-point change from the frozen checkpoint. Random-500 is the best joint
-    checkpoint in the fixed 500-candidate sequence; the nine agent rows include every
-    configuration with audit-valid per-task replay, with the number of runs printed beside
-    its name.}
+    \caption{\textbf{Per-task gains on Qwen2.5-3B-Instruct.} Cells are percentage-point
+    changes from base. The 12 agent rows average all available audit-valid replays
+    ($n=2$--$4$, printed by row); Random-500 uses one fixed 500-candidate sequence. GPT-5.5
+    and GPT-5.6 use Codex, Opus and Sonnet use Cursor, and the other named agents use
+    OpenCode.}
     \label{fig:tasks}
 \end{figure}
 
@@ -414,7 +407,7 @@ runs are excluded from the statistics in this section and discussed separately b
 
 \subsection{Time utilization}
 
-The 31 audit-valid agents complete between 123 and 1,241 evaluations (median 427).
+The 31 audit-valid runs complete between 123 and 1,241 evaluations (median 427).
 Candidate count matters---Figure~\ref{fig:premise} shows that the random-search maximum
 grows with budget---but the traces contain more than repeated independent sampling. Agents
 change scales, screen task subsets, compare directions, and move the search center during
@@ -437,10 +430,9 @@ the visual horizon; it does not represent additional evaluations after submissio
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig6-agent-behavior.pdf}
-    \caption{\textbf{What the complete traces reveal.} (A) Empirical time at
-    which 31 audit-valid agent trajectories reach 90\% of their final gain; useful improvements continue
-    throughout the four-hour horizon. (B) Best composed checkpoint versus best one-direction checkpoint
-    within each audit-valid run. Composition wins in 24 of 31 runs.}
+    \caption{\textbf{Behavior across 31 audit-valid Qwen2.5-3B-Instruct runs.}
+    (A) Time to reach 90\% of each run's final gain. (B) Best composed versus best
+    one-direction checkpoint; composition wins in 24 runs.}
     \label{fig:behavior}
 \end{figure}
 
@@ -476,15 +468,11 @@ budget.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig6b-best-run-search-styles.pdf}
-    \caption{\textbf{Best-run search behavior differs across agent configurations.} For
-    each of the twelve configurations with audit-valid detailed traces, we select its
-    highest-scoring run on Qwen2.5-3B-Instruct. (A) Running best
-    seven-task score over the four-hour episode. Squares mark explicit submissions; faint
-    dashed plateaus extend submitted scores to minute 240 for visual alignment only.
-    (B) Share of classified candidate programs using one perturbation direction versus a
-    linear combination of multiple directions. The right annotation gives the number of
-    directions $k$ in the best checkpoint and its score. The figure describes search
-    behavior within selected best runs; Table~\ref{tab:main} reports repeated-run means.}
+    \caption{\textbf{Highest-scoring audit-valid Qwen2.5-3B-Instruct run per setting.}
+    (A) Running-best score; squares mark submission and dashed tails only align the
+    four-hour axis. (B) One-direction versus composed candidates; $k$ is the number of
+    directions in the best checkpoint. OpenCode runs Kimi K2.6, DeepSeek V4 Pro, GLM-5.1,
+    MiniMax M2.7, and Qwen3.7-Max; Codex runs GPT-5.5/5.6; Cursor runs Opus/Sonnet.}
     \label{fig:search-styles}
 \end{figure}
 
@@ -502,13 +490,10 @@ labels or post-hoc strategy names.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig6c-concrete-agent-operations.pdf}
-    \caption{\textbf{Exact operations that construct each selected best checkpoint.}
-    We replay the highest-scoring complete Qwen2.5-3B-Instruct run for each agent in one
-    normalized notation: copy the frozen base, add every recorded seeded direction at its
-    recorded scale, and evaluate the resulting state. The header reports the total number
-    of one-direction probes and composed candidates evaluated during that run. The snippets
-    are exact reconstructions of checkpoint specifications; they are not claimed to be
-    verbatim source code written by the agent.}
+    \caption{\textbf{Best-checkpoint programs for six agents on Qwen2.5-3B-Instruct.}
+    Panels show Kimi/OpenCode, GPT-5.6 xhigh/Codex, GPT-5.5 high/Codex, Sonnet/Cursor,
+    Opus/Cursor, and DeepSeek/OpenCode. Each reconstructs the base plus its recorded
+    seeded directions and scales.}
     \label{fig:operations}
 \end{figure}
 
@@ -525,14 +510,10 @@ discards this structure.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig7-weight-space-walks.pdf}
-    \caption{\textbf{Complete projected weight-space walks.} Each panel is one of the three
-    valid Qwen3-4B-Base episodes for which complete checkpoint programs were retained. The
-    background is an interpolated visualization of
-    scores actually measured in that run (blue: lower; white: near base; red: higher).
-    Line color runs from the first to the last evaluation and arrows show direction. The
-    black star is the frozen checkpoint, and the
-    gold star is the best measured checkpoint. Panels autoscale so short walks remain
-    visible; backgrounds should not be compared as calibrated global loss surfaces.}
+    \caption{\textbf{Projected Qwen3-4B-Base search paths.} Panels show GLM-5.1,
+    GPT-5.5, and MiniMax M2.7, all using OpenCode. Line color and arrows show evaluation
+    order; black and gold stars mark the base and best checkpoint. Backgrounds interpolate
+    only scores measured within each run.}
     \label{fig:walks}
 \end{figure}
 
@@ -547,13 +528,11 @@ endpoints are similar.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig5-trace-cases.pdf}
-    \caption{\textbf{Four-hour trajectories for every configuration with complete detailed
-    traces.} Gray points are retained candidate evaluations and colored steps are the
-    running best. Each panel displays the audit-valid run closest to that configuration's
-    median endpoint. A square marks the explicit submission time, and a faint dashed
-    plateau extends the submitted score to minute 240 for visual alignment only. The
-    upper-right annotation reports the repetition count, candidate evaluations in the
-    displayed run, and final best score.}
+    \caption{\textbf{Representative Qwen2.5-3B-Instruct trajectories for 12 settings.}
+    OpenCode runs Kimi K2.6, DeepSeek V4 Pro, GLM-5.1, MiniMax M2.7, and Qwen3.7-Max;
+    Codex runs GPT-5.5/5.6; Cursor runs Opus/Sonnet. Each panel shows the audit-valid run nearest that setting's median
+    endpoint: gray points are evaluations, colored steps are the running best, and the
+    square is submission. Dashed tails only align the four-hour axis.}
     \label{fig:trajectory}
 \end{figure}
 

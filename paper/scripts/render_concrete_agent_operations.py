@@ -8,7 +8,7 @@ from pathlib import Path
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import numpy as np
+from matplotlib.patches import FancyBboxPatch
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -38,6 +38,10 @@ def select_runs() -> list[dict]:
         best = max(candidates, key=lambda run: run["best_observed_full_suite_score"])
         selected.append({**best, "display_name": display_name, "color": color})
     return selected
+
+
+def format_scale(scale: float) -> str:
+    return f"{scale:+.2e}".replace("e-0", "e-").replace("e+0", "e+")
 
 
 def render() -> None:
@@ -82,119 +86,160 @@ def render() -> None:
 
     positive = "#2A7F62"
     negative = "#C97649"
-    neutral = "#7A8494"
-    grid = "#E5E9EF"
-    text = "#202938"
-    muted = "#667085"
+    text = "#25324A"
+    muted = "#778196"
+    panel_fill = "#FBF9F5"
+    panel_edge = "#D8D1C8"
+    accent = "#B99372"
 
-    fig, axes = plt.subplots(3, 2, figsize=(7.15, 5.55), sharex=True)
+    display_order = [
+        "Kimi K2.6",
+        "Claude Sonnet 4.6",
+        "GPT-5.6 xhigh",
+        "DeepSeek V4 Pro",
+        "GPT-5.5 high",
+        "Claude Opus 4.8",
+    ]
+    by_name = {run["display_name"]: run for run in selected}
+    ordered = [by_name[name] for name in display_order]
+
+    fig = plt.figure(figsize=(7.15, 6.15))
     fig.patch.set_facecolor("white")
+    grid = fig.add_gridspec(
+        3,
+        2,
+        height_ratios=[0.82, 0.92, 1.45],
+        left=0.012,
+        right=0.988,
+        top=0.992,
+        bottom=0.008,
+        wspace=0.06,
+        hspace=0.08,
+    )
+    axes = [fig.add_subplot(grid[row, column]) for row in range(3) for column in range(2)]
 
-    for panel_index, (ax, run) in enumerate(zip(axes.flat, selected)):
+    for panel_index, (ax, run) in enumerate(zip(axes, ordered)):
         terms = run["best_observed_terms"]
-        coefficients = np.array([term["scale"] * 1e3 for term in terms])
-        positions = np.arange(len(terms))
-        colors = [positive if value >= 0 else negative for value in coefficients]
-        score = run["best_observed_full_suite_score"] * 100
-        ax.axvline(0, color="#B8C0CC", lw=0.9, zorder=0)
-        ax.hlines(positions, 0, coefficients, colors=colors, lw=2.2, zorder=2)
-        ax.scatter(
-            coefficients,
-            positions,
-            s=24,
-            c=colors,
-            edgecolors="white",
-            linewidths=0.55,
-            zorder=3,
-        )
-        for y_value, coefficient in zip(positions, coefficients):
-            offset = 0.055 if coefficient >= 0 else -0.055
-            ax.text(
-                coefficient + offset,
-                y_value,
-                f"{coefficient:+.2f}",
-                ha="left" if coefficient >= 0 else "right",
-                va="center",
-                fontsize=6.8,
-                color=text,
-            )
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.axis("off")
 
-        ax.set_xlim(-1.55, 1.55)
-        ax.set_ylim(len(terms) - 0.35, -0.75)
-        ax.set_yticks(positions, [rf"$z_{{{index + 1}}}$" for index in positions])
-        ax.set_xticks(np.arange(-1.5, 1.51, 0.5))
-        ax.grid(axis="x", color=grid, linewidth=0.55, zorder=0)
-        ax.tick_params(axis="y", length=0, pad=3, labelsize=7.2, colors=muted)
-        ax.tick_params(axis="x", length=2.5, width=0.6, labelsize=7.0, colors=muted)
-        for spine in ("top", "right", "left"):
-            ax.spines[spine].set_visible(False)
-        ax.spines["bottom"].set_color("#B8C0CC")
-        ax.spines["bottom"].set_linewidth(0.65)
+        panel = FancyBboxPatch(
+            (0.01, 0.02),
+            0.98,
+            0.96,
+            boxstyle="round,pad=0.006,rounding_size=0.018",
+            facecolor=panel_fill,
+            edgecolor=panel_edge,
+            linewidth=0.7,
+        )
+        ax.add_patch(panel)
+        ax.plot([0.025, 0.975], [0.835, 0.835], color=accent, lw=1.15)
 
         ax.text(
-            -0.11,
-            1.10,
+            0.045,
+            0.91,
             chr(ord("a") + panel_index),
-            transform=ax.transAxes,
             ha="left",
-            va="top",
-            fontsize=9,
-            color=text,
-            weight="semibold",
+            va="center",
+            fontsize=8.5,
+            color=muted,
         )
         ax.text(
-            0.0,
-            1.10,
+            0.105,
+            0.91,
             run["display_name"],
-            transform=ax.transAxes,
             ha="left",
-            va="top",
-            fontsize=8.8,
+            va="center",
+            fontsize=9.0,
             color=text,
         )
         ax.text(
-            1.0,
-            1.10,
-            f"score {score:.2f}",
-            transform=ax.transAxes,
+            0.955,
+            0.91,
+            f"k = {len(terms)}",
             ha="right",
-            va="top",
-            fontsize=8.2,
-            color=text,
-        )
-        ax.text(
-            0.0,
-            1.01,
-            f"k={len(terms)}  |  {run['one_term_candidates']} probes  |  "
-            f"{run['multi_term_candidates']} compositions",
-            transform=ax.transAxes,
-            ha="left",
-            va="top",
-            fontsize=6.7,
+            va="center",
+            fontsize=7.5,
             color=muted,
         )
 
-    for ax in axes[-1, :]:
-        ax.set_xlabel(r"Signed coefficient  $\alpha_i \times 10^{-3}$", fontsize=7.8, color=text)
+        line_count = len(terms) + 2
+        max_step = 0.078 if panel_index >= 4 else 0.112
+        step = min(max_step, 0.65 / max(line_count - 1, 1))
+        y_positions = [0.75 - index * step for index in range(line_count)]
 
-    legend_handles = [
-        mpl.lines.Line2D([0], [0], color=positive, marker="o", lw=2, markersize=4,
-                         label="positive coefficient"),
-        mpl.lines.Line2D([0], [0], color=negative, marker="o", lw=2, markersize=4,
-                         label="negative coefficient"),
-    ]
-    fig.legend(
-        handles=legend_handles,
-        loc="upper center",
-        bbox_to_anchor=(0.5, 0.995),
-        ncol=2,
-        frameon=False,
-        fontsize=7.4,
-        labelcolor=text,
-        handlelength=1.8,
-        columnspacing=1.6,
-    )
-    fig.subplots_adjust(left=0.075, right=0.985, top=0.91, bottom=0.075, wspace=0.20, hspace=0.48)
+        def line_number(index: int, y_value: float) -> None:
+            ax.text(
+                0.055,
+                y_value,
+                f"{index:02d}",
+                ha="left",
+                va="center",
+                fontsize=6.2,
+                family="DejaVu Sans Mono",
+                color="#A3A9B4",
+            )
+
+        line_number(1, y_positions[0])
+        ax.text(
+            0.12,
+            y_positions[0],
+            "state = copy(base)",
+            ha="left",
+            va="center",
+            fontsize=6.9,
+            family="DejaVu Sans Mono",
+            color=text,
+        )
+
+        for term_index, (term, y_value) in enumerate(zip(terms, y_positions[1:-1]), start=2):
+            coefficient = format_scale(term["scale"])
+            coefficient_color = positive if term["scale"] >= 0 else negative
+            line_number(term_index, y_value)
+            ax.text(
+                0.12,
+                y_value,
+                "state +=",
+                ha="left",
+                va="center",
+                fontsize=6.9,
+                family="DejaVu Sans Mono",
+                color=text,
+            )
+            ax.text(
+                0.34,
+                y_value,
+                coefficient,
+                ha="left",
+                va="center",
+                fontsize=6.9,
+                family="DejaVu Sans Mono",
+                color=coefficient_color,
+            )
+            ax.text(
+                0.52,
+                y_value,
+                f"* noise(seed={term['seed']})",
+                ha="left",
+                va="center",
+                fontsize=6.9,
+                family="DejaVu Sans Mono",
+                color=text,
+            )
+
+        line_number(line_count, y_positions[-1])
+        ax.text(
+            0.12,
+            y_positions[-1],
+            "return state",
+            ha="left",
+            va="center",
+            fontsize=6.9,
+            family="DejaVu Sans Mono",
+            color=accent,
+        )
+
     OUT.mkdir(parents=True, exist_ok=True)
     for suffix in ("pdf", "png", "svg"):
         fig.savefig(OUT / f"fig6c-concrete-agent-operations.{suffix}")

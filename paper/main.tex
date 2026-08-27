@@ -492,19 +492,18 @@ budget.
     \label{fig:search-styles}
 \end{figure}
 
-The aggregate counts above do not reveal the structure of the checkpoint retained by each
-run. Figure~\ref{fig:operations} decomposes each checkpoint into signed coefficients over
-its recorded perturbation directions. The shared horizontal scale makes step size, sign,
-and composition depth directly comparable. Kimi keeps three positive directions, while
-GPT-5.6 and Sonnet mix signs. Opus builds the deepest composition with nine directions.
-These are exact replay terms from the traces.
+The aggregate counts above do not reveal what an agent actually wrote into its retained
+checkpoint. Figure~\ref{fig:operations} transcribes the exact construction program for six
+best runs. Every line records the applied coefficient, the noise seed, and the execution
+order. Kimi applies three positive directions. GPT-5.6, GPT-5.5, Sonnet, and DeepSeek mix
+positive and negative edits. Opus builds the deepest program with nine directions.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig6c-concrete-agent-operations.pdf}
-    \caption{Perturbation programs retained by six agents on Qwen2.5-3B-Instruct.
-    Each row shows one deterministic direction in application order. Bar length gives its
-    signed coefficient on a shared scale, and $k$ is the number of retained directions.}
+    \caption{Exact checkpoint construction programs for six agents on
+    Qwen2.5-3B-Instruct. Each panel replays the recorded operation sequence from the base
+    checkpoint using the original coefficient and noise seed.}
     \label{fig:operations}
 \end{figure}
 

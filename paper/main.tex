@@ -27,11 +27,7 @@ LLM Post-Training Without Gradients?}
 \newcommand{\bench}{\textsc{PostTrainBench}$^{0}$}
 \newcommand{\score}{J}
 \definecolor{tableheader}{HTML}{E9EEF5}
-\definecolor{tablebest}{HTML}{EDF5FF}
 \definecolor{tablebase}{HTML}{F3F4F6}
-\definecolor{codexcell}{HTML}{E8F2FF}
-\definecolor{cursorcell}{HTML}{F1ECFF}
-\definecolor{opencodecell}{HTML}{FFF2DF}
 % \iclrfinalcopy
 
 \begin{document}
@@ -115,7 +111,7 @@ Figure~\ref{fig:system} summarizes one episode. All harnesses receive the same i
 resources, candidate language, and evaluation commands. The underlying frontier model and
 CLI scaffold together form the research agent: the model plans and interprets feedback,
 while the scaffold manages tool calls, shell execution, files, permissions, and context.
-We evaluate Codex CLI, Cursor Agent, and OpenCode without human intervention.
+We evaluate CLI-based research agents without human intervention.
 
 \subsection{Agent architecture and isolation}
 All harnesses receive the same instruction and four commands: evaluate one candidate,
@@ -296,7 +292,7 @@ Qwen2.5-3B-Instruct is the primary target, with an unmodified joint score of 44.
 episode exposes eight H20 GPUs for parallel inference, and all reasoning, code execution,
 evaluation, and checkpoint handling counts toward the time limit. A run contributes its
 best complete seven-task score, even when the agent exits without a final submission. The
-main comparison retains three runs for every exact model--harness--reasoning setting; when
+main comparison retains three runs for every exact agent configuration; when
 more were available, we retained the three highest-scoring complete runs. Table~\ref{tab:main}
 reports their mean, best score, gain over the base, and range. Process figures use the
 subset whose checkpoints and timestamped traces can be reconstructed and replayed; that
@@ -335,32 +331,29 @@ retained four-hour runs. Mean and Best use each run's best complete seven-task s
 Gain is the mean improvement over the 44.08 base. Random-500 reports the best of 500 fixed
 perturbations.}
 \label{tab:main}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}rllrrrr}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}rlrrrr}
 \toprule
 \rowcolor{tableheader}
-Rank & Research agent & Harness & Mean $\uparrow$ & Best $\uparrow$ & Gain $\uparrow$ & Range \\
+Rank & Research agent & Mean $\uparrow$ & Best $\uparrow$ & Gain $\uparrow$ & Range \\
 \midrule
-\rowcolor{tablebest}
-1 & GPT-5.5 high & \cellcolor{codexcell}Codex & \textbf{48.39} & 49.23 & \textbf{+4.32} & 47.56--49.23 \\
-\rowcolor{tablebest}
-2 & Kimi K2.6 & \cellcolor{opencodecell}OpenCode & 48.09 & \textbf{49.25} & +4.02 & 47.51--49.25 \\
-\rowcolor{tablebest}
-3 & GPT-5.5 xhigh & \cellcolor{codexcell}Codex & 47.98 & 48.17 & +3.91 & 47.66--48.17 \\
-4 & GPT-5.6 medium & \cellcolor{codexcell}Codex & 47.72 & 48.83 & +3.65 & 46.69--48.83 \\
-5 & GPT-5.6 xhigh & \cellcolor{codexcell}Codex & 47.59 & 48.64 & +3.52 & 46.81--48.64 \\
-6 & GPT-5.6 high & \cellcolor{codexcell}Codex & 46.84 & 47.28 & +2.77 & 46.27--47.28 \\
-7 & DeepSeek V4 Pro & \cellcolor{opencodecell}OpenCode & 46.56 & 47.11 & +2.48 & 45.62--47.11 \\
-8 & Opus 4.8 high & \cellcolor{cursorcell}Cursor & 46.42 & 47.13 & +2.35 & 46.04--47.13 \\
-9 & Sonnet 4.6 medium & \cellcolor{cursorcell}Cursor & 46.41 & 47.92 & +2.33 & 45.59--47.92 \\
-10 & GPT-5.4 Pro & \cellcolor{opencodecell}OpenCode & 46.09 & 46.83 & +2.02 & 45.61--46.83 \\
-11 & MiniMax M2.7 & \cellcolor{opencodecell}OpenCode & 46.09 & 47.12 & +2.01 & 45.40--47.12 \\
-12 & GLM-5.1 & \cellcolor{opencodecell}OpenCode & 45.99 & 46.19 & +1.91 & 45.88--46.19 \\
-13 & Qwen3.7-Max & \cellcolor{opencodecell}OpenCode & 45.98 & 46.15 & +1.90 & 45.70--46.15 \\
+1 & GPT-5.5 high & \textbf{48.39} & 49.23 & \textbf{+4.32} & 47.56--49.23 \\
+2 & Kimi K2.6 & 48.09 & \textbf{49.25} & +4.02 & 47.51--49.25 \\
+3 & GPT-5.5 xhigh & 47.98 & 48.17 & +3.91 & 47.66--48.17 \\
+4 & GPT-5.6 medium & 47.72 & 48.83 & +3.65 & 46.69--48.83 \\
+5 & GPT-5.6 xhigh & 47.59 & 48.64 & +3.52 & 46.81--48.64 \\
+6 & GPT-5.6 high & 46.84 & 47.28 & +2.77 & 46.27--47.28 \\
+7 & DeepSeek V4 Pro & 46.56 & 47.11 & +2.48 & 45.62--47.11 \\
+8 & Opus 4.8 high & 46.42 & 47.13 & +2.35 & 46.04--47.13 \\
+9 & Sonnet 4.6 medium & 46.41 & 47.92 & +2.33 & 45.59--47.92 \\
+10 & GPT-5.4 Pro & 46.09 & 46.83 & +2.02 & 45.61--46.83 \\
+11 & MiniMax M2.7 & 46.09 & 47.12 & +2.01 & 45.40--47.12 \\
+12 & GLM-5.1 & 45.99 & 46.19 & +1.91 & 45.88--46.19 \\
+13 & Qwen3.7-Max & 45.98 & 46.15 & +1.90 & 45.70--46.15 \\
 \midrule
 \rowcolor{tablebase}
--- & Random-500 & Fixed search & 45.89 & 45.89 & +1.81 & -- \\
+-- & Random-500 & 45.89 & 45.89 & +1.81 & -- \\
 \rowcolor{tablebase}
--- & \emph{Base checkpoint} & -- & 44.08 & 44.08 & 0.00 & -- \\
+-- & \emph{Base checkpoint} & 44.08 & 44.08 & 0.00 & -- \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -390,7 +383,7 @@ optimized, rather than a target-independent agent capability score.
     \centering
     \includegraphics[width=\linewidth]{figures/fig3-target-dependence.pdf}
     \caption{\textbf{Target sensitivity: Qwen2.5-3B-Instruct versus Qwen3-4B-Base.}
-    (A) Rank changes for the eight shared agent--harness settings. (B) Their ten largest
+    (A) Rank changes for the eight shared agent settings. (B) Their ten largest
     within-setting score ranges; ticks are means and gray endpoints are minima and maxima.}
     \label{fig:target-dependence}
 \end{figure}
@@ -505,9 +498,9 @@ labels or post-hoc strategy names.
     \centering
     \includegraphics[width=\linewidth]{figures/fig6c-concrete-agent-operations.pdf}
     \caption{\textbf{Best-checkpoint programs for six agents on Qwen2.5-3B-Instruct.}
-    Panels show Kimi/OpenCode, GPT-5.6 xhigh/Codex, GPT-5.5 high/Codex, Sonnet/Cursor,
-    Opus/Cursor, and DeepSeek/OpenCode. Each reconstructs the base plus its recorded
-    seeded directions and scales.}
+    Panels show Kimi K2.6, GPT-5.6 xhigh, GPT-5.5 high, Sonnet 4.6, Opus 4.8, and
+    DeepSeek V4 Pro. Each reconstructs the base plus its recorded seeded directions and
+    scales.}
     \label{fig:operations}
 \end{figure}
 
@@ -525,9 +518,9 @@ discards this structure.
     \centering
     \includegraphics[width=\linewidth]{figures/fig7-weight-space-walks.pdf}
     \caption{\textbf{Projected Qwen3-4B-Base search paths.} Panels show GLM-5.1,
-    GPT-5.5, and MiniMax M2.7, all using OpenCode. Line color and arrows show evaluation
-    order; black and gold stars mark the base and best checkpoint. Backgrounds interpolate
-    only scores measured within each run.}
+    GPT-5.5, and MiniMax M2.7. Line color and arrows show evaluation order; black and gold
+    stars mark the base and best checkpoint. Backgrounds interpolate only scores measured
+    within each run.}
     \label{fig:walks}
 \end{figure}
 
@@ -656,19 +649,19 @@ budget, trajectory, composition, and target controls needed for reliable compari
 \setlength{\tabcolsep}{5pt}
 \caption{Auxiliary Qwen3-4B-Base results (0--100). Each exact setting contributes its two
 available same-protocol score-bearing runs.}
-\begin{tabular}{llrrrr}
+\begin{tabular}{lrrrr}
 \toprule
-Agent & Harness & Mean & $\Delta$ Base & Range & $n$ \\
+Agent & Mean & $\Delta$ Base & Range & $n$ \\
 \midrule
-MiniMax M2.7 & OpenCode & \textbf{49.00} & \textbf{+7.92} & 48.94--49.07 & 2 \\
-Kimi K2.6 & OpenCode & 48.91 & +7.83 & 45.88--51.94 & 2 \\
-GPT-5.4 Pro & OpenCode & 48.55 & +7.47 & 47.20--49.89 & 2 \\
-DeepSeek V4 Pro & OpenCode & 48.25 & +7.17 & 46.29--50.21 & 2 \\
-GPT-5.6 xhigh & Codex & 48.24 & +7.16 & 43.29--53.19 & 2 \\
-GLM-5.1 & OpenCode & 45.71 & +4.63 & 44.74--46.67 & 2 \\
-GPT-5.5 xhigh & Codex & 45.19 & +4.11 & 42.96--47.42 & 2 \\
-Qwen3.7-Max & OpenCode & 44.50 & +3.42 & 44.38--44.62 & 2 \\
-\emph{Base checkpoint} & -- & 41.08 & 0.00 & -- & -- \\
+MiniMax M2.7 & \textbf{49.00} & \textbf{+7.92} & 48.94--49.07 & 2 \\
+Kimi K2.6 & 48.91 & +7.83 & 45.88--51.94 & 2 \\
+GPT-5.4 Pro & 48.55 & +7.47 & 47.20--49.89 & 2 \\
+DeepSeek V4 Pro & 48.25 & +7.17 & 46.29--50.21 & 2 \\
+GPT-5.6 xhigh & 48.24 & +7.16 & 43.29--53.19 & 2 \\
+GLM-5.1 & 45.71 & +4.63 & 44.74--46.67 & 2 \\
+GPT-5.5 xhigh & 45.19 & +4.11 & 42.96--47.42 & 2 \\
+Qwen3.7-Max & 44.50 & +3.42 & 44.38--44.62 & 2 \\
+\emph{Base checkpoint} & 41.08 & 0.00 & -- & -- \\
 \bottomrule
 \end{tabular}
 \end{table}

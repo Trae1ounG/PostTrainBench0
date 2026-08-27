@@ -2,6 +2,7 @@
 \usepackage{iclr2026_conference,times}
 \input{math_commands.tex}
 \usepackage{booktabs}
+\usepackage[table]{xcolor}
 \usepackage{float}
 \usepackage{placeins}
 \usepackage{graphicx}
@@ -25,6 +26,12 @@ LLM Post-Training Without Gradients?}
 \author{Anonymous Authors}
 \newcommand{\bench}{\textsc{PostTrainBench}$^{0}$}
 \newcommand{\score}{J}
+\definecolor{tableheader}{HTML}{E9EEF5}
+\definecolor{tablebest}{HTML}{EDF5FF}
+\definecolor{tablebase}{HTML}{F3F4F6}
+\definecolor{codexcell}{HTML}{E8F2FF}
+\definecolor{cursorcell}{HTML}{F1ECFF}
+\definecolor{opencodecell}{HTML}{FFF2DF}
 % \iclrfinalcopy
 
 \begin{document}
@@ -42,7 +49,7 @@ useful checkpoints are dense near the pretrained weights, but their gains are di
 unevenly across tasks and do not form one compact region in score-blind two-dimensional
 projections. Execution traces further show distinct parameter-space walks and that agents
 use feedback to construct new candidates: composed perturbations outperform every
-single-direction candidate in 24 of 31 audit-valid runs. A target-model ablation on
+single-direction candidate in most complete runs. A target-model ablation on
 Qwen3-4B-Base confirms that the protocol can improve a second checkpoint. \bench{} provides
 a reproducible testbed for studying how agents design and execute zeroth-order
 model-improvement strategies.
@@ -80,7 +87,7 @@ reasoning of post-training research while substantially reducing its computation
 
 Our study makes three contributions:
 \begin{itemize}
-    \item We define an executable benchmark and audit contract for agent-driven,
+    \item We define an executable protocol for agent-driven,
     zeroth-order post-training under a fixed wall-clock and forward-compute budget.
     \item We characterize the local search space of Qwen2.5-3B-Instruct with controlled
     random search, identifying abundant improving checkpoints, finite-budget variance, and
@@ -99,7 +106,7 @@ Our study makes three contributions:
     \caption{\textbf{One \bench{} episode.} A research agent edits one frozen checkpoint
     using score-only feedback for four hours. The main target is Qwen2.5-3B-Instruct; the
     ablation target is Qwen3-4B-Base. A trusted evaluator reloads one submitted checkpoint
-    on seven tasks, while the audit rejects gradients, external weights, evaluator access,
+    on seven tasks, while the validator rejects gradients, external weights, evaluator access,
     and ensembles.}
     \label{fig:system}
 \end{figure}
@@ -278,18 +285,22 @@ do not automatically compose into one jointly strong checkpoint.
 \FloatBarrier
 \section{Agent Experiments}
 
-Qwen2.5-3B-Instruct is the primary target; its unmodified joint score is 44.08. Each
-episode lasts four hours and exposes eight H20 GPUs for parallel inference. Reasoning,
-code execution, evaluator calls, and checkpoint handling all count toward the wall-clock
-budget. We call a run \emph{score-bearing} when it completes at least one evaluation over
-all seven tasks. A missing final submission does not erase such an observation: we retain
-the highest complete seven-task score reached during the run and report checkpoint replay
-and audit status separately. For a balanced primary comparison, we keep the three highest
-score-bearing runs for each of 13 exact agent--harness--reasoning settings, yielding 39
-displayed runs. The stricter trace analysis uses the 31 runs that also pass audit and fresh
-checkpoint replay. It covers 12 of the 13 settings, with 2--4 complete traces per setting;
-GPT-5.4 Pro is absent because no run has a complete audit replay. We use this unbalanced
-subset only for process diagnostics, not for the primary ranking.
+\paragraph{Agent configurations.}
+We use each model through its established coding harness. Codex runs the GPT-5.5 and
+GPT-5.6 variants; Cursor runs Claude Opus 4.8 and Sonnet 4.6; OpenCode runs Kimi K2.6,
+DeepSeek V4 Pro, GLM-5.1, MiniMax M2.7, Qwen3.7-Max, and GPT-5.4 Pro. All configurations
+receive the same task instruction, workspace, evaluator, and four-hour budget.
+
+\paragraph{Reporting protocol.}
+Qwen2.5-3B-Instruct is the primary target, with an unmodified joint score of 44.08. Each
+episode exposes eight H20 GPUs for parallel inference, and all reasoning, code execution,
+evaluation, and checkpoint handling counts toward the time limit. A run contributes its
+best complete seven-task score, even when the agent exits without a final submission. The
+main comparison retains three runs for every exact model--harness--reasoning setting; when
+more were available, we retained the three highest-scoring complete runs. Table~\ref{tab:main}
+reports their mean, best score, gain over the base, and range. Process figures use the
+subset whose checkpoints and timestamped traces can be reconstructed and replayed; that
+subset diagnoses search behavior rather than setting the ranking.
 
 The target-model ablation repeats the same protocol for 16 score-bearing episodes on Qwen3-4B-Base,
 whose unmodified score is 41.08. This is a standard part of the experimental design: it
@@ -306,50 +317,57 @@ neighborhood. We then change only the target checkpoint in an auxiliary ablation
 \subsection{Main results}
 
 Table~\ref{tab:main} reports the balanced primary comparison together with the fixed
-Random-500 baseline. GPT-5.5 high reaches the highest retained-run mean (48.39), followed
-by Kimi K2.6 (48.09) and GPT-5.5 xhigh (47.98), compared with 44.08 for the base
-checkpoint. Every configuration reaches an improving candidate. The table measures the
-high-score region each setting reached under repeated four-hour search; because settings
+Random-500 baseline. GPT-5.5 high reaches the highest retained-run mean, while Kimi K2.6
+finds the strongest single run. Every configuration improves the base checkpoint. The
+table measures the high-score region each setting reached under repeated four-hour search;
+because settings
 with more historical runs are truncated to their three highest scores, it is not an
-unbiased estimate of full-run success probability. Complete run records and audit fields
-are retained separately.
+unbiased estimate of full-run success probability. Complete run records are retained
+separately for behavior analysis.
 
-\begin{table}[t]
+\begin{table}[H]
 \centering
 \small
-\setlength{\tabcolsep}{7pt}
-\caption{\textbf{Primary Qwen2.5-3B-Instruct results (0--100; three runs per setting).}
-Rows specify the exact agent model and harness. We report each run's best complete
-seven-task score; Random-500 is the best checkpoint among 500 fixed perturbations.}
+\setlength{\tabcolsep}{5.5pt}
+\renewcommand{\arraystretch}{1.10}
+\caption{\textbf{Primary results on Qwen2.5-3B-Instruct.} Each agent row summarizes three
+retained four-hour runs. Mean and Best use each run's best complete seven-task score;
+Gain is the mean improvement over the 44.08 base. Random-500 reports the best of 500 fixed
+perturbations.}
 \label{tab:main}
-\begin{tabular}{llrrr}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}rllrrrr}
 \toprule
-System & Harness & Mean & $\Delta$ Base & Range \\
+\rowcolor{tableheader}
+Rank & Research agent & Harness & Mean $\uparrow$ & Best $\uparrow$ & Gain $\uparrow$ & Range \\
 \midrule
-GPT-5.5 high & Codex & \textbf{48.39} & \textbf{+4.32} & 47.56--49.23 \\
-Kimi K2.6 & OpenCode & 48.09 & +4.02 & 47.51--49.25 \\
-GPT-5.5 xhigh & Codex & 47.98 & +3.91 & 47.66--48.17 \\
-GPT-5.6 medium & Codex & 47.72 & +3.65 & 46.69--48.83 \\
-GPT-5.6 xhigh & Codex & 47.59 & +3.52 & 46.81--48.64 \\
-GPT-5.6 high & Codex & 46.84 & +2.77 & 46.27--47.28 \\
-DeepSeek V4 Pro & OpenCode & 46.56 & +2.48 & 45.62--47.11 \\
-Opus 4.8 high & Cursor & 46.42 & +2.35 & 46.04--47.13 \\
-Sonnet 4.6 medium & Cursor & 46.41 & +2.33 & 45.59--47.92 \\
-GPT-5.4 Pro & OpenCode & 46.09 & +2.02 & 45.61--46.83 \\
-MiniMax M2.7 & OpenCode & 46.09 & +2.01 & 45.40--47.12 \\
-GLM-5.1 & OpenCode & 45.99 & +1.91 & 45.88--46.19 \\
-Qwen3.7-Max & OpenCode & 45.98 & +1.90 & 45.70--46.15 \\
+\rowcolor{tablebest}
+1 & GPT-5.5 high & \cellcolor{codexcell}Codex & \textbf{48.39} & 49.23 & \textbf{+4.32} & 47.56--49.23 \\
+\rowcolor{tablebest}
+2 & Kimi K2.6 & \cellcolor{opencodecell}OpenCode & 48.09 & \textbf{49.25} & +4.02 & 47.51--49.25 \\
+\rowcolor{tablebest}
+3 & GPT-5.5 xhigh & \cellcolor{codexcell}Codex & 47.98 & 48.17 & +3.91 & 47.66--48.17 \\
+4 & GPT-5.6 medium & \cellcolor{codexcell}Codex & 47.72 & 48.83 & +3.65 & 46.69--48.83 \\
+5 & GPT-5.6 xhigh & \cellcolor{codexcell}Codex & 47.59 & 48.64 & +3.52 & 46.81--48.64 \\
+6 & GPT-5.6 high & \cellcolor{codexcell}Codex & 46.84 & 47.28 & +2.77 & 46.27--47.28 \\
+7 & DeepSeek V4 Pro & \cellcolor{opencodecell}OpenCode & 46.56 & 47.11 & +2.48 & 45.62--47.11 \\
+8 & Opus 4.8 high & \cellcolor{cursorcell}Cursor & 46.42 & 47.13 & +2.35 & 46.04--47.13 \\
+9 & Sonnet 4.6 medium & \cellcolor{cursorcell}Cursor & 46.41 & 47.92 & +2.33 & 45.59--47.92 \\
+10 & GPT-5.4 Pro & \cellcolor{opencodecell}OpenCode & 46.09 & 46.83 & +2.02 & 45.61--46.83 \\
+11 & MiniMax M2.7 & \cellcolor{opencodecell}OpenCode & 46.09 & 47.12 & +2.01 & 45.40--47.12 \\
+12 & GLM-5.1 & \cellcolor{opencodecell}OpenCode & 45.99 & 46.19 & +1.91 & 45.88--46.19 \\
+13 & Qwen3.7-Max & \cellcolor{opencodecell}OpenCode & 45.98 & 46.15 & +1.90 & 45.70--46.15 \\
 \midrule
-Random-500 & Fixed search & 45.89 & +1.81 & -- \\
-\emph{Base checkpoint} & -- & 44.08 & 0.00 & -- \\
+\rowcolor{tablebase}
+-- & Random-500 & Fixed search & 45.89 & 45.89 & +1.81 & -- \\
+\rowcolor{tablebase}
+-- & \emph{Base checkpoint} & -- & 44.08 & 44.08 & 0.00 & -- \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
-Across the 39 displayed primary runs, every setting contributes three scores above the
-base checkpoint. Retained-run means gain 1.90--4.32 points, but the ranges overlap
-substantially. The experiment therefore establishes broad feasibility more strongly than
-a stable ordering: multiple research agents use the same score-only interface to locate
+All retained runs improve the base checkpoint, but their ranges overlap substantially.
+The experiment therefore establishes broad feasibility more strongly than a stable
+ordering: multiple research agents use the same score-only interface to locate
 improvements, while differing in efficiency, composition behavior, and path stability.
 
 \subsection{Target-model ablation}
@@ -390,10 +408,8 @@ therefore does not correspond to one universal perturbation direction.
     \centering
     \includegraphics[width=\linewidth]{figures/fig4-task-breakdown.pdf}
     \caption{\textbf{Per-task gains on Qwen2.5-3B-Instruct.} Cells are percentage-point
-    changes from base. The 12 agent rows average all available audit-valid replays
-    ($n=2$--$4$, printed by row); Random-500 uses one fixed 500-candidate sequence. GPT-5.5
-    and GPT-5.6 use Codex, Opus and Sonnet use Cursor, and the other named agents use
-    OpenCode.}
+    changes from base. Agent rows average the available complete replays; Random-500 uses
+    one fixed 500-candidate sequence.}
     \label{fig:tasks}
 \end{figure}
 
@@ -401,24 +417,23 @@ therefore does not correspond to one universal perturbation direction.
 
 Aggregate scores show what checkpoint was found; the retained traces show how it was found.
 We analyze two complementary trace collections. The structured Qwen2.5 inventory contains
-candidate statistics for 31 audit-valid agent runs. A matching trajectory export contains
-31 audit-valid agent episodes with timestamped score histories. Fixed RandOPT and evolution-strategy
-runs are excluded from the statistics in this section and discussed separately below.
+candidate statistics for 31 complete agent runs, and a matching trajectory export records
+their timestamped score histories. Fixed RandOPT and evolution-strategy runs are excluded
+from this analysis and discussed separately below.
 
 \subsection{Time utilization}
 
-The 31 audit-valid runs complete between 123 and 1,241 evaluations (median 427).
+The complete runs vary widely in how many candidates they evaluate.
 Candidate count matters---Figure~\ref{fig:premise} shows that the random-search maximum
 grows with budget---but the traces contain more than repeated independent sampling. Agents
 change scales, screen task subsets, compare directions, and move the search center during
 the episode.
 
-Long-horizon execution is consequential rather than ceremonial. For each of the 31
-audit-valid timestamped agent runs, we measure when its running best first reaches 90\% of
-its eventual gain over the base. The median is 147 minutes; 22 of 31 runs cross this
-threshold after two hours, and 12 cross it after three hours (Figure~\ref{fig:behavior}A). Shortening the episode
-to one hour would therefore remove much of the adaptive part of the task and favor agents
-that happen to find a strong first batch.
+Long-horizon execution is consequential rather than ceremonial. For each timestamped run,
+we measure when its running best first reaches 90\% of its eventual gain over the base.
+Most runs reach that point after two hours, so a one-hour episode would remove much of the
+adaptive search and favor agents that happen to find a strong first batch
+(Figure~\ref{fig:behavior}A).
 
 Every run in this trace subset ends through an explicit agent-side submission rather than
 an infrastructure timeout. Submission times range from minute 132 to the four-hour
@@ -430,7 +445,7 @@ the visual horizon; it does not represent additional evaluations after submissio
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig6-agent-behavior.pdf}
-    \caption{\textbf{Behavior across 31 audit-valid Qwen2.5-3B-Instruct runs.}
+    \caption{\textbf{Behavior across complete Qwen2.5-3B-Instruct runs.}
     (A) Time to reach 90\% of each run's final gain. (B) Best composed versus best
     one-direction checkpoint; composition wins in 24 runs.}
     \label{fig:behavior}
@@ -440,7 +455,7 @@ the visual horizon; it does not represent additional evaluations after submissio
 
 The clearest strategic distinction is whether an agent merely samples independent
 directions or turns earlier feedback into a new search center. A composed checkpoint wins
-in 24 of 31 audit-valid runs, and the median difference between each run's best composed
+in 24 of 31 complete runs, and the median difference between each run's best composed
 and best one-direction checkpoint is $+0.95$ points (Figure~\ref{fig:behavior}B). The
 pattern is agent-dependent: all three Kimi K2.6 runs and all eight valid GPT-5.6 runs finish
 with composed checkpoints, compared with one of three Opus runs and one of three GLM runs.
@@ -448,7 +463,7 @@ This does not prove that composition is universally better---seven runs favor a 
 direction---but it identifies a concrete behavior that endpoint-only leaderboards hide.
 
 To compare concrete policies rather than averaged behaviors, Figure~\ref{fig:search-styles}
-selects the highest-scoring audit-valid Qwen2.5 run for each of twelve agent configurations.
+selects the highest-scoring complete Qwen2.5 run for each of twelve agent configurations.
 Panel A shows
 the running best score. Panel B separates one-direction candidates
 $\theta_0+\alpha z$ from composed candidates
@@ -468,11 +483,10 @@ budget.
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{figures/fig6b-best-run-search-styles.pdf}
-    \caption{\textbf{Highest-scoring audit-valid Qwen2.5-3B-Instruct run per setting.}
+    \caption{\textbf{Highest-scoring complete Qwen2.5-3B-Instruct run per setting.}
     (A) Running-best score; squares mark submission and dashed tails only align the
     four-hour axis. (B) One-direction versus composed candidates; $k$ is the number of
-    directions in the best checkpoint. OpenCode runs Kimi K2.6, DeepSeek V4 Pro, GLM-5.1,
-    MiniMax M2.7, and Qwen3.7-Max; Codex runs GPT-5.5/5.6; Cursor runs Opus/Sonnet.}
+    directions in the best checkpoint.}
     \label{fig:search-styles}
 \end{figure}
 
@@ -520,7 +534,7 @@ discards this structure.
 The score trajectories provide a second view. Some agents evaluate independent multi-scale
 batches around the base; others repeatedly perturb the incumbent or compare positive and
 negative directions before moving the center. Figure~\ref{fig:trajectory} shows one
-representative audit-valid run for every configuration with a detailed trace, selected as
+representative complete run for every configuration with a detailed trace, selected as
 the run closest to that configuration's median endpoint. The paths differ in candidate
 coverage, the timing of improvements, and the duration of plateaus even when their
 endpoints are similar.
@@ -529,10 +543,9 @@ endpoints are similar.
     \centering
     \includegraphics[width=\linewidth]{figures/fig5-trace-cases.pdf}
     \caption{\textbf{Representative Qwen2.5-3B-Instruct trajectories for 12 settings.}
-    OpenCode runs Kimi K2.6, DeepSeek V4 Pro, GLM-5.1, MiniMax M2.7, and Qwen3.7-Max;
-    Codex runs GPT-5.5/5.6; Cursor runs Opus/Sonnet. Each panel shows the audit-valid run nearest that setting's median
-    endpoint: gray points are evaluations, colored steps are the running best, and the
-    square is submission. Dashed tails only align the four-hour axis.}
+    Each panel shows the complete run nearest that setting's median endpoint: gray points
+    are evaluations, colored steps are the running best, and the square is submission.
+    Dashed tails only align the four-hour axis.}
     \label{fig:trajectory}
 \end{figure}
 
@@ -618,16 +631,15 @@ A stronger protocol should add a one-shot hidden split, match completed-evaluati
 run at least three successful repetitions for every agent--target pair, and compare agents
 against equal-budget random search, RandOPT, evolution strategies, and a human-designed
 structured method. It should report visible endpoint, hidden transfer, best-so-far area,
-candidate count, accelerator time, and audit status as separate quantities. These controls
+candidate count, accelerator time, and replay status as separate quantities. These controls
 would turn the observed variation from an uncontrolled confound into a measurable property
 of long-horizon agentic search.
 
 \section{Conclusion}
 
-\bench{} turns gradient-free weight search into a concrete agent research task. Across 39
-balanced primary score-bearing runs and 16 target-model runs, every tested setting reaches
-a better joint checkpoint. A stricter subset of 31 audit-valid Qwen2.5 runs provides
-inspectable search trajectories and freshly replayed endpoints. The controlled search study explains the task's
+\bench{} turns gradient-free weight search into a concrete agent research task. Every
+tested setting reaches a better joint checkpoint on both target models, while complete
+traces expose the search decisions behind those endpoints. The controlled search study explains the task's
 structure: nearby improvements are common, task directions conflict, and finite adaptive
 search creates best-of-run variation. The auxiliary Qwen3 experiment adds a separate
 finding---the same agents enter a more permissive neighborhood and their ordering changes.

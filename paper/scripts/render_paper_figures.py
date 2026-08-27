@@ -182,7 +182,12 @@ def render_search_space() -> None:
     ax.set_xticks([1, 4, 16, 64, 256, 1000], ["1", "4", "16", "64", "256", "1k"])
     ax.set(xlabel="Random candidates evaluated", ylabel="Best score found")
     ax.grid(True)
-    ax.legend(frameon=False, loc="lower right", handlelength=1.8)
+    ax.legend(
+        frameon=False,
+        loc="upper left",
+        bbox_to_anchor=(0.01, 0.88),
+        handlelength=1.8,
+    )
     panel_label(ax, "B")
 
     save(fig, "fig2-search-space")
@@ -605,7 +610,7 @@ def render_trace_cases() -> None:
 
     palette = [ORANGE, GREEN, "#59A14F", "#72A0C1", "#4E79A7", BLUE,
                RED, PURPLE, "#B279A2", GRAY, "#9C755F", "#76B7B2"]
-    fig, axes = plt.subplots(4, 3, figsize=(7.15, 6.75), sharex=True, sharey=True,
+    fig, axes = plt.subplots(4, 3, figsize=(7.15, 6.95), sharex=True, sharey=True,
                              gridspec_kw={"wspace": 0.11, "hspace": 0.24})
     for index, (ax, (label, _, run, repeat_count), color) in enumerate(zip(axes.flat, representatives, palette)):
         points = run["points"]
@@ -644,15 +649,26 @@ def render_trace_cases() -> None:
         ax.axhline(44.08, color=INK, ls="--", lw=0.8)
         ax.set(xlim=(0, 240), ylim=(39.5, 50.0))
         ax.grid(True)
-        ax.set_title(label, loc="left", fontsize=7.2, pad=2)
+        letter = chr(ord("a") + index)
+        ax.text(0.0, 1.02, letter, transform=ax.transAxes, weight="bold", fontsize=8.2)
+        ax.set_title(label, x=0.085, ha="left", fontsize=7.2, pad=2)
         ax.text(0.97, 0.95, f"{repeat_count} runs · {run['evaluations']} evals · {best[-1]:.2f}",
                 transform=ax.transAxes, ha="right", va="top", color=GRAY, fontsize=5.4)
-        panel_label(ax, chr(ord("A") + index))
-    fig.supxlabel("Elapsed minutes", y=0.015, fontsize=8)
+    fig.supxlabel("Elapsed minutes", y=-0.005, fontsize=8)
     fig.supylabel("Seven-task score", x=0.01, fontsize=8)
     axes[-1, -1].plot([], [], color="#B7C0CC", marker="o", ls="", ms=3, label="evaluated candidate")
     axes[-1, -1].plot([], [], color=INK, lw=1.55, label="running best")
-    axes[-1, -1].legend(frameon=False, loc="lower right", handlelength=1.4, fontsize=5.5)
+    handles, legend_labels = axes[-1, -1].get_legend_handles_labels()
+    fig.legend(
+        handles,
+        legend_labels,
+        frameon=False,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.018),
+        ncol=2,
+        handlelength=1.4,
+        fontsize=5.5,
+    )
 
     save(fig, "fig5-trace-cases")
 

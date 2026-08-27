@@ -26,18 +26,18 @@ LLM Post-Training Without Gradients?}
 \author{Anonymous Authors}
 \newcommand{\bench}{\textsc{PostTrainBench}$^{0}$}
 \newcommand{\score}{J}
-\definecolor{tableheader}{HTML}{E9EEF5}
-\definecolor{tablebase}{HTML}{F3F4F6}
-% Score shading follows the warm, value-dependent palette used by PostTrainBench.
+\definecolor{tableheader}{HTML}{F3EFE8}
+\definecolor{tablebase}{HTML}{F5F5F3}
+% Score shading uses the pale warm palette of Figure 1.
 \definecolor{perfzero}{HTML}{FFFFFF}
-\definecolor{perf10}{HTML}{FAF5F0}
-\definecolor{perf20}{HTML}{F5EBE0}
-\definecolor{perf30}{HTML}{F0E0D0}
-\definecolor{perf40}{HTML}{EBD5C0}
-\definecolor{perf50}{HTML}{E6CAB0}
-\definecolor{perf60}{HTML}{E0BFA0}
-\definecolor{perf70}{HTML}{DBB490}
-\definecolor{perf80}{HTML}{D5A880}
+\definecolor{perf10}{HTML}{FCFBF5}
+\definecolor{perf20}{HTML}{FAF8EC}
+\definecolor{perf30}{HTML}{F8F4E2}
+\definecolor{perf40}{HTML}{F5EFD7}
+\definecolor{perf50}{HTML}{F2E9CC}
+\definecolor{perf60}{HTML}{EFE4C1}
+\definecolor{perf70}{HTML}{ECDEB6}
+\definecolor{perf80}{HTML}{E8D6AA}
 \definecolor{goldmedal}{HTML}{B58A00}
 \definecolor{silvermedal}{HTML}{667085}
 \definecolor{bronzemedal}{HTML}{A65F34}
@@ -112,11 +112,9 @@ Our study makes three contributions:
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{../docs/assets/system-overview.png}
-    \caption{\textbf{One \bench{} episode.} A research agent edits one frozen checkpoint
-    using score-only feedback for four hours. The main target is Qwen2.5-3B-Instruct; the
-    ablation target is Qwen3-4B-Base. A trusted evaluator reloads one submitted checkpoint
-    on seven tasks, while the validator rejects gradients, external weights, evaluator access,
-    and ensembles.}
+    \caption{Overview of \bench. A research agent iteratively modifies a frozen checkpoint
+    and learns from score-only evaluation. Compliance checks enforce gradient-free model
+    improvement, and the highest-scoring valid checkpoint is retained after four hours.}
     \label{fig:system}
 \end{figure}
 

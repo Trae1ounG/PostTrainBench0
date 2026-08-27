@@ -18,3 +18,4 @@ outputs/
 output/playwright/
 .playwright-cli/
 work/
+*.pdf

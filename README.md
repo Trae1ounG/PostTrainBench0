@@ -71,7 +71,7 @@ answers, or gradients.
 
 ## How one run works
 
-[![PostTrainBench⁰ system design](docs/figures/posttrainbench0-system.png)](docs/figures/posttrainbench0-system.pdf)
+![PostTrainBench⁰ system design](docs/figures/posttrainbench0-system.png)
 
 **Figure 1. PostTrainBench⁰ system design.** The agent controls the search code
 and candidate construction. Every candidate passes a compliance check before a
@@ -80,8 +80,7 @@ window; at timeout, the controller retains the best candidate that completed a
 full-suite evaluation. The base checkpoint, evaluator, answers, and final
 selection remain outside the writable workspace.
 
-Figure source: [editable draw.io](docs/figures/posttrainbench0-system.drawio) ·
-[vector PDF](docs/figures/posttrainbench0-system.pdf)
+Figure source: [editable draw.io](docs/figures/posttrainbench0-system.drawio)
 
 The trusted controller stores append-only attempt records and reloads the final
 checkpoint in a fresh inference process. See

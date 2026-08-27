@@ -48,7 +48,6 @@ test("ships interactive data and checked research figures", async () => {
   await Promise.all(requiredAssets.map((path) => access(new URL(`dist-pages/${path}`, root))));
   await Promise.all([
     access(new URL("docs/figures/posttrainbench0-system.drawio", root)),
-    access(new URL("docs/figures/posttrainbench0-system.pdf", root)),
   ]);
 
   const bundles = await readdir(new URL("dist-pages/assets/", root));

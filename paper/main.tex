@@ -332,37 +332,37 @@ with more historical runs are truncated to their three highest scores, it is not
 unbiased estimate of full-run success probability. Complete run records are retained
 separately for behavior analysis.
 
-\begin{table}[H]
+\begin{table}[t]
 \centering
 \small
-\setlength{\tabcolsep}{5.5pt}
+\setlength{\tabcolsep}{4.2pt}
 \renewcommand{\arraystretch}{1.10}
 \caption{Primary results on Qwen2.5-3B-Instruct. Each agent row summarizes three
 retained four-hour runs. Mean and Best use each run's best complete seven-task score;
 Gain is the mean improvement over the 44.08 base. Random-500 reports the best of 500 fixed
 perturbations. Darker cells indicate larger scores or gains.}
 \label{tab:main}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}rlrrrr}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}rllrrrr}
 \toprule
 \rowcolor{tableheader}
-Rank & Research agent & Mean $\uparrow$ & Best $\uparrow$ & Gain $\uparrow$ & Range \\
+Rank & Research agent & Harness & Mean $\uparrow$ & Best $\uparrow$ & Gain $\uparrow$ & Range \\
 \midrule
-\textcolor{goldmedal}{1} & GPT-5.5 high & \cellcolor{perf70}48.39 & \cellcolor{perf80}49.23 & \cellcolor{perf80}+4.32 & 47.56--49.23 \\
-\textcolor{silvermedal}{2} & Kimi K2.6 & \cellcolor{perf70}48.09 & \cellcolor{perf80}49.25 & \cellcolor{perf80}+4.02 & 47.51--49.25 \\
-\textcolor{bronzemedal}{3} & GPT-5.5 xhigh & \cellcolor{perf60}47.98 & \cellcolor{perf70}48.17 & \cellcolor{perf70}+3.91 & 47.66--48.17 \\
-4 & GPT-5.6 medium & \cellcolor{perf60}47.72 & \cellcolor{perf80}48.83 & \cellcolor{perf70}+3.65 & 46.69--48.83 \\
-5 & GPT-5.6 xhigh & \cellcolor{perf60}47.59 & \cellcolor{perf80}48.64 & \cellcolor{perf70}+3.52 & 46.81--48.64 \\
-6 & GPT-5.6 high & \cellcolor{perf40}46.84 & \cellcolor{perf50}47.28 & \cellcolor{perf50}+2.77 & 46.27--47.28 \\
-7 & DeepSeek V4 Pro & \cellcolor{perf40}46.56 & \cellcolor{perf50}47.11 & \cellcolor{perf40}+2.48 & 45.62--47.11 \\
-8 & Opus 4.8 high & \cellcolor{perf30}46.42 & \cellcolor{perf50}47.13 & \cellcolor{perf40}+2.35 & 46.04--47.13 \\
-9 & Sonnet 4.6 medium & \cellcolor{perf30}46.41 & \cellcolor{perf60}47.92 & \cellcolor{perf40}+2.33 & 45.59--47.92 \\
-10 & GPT-5.4 Pro & \cellcolor{perf30}46.09 & \cellcolor{perf40}46.83 & \cellcolor{perf40}+2.02 & 45.61--46.83 \\
-11 & MiniMax M2.7 & \cellcolor{perf30}46.09 & \cellcolor{perf50}47.12 & \cellcolor{perf40}+2.01 & 45.40--47.12 \\
-12 & GLM-5.1 & \cellcolor{perf20}45.99 & \cellcolor{perf30}46.19 & \cellcolor{perf30}+1.91 & 45.88--46.19 \\
-13 & Qwen3.7-Max & \cellcolor{perf20}45.98 & \cellcolor{perf30}46.15 & \cellcolor{perf30}+1.90 & 45.70--46.15 \\
+\textcolor{goldmedal}{1} & GPT-5.5 high & Codex & \cellcolor{perf70}48.39 & \cellcolor{perf80}49.23 & \cellcolor{perf80}+4.32 & 47.56--49.23 \\
+\textcolor{silvermedal}{2} & Kimi K2.6 & OpenCode & \cellcolor{perf70}48.09 & \cellcolor{perf80}49.25 & \cellcolor{perf80}+4.02 & 47.51--49.25 \\
+\textcolor{bronzemedal}{3} & GPT-5.5 xhigh & Codex & \cellcolor{perf60}47.98 & \cellcolor{perf70}48.17 & \cellcolor{perf70}+3.91 & 47.66--48.17 \\
+4 & GPT-5.6 medium & Codex & \cellcolor{perf60}47.72 & \cellcolor{perf80}48.83 & \cellcolor{perf70}+3.65 & 46.69--48.83 \\
+5 & GPT-5.6 xhigh & Codex & \cellcolor{perf60}47.59 & \cellcolor{perf80}48.64 & \cellcolor{perf70}+3.52 & 46.81--48.64 \\
+6 & GPT-5.6 high & Codex & \cellcolor{perf40}46.84 & \cellcolor{perf50}47.28 & \cellcolor{perf50}+2.77 & 46.27--47.28 \\
+7 & DeepSeek V4 Pro & OpenCode & \cellcolor{perf40}46.56 & \cellcolor{perf50}47.11 & \cellcolor{perf40}+2.48 & 45.62--47.11 \\
+8 & Opus 4.8 high & Cursor & \cellcolor{perf30}46.42 & \cellcolor{perf50}47.13 & \cellcolor{perf40}+2.35 & 46.04--47.13 \\
+9 & Sonnet 4.6 medium & Cursor & \cellcolor{perf30}46.41 & \cellcolor{perf60}47.92 & \cellcolor{perf40}+2.33 & 45.59--47.92 \\
+10 & GPT-5.4 Pro & OpenCode & \cellcolor{perf30}46.09 & \cellcolor{perf40}46.83 & \cellcolor{perf40}+2.02 & 45.61--46.83 \\
+11 & MiniMax M2.7 & OpenCode & \cellcolor{perf30}46.09 & \cellcolor{perf50}47.12 & \cellcolor{perf40}+2.01 & 45.40--47.12 \\
+12 & GLM-5.1 & OpenCode & \cellcolor{perf20}45.99 & \cellcolor{perf30}46.19 & \cellcolor{perf30}+1.91 & 45.88--46.19 \\
+13 & Qwen3.7-Max & OpenCode & \cellcolor{perf20}45.98 & \cellcolor{perf30}46.15 & \cellcolor{perf30}+1.90 & 45.70--46.15 \\
 \midrule
-\rowcolor{tablebase}-- & Random-500 & \cellcolor{perf20}45.89 & \cellcolor{perf20}45.89 & \cellcolor{perf30}+1.81 & -- \\
-\rowcolor{tablebase}-- & \emph{Base checkpoint} & \cellcolor{perfzero}44.08 & \cellcolor{perfzero}44.08 & \cellcolor{perfzero}0.00 & -- \\
+\rowcolor{tablebase}-- & Random-500 & -- & \cellcolor{perf20}45.89 & \cellcolor{perf20}45.89 & \cellcolor{perf30}+1.81 & -- \\
+\rowcolor{tablebase}-- & \emph{Base checkpoint} & -- & \cellcolor{perfzero}44.08 & \cellcolor{perfzero}44.08 & \cellcolor{perfzero}0.00 & -- \\
 \bottomrule
 \end{tabular*}
 \end{table}

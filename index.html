@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PostTrainBench⁰ — LLM Post-Training Without Gradients</title>
-    <meta name="description" content="A bilingual research article on whether LLM agents can improve language models through zeroth-order, score-only optimization." />
+    <meta name="description" content="A bilingual research article on whether LLM agents can conduct long-horizon, score-only model-improvement research in an unpredictable weight space." />
     <meta name="author" content="Yuqiao Tan, Minzheng Wang, Shizhu He, Jun Zhao, Kang Liu" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://trae1oung.github.io/posttrainbench0/" />
     <link rel="icon" href="./favicon.svg" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="PostTrainBench⁰ — LLM Post-Training Without Gradients" />
-    <meta property="og:description" content="Can LLM agents automate model improvement when gradients are unavailable?" />
+    <meta property="og:description" content="Can LLM agents research and automate model improvement when every weight-space experiment has an unpredictable return?" />
     <meta property="og:url" content="https://trae1oung.github.io/posttrainbench0/" />
     <meta property="og:image" content="https://trae1oung.github.io/posttrainbench0/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -25,11 +25,11 @@
         <article>
           <h1>PostTrainBench⁰: Can LLM Agents Automate LLM Post-Training Without Gradients?</h1>
           <p>Yuqiao Tan · Minzheng Wang · Shizhu He · Jun Zhao · Kang Liu<br />Institute of Automation, Chinese Academy of Sciences</p>
-          <p>PostTrainBench⁰ is a research preview for evaluating whether an autonomous LLM agent can improve a frozen language model using only score feedback and zeroth-order optimization.</p>
+          <p>PostTrainBench⁰ asks whether an autonomous LLM agent can conduct long-horizon model-improvement research when every weight-space experiment has an unknown return and the evaluator provides only scores.</p>
           <h2>Benchmark setup</h2>
           <p>Each four-hour run uses one read-only base checkpoint, eight inference workers, and seven tasks: Countdown, GSM8K, MATH-500, OlympiadBench, MBPP, ROCStories, and USPTO-50K. Gradients, evaluator edits, model replacement, and inference-time ensembles are forbidden.</p>
           <h2>Current evidence</h2>
-          <p>Nearby checkpoints can improve the joint score, and all 66 score-bearing pilot runs observed a complete seven-task candidate above their base checkpoint. The traces reveal distinct search programs and trajectories, while repeat variation makes finite-search reliability a concrete evaluation question. PostTrainBench⁰ releases this lower-cost, replayable AI-for-AI loop so the community can inspect it and build better search algorithms and protocols.</p>
+          <p>Nearby checkpoints can improve the joint score, and all 66 score-bearing pilot runs observed a complete seven-task candidate above their base checkpoint. The traces reveal how agents write search programs, interpret previously unknown feedback, and revise their experiments, while repeat variation makes finite-search reliability a concrete evaluation question.</p>
           <p><a href="https://github.com/Trae1ounG/PostTrainBench0">Code and benchmark materials</a></p>
         </article>
       </main>

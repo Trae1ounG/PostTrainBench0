@@ -24,7 +24,7 @@ test("builds the bilingual research article for the personal site", async () => 
   assert.match(page, /中文/);
   assert.match(page, />EN</);
   assert.match(page, /Task definition and setup/);
-  assert.match(page, /66 score-bearing agent runs/);
+  assert.match(page, /Across 66 score-bearing agent runs on two target models/);
   assert.match(page, /retain 55 runs for compact comparison/);
   assert.match(page, /31 Qwen2\.5-3B runs with replayable candidate-level trajectories/);
   assert.match(page, /GPT-5\.5 high therefore has the higher repeated-run mean/);

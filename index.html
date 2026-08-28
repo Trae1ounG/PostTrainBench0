@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PostTrainBench⁰ — LLM Post-Training Without Gradients</title>
+    <meta name="description" content="A bilingual research article on whether LLM agents can improve language models through zeroth-order, score-only optimization." />
+    <meta name="author" content="Yuqiao Tan, Minzheng Wang, Shizhu He, Jun Zhao, Kang Liu" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://trae1oung.github.io/posttrainbench0/" />
+    <link rel="icon" href="./favicon.svg" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="PostTrainBench⁰ — LLM Post-Training Without Gradients" />
+    <meta property="og:description" content="Can LLM agents automate model improvement when gradients are unavailable?" />
+    <meta property="og:url" content="https://trae1oung.github.io/posttrainbench0/" />
+    <meta property="og:image" content="https://trae1oung.github.io/posttrainbench0/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">
+      {"@context":"https://schema.org","@type":"ScholarlyArticle","headline":"PostTrainBench⁰: Can LLM Agents Automate LLM Post-Training Without Gradients?","author":[{"@type":"Person","name":"Yuqiao Tan","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Minzheng Wang","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Shizhu He","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Jun Zhao","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Kang Liu","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}}],"datePublished":"2026-08-24","url":"https://trae1oung.github.io/posttrainbench0/","inLanguage":["en","zh-CN"]}
+    </script>
+    <script type="module" crossorigin src="/posttrainbench0/assets/index-DwAD2owI.js"></script>
+    <link rel="stylesheet" crossorigin href="/posttrainbench0/assets/index-CmUy9gA1.css">
+  </head>
+  <body>
+    <div id="root">
+      <main>
+        <article>
+          <h1>PostTrainBench⁰: Can LLM Agents Automate LLM Post-Training Without Gradients?</h1>
+          <p>Yuqiao Tan · Minzheng Wang · Shizhu He · Jun Zhao · Kang Liu<br />Institute of Automation, Chinese Academy of Sciences</p>
+          <p>PostTrainBench⁰ is a research preview for evaluating whether an autonomous LLM agent can improve a frozen language model using only score feedback and zeroth-order optimization.</p>
+          <h2>Benchmark setup</h2>
+          <p>Each four-hour run uses one read-only base checkpoint, eight inference workers, and seven tasks: Countdown, GSM8K, MATH-500, OlympiadBench, MBPP, ROCStories, and USPTO-50K. Gradients, evaluator edits, model replacement, and inference-time ensembles are forbidden.</p>
+          <h2>Current evidence</h2>
+          <p>Nearby checkpoints can improve the joint score, and all 66 score-bearing pilot runs observed a complete seven-task candidate above their base checkpoint. The traces reveal distinct search programs and trajectories, while repeat variation makes finite-search reliability a concrete evaluation question. PostTrainBench⁰ releases this lower-cost, replayable AI-for-AI loop so the community can inspect it and build better search algorithms and protocols.</p>
+          <p><a href="https://github.com/Trae1ounG/PostTrainBench0">Code and benchmark materials</a></p>
+        </article>
+      </main>
+    </div>
+  </body>
+</html>

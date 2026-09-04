@@ -4,21 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PostTrainBench⁰ — LLM Post-Training Without Gradients</title>
-    <meta name="description" content="A bilingual research article on whether LLM agents can conduct long-horizon, score-only model-improvement research in an unpredictable weight space." />
+    <meta name="description" content="A bilingual research article evaluating whether LLM agents can discover generalizable post-training strategies without gradients from scalar feedback." />
     <meta name="author" content="Yuqiao Tan, Minzheng Wang, Shizhu He, Jun Zhao, Kang Liu" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://trae1oung.github.io/posttrainbench0/" />
     <link rel="icon" href="./favicon.svg" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="PostTrainBench⁰ — LLM Post-Training Without Gradients" />
-    <meta property="og:description" content="Can LLM agents research and automate model improvement when every weight-space experiment has an unpredictable return?" />
+    <meta property="og:description" content="Can LLM agents discover generalizable post-training algorithms when backpropagation is removed and only scalar scores are provided?" />
     <meta property="og:url" content="https://trae1oung.github.io/posttrainbench0/" />
     <meta property="og:image" content="https://trae1oung.github.io/posttrainbench0/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json">
       {"@context":"https://schema.org","@type":"ScholarlyArticle","headline":"PostTrainBench⁰: Can LLM Agents Automate LLM Post-Training Without Gradients?","author":[{"@type":"Person","name":"Yuqiao Tan","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Minzheng Wang","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Shizhu He","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Jun Zhao","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}},{"@type":"Person","name":"Kang Liu","affiliation":{"@type":"Organization","name":"Institute of Automation, Chinese Academy of Sciences"}}],"datePublished":"2026-08-24","url":"https://trae1oung.github.io/posttrainbench0/","inLanguage":["en","zh-CN"]}
     </script>
-    <script type="module" crossorigin src="/posttrainbench0/assets/index-CqhQZ56f.js"></script>
+    <script type="module" crossorigin src="/posttrainbench0/assets/index-B-gVXdC2.js"></script>
     <link rel="stylesheet" crossorigin href="/posttrainbench0/assets/index-CmUy9gA1.css">
   </head>
   <body>
@@ -27,11 +27,11 @@
         <article>
           <h1>PostTrainBench⁰: Can LLM Agents Automate LLM Post-Training Without Gradients?</h1>
           <p>Yuqiao Tan · Minzheng Wang · Shizhu He · Jun Zhao · Kang Liu<br />Institute of Automation, Chinese Academy of Sciences</p>
-          <p>PostTrainBench⁰ asks whether an autonomous LLM agent can conduct long-horizon model-improvement research when every weight-space experiment has an unknown return and the evaluator provides only scores.</p>
+          <p>PostTrainBench⁰ tests whether autonomous LLM agents can post-train language models without gradients, evaluating whether agents can discover generalizable optimization strategies using only black-box scalar feedback.</p>
           <h2>Benchmark setup</h2>
-          <p>Each four-hour run uses one read-only base checkpoint, eight inference workers, and seven tasks: Countdown, GSM8K, MATH-500, OlympiadBench, MBPP, ROCStories, and USPTO-50K. Gradients, evaluator edits, model replacement, and inference-time ensembles are forbidden.</p>
-          <h2>Current evidence</h2>
-          <p>Nearby checkpoints can improve the joint score, and all 66 score-bearing pilot runs observed a complete seven-task candidate above their base checkpoint. The traces reveal how agents write search programs, interpret previously unknown feedback, and revise their experiments, while repeat variation makes finite-search reliability a concrete evaluation question.</p>
+          <p>Each four-hour run provides one base checkpoint, eight inference workers, and seven conflicting tasks: Countdown, GSM8K, MATH-500, OlympiadBench, MBPP, ROCStories, and USPTO-50K. Gradients, evaluator edits, model replacement, and inference-time ensembles are forbidden.</p>
+          <h2>Core findings</h2>
+          <p>Across 13 frontier agents, all systems improve visible scores and demonstrate experimental reasoning such as multi-scale tuning and rollback. However, a simple tuned evolution strategy substantially outperforms every agent, and 9 of 13 agents fail to generalize on held-out test sets. These results reveal that current agents excel at operational execution but cannot yet achieve true algorithmic discovery.</p>
           <p><a href="https://github.com/Trae1ounG/PostTrainBench0">Code and benchmark materials</a></p>
         </article>
       </main>
